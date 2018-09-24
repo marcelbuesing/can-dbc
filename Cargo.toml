@@ -1,0 +1,8 @@
+[package]
+name = "dbc-parser"
+version = "0.1.0"
+authors = ["marcelbuesing <buesing.marcel@googlemail.com>"]
+edition = "2018"
+
+[dependencies]
+nom = "4.0"
