@@ -70,6 +70,24 @@ mod tests {
         SG_ BasL2 : 3|2@0- (1,0) [0|0] \"x\" DFA_FUS\r\n\r\n";
         let (_, message_def) = message_definition(def).expect("Failed to parse message definition");
     }
+
+    #[test]
+    fn signal_comment_test() {
+        let def1 = "CM_ SG_ 193 KLU_R_X \"This is a signal comment test\";";
+        let id1 = SignalCommentId(193);
+        let comment1 = DbcElement::SignalComment(id1, "KLU_R_X".to_string(), "This is a signal comment test".to_string(), false);
+        let (_, comment1_def) = comment(def1).expect("Failed to parse signal comment definition");
+        assert_eq!(comment1, comment1_def);
+     }
+
+     #[test]
+    fn message_definition_comment_test() {
+        let def1 = "CM_ BO_ 34544 XYZ \"Some Message comment\";";
+        let id1 = MessageId(34544);
+        let comment1 = DbcElement::MessageDefinitionComment(id1, "XYZ".to_string(), "Some Message comment".to_string(), false);
+        let (_, comment1_def) = comment(def1).expect("Failed to parse message definition comment definition");
+        assert_eq!(comment1, comment1_def);
+     }
 }
 
 #[derive(Debug, PartialEq)]
@@ -95,7 +113,7 @@ pub struct Signal {
 }
 
 #[derive(Debug, PartialEq)]
-pub struct SignalCommentId(i64);
+pub struct SignalCommentId(u64);
 
 #[derive(Debug, PartialEq)]
 pub struct MessageId(u64);
@@ -256,6 +274,14 @@ fn is_colon(chr: char) -> bool {
     chr == ':'
 }
 
+fn is_semi_colon(chr: char) -> bool {
+    chr == ';'
+}
+
+fn is_space_s(chr: char) -> bool {
+    chr == ' '
+}
+
 fn is_c_string_char(chr: char) -> bool {
     chr.is_digit(10) || chr.is_alphabetic() || chr == '_'
 }
@@ -272,6 +298,9 @@ named!(colon<&str,  char>, char!(':'));
 
 /// Comma aka ','
 named!(comma<&str,  char>, char!(','));
+
+/// Comma aka ';'
+named!(semi_colon<&str,  char>, char!(';'));
 
 /// Quote aka '"'
 named!(quote<&str,  char>, char!('"'));
@@ -338,6 +367,13 @@ named!(pub message_id<&str, MessageId>,
     do_parse!(
         id:  u64_digit >>
         (MessageId(id))
+    )
+);
+
+named!(pub signal_comment_id<&str, SignalCommentId>,
+    do_parse!(
+        id:  u64_digit >>
+        (SignalCommentId(id))
     )
 );
 
@@ -447,4 +483,41 @@ named!(pub message_definition<&str, DbcElement>,
     signals: separated_nonempty_list!(line_ending, signal) >>
     (DbcElement::Message(id, false, name.to_string(), size, transmitter.to_string(), signals))
   )
+);
+
+named!(pub signal_comment<&str, DbcElement>,
+    do_parse!(
+        tag!("SG_") >>
+        ss >>
+        id: signal_comment_id >>
+        ss >>
+        name: c_ident >>
+        ss >>
+        comment: quoted >>
+        (DbcElement::SignalComment(id, name.to_string(), comment.to_string(), false))
+    )
+);
+
+named!(pub message_definition_comment<&str, DbcElement>,
+    do_parse!(
+        tag!("BO_") >>
+        ss >>
+        id: message_id >>
+        ss >>
+        // TODO not only c ident ?
+        name: take_till_s!(is_space_s) >>
+        ss >>
+        comment: quoted >>
+        (DbcElement::MessageDefinitionComment(id, name.to_string(), comment.to_string(), false))
+    )
+);
+
+named!(pub comment<&str, DbcElement>,
+    do_parse!(
+        tag!("CM_") >>
+        ss >>
+        c: alt!(signal_comment | message_definition_comment) >>
+        semi_colon >>
+        (c)
+    )
 );
