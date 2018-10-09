@@ -30,7 +30,7 @@ mod tests {
 
     #[test]
     fn signal_test() {
-        let signal_line = " SG_ NAME : 6|2@1- (1,0) [0|0] \"x\" ECALL_RUS\r\n\r\n";
+        let signal_line = " SG_ NAME : 3|2@1- (1,0) [0|0] \"x\" UFA\r\n\r\n";
         let signal1 = signal(signal_line).unwrap();
     }
     #[test]
@@ -75,49 +75,80 @@ mod tests {
     fn signal_comment_test() {
         let def1 = "CM_ SG_ 193 KLU_R_X \"This is a signal comment test\";";
         let id1 = SignalCommentId(193);
-        let comment1 = DbcElement::SignalComment(id1, "KLU_R_X".to_string(), "This is a signal comment test".to_string(), false);
+        let comment1 = DbcElement::SignalComment(
+            id1,
+            "KLU_R_X".to_string(),
+            "This is a signal comment test".to_string(),
+            false,
+        );
         let (_, comment1_def) = comment(def1).expect("Failed to parse signal comment definition");
         assert_eq!(comment1, comment1_def);
-     }
+    }
 
-     #[test]
+    #[test]
     fn message_definition_comment_test() {
         let def1 = "CM_ BO_ 34544 XYZ \"Some Message comment\";";
         let id1 = MessageId(34544);
-        let comment1 = DbcElement::MessageDefinitionComment(id1, "XYZ".to_string(), "Some Message comment".to_string(), false);
-        let (_, comment1_def) = comment(def1).expect("Failed to parse message definition comment definition");
+        let comment1 = DbcElement::MessageDefinitionComment(
+            id1,
+            "XYZ".to_string(),
+            "Some Message comment".to_string(),
+            false,
+        );
+        let (_, comment1_def) =
+            comment(def1).expect("Failed to parse message definition comment definition");
         assert_eq!(comment1, comment1_def);
-     }
+    }
 
-     #[test]
-     fn value_description_for_signal_test() {
-         let def1 = "VAL_ 837 UF_HZ_OI 255 \"NOP\" ;";
-         let id = MessageId(837);
-         let name = "UF_HZ_OI".to_string();
-         let descriptions = vec!(ValueDescription {a: 255.0, b: "NOP".to_string()});
-         let value_description_for_signal1 = DbcElement::ValueDescriptionsForSignal(id, name, descriptions);
-         let (_, value_signal_def) = value_descriptions(def1).expect("Failed to parse value desc for signal");
-         assert_eq!(value_description_for_signal1, value_signal_def);
-     }
+    #[test]
+    fn value_description_for_signal_test() {
+        let def1 = "VAL_ 837 UF_HZ_OI 255 \"NOP\" ;";
+        let id = MessageId(837);
+        let name = "UF_HZ_OI".to_string();
+        let descriptions = vec![ValueDescription {
+            a: 255.0,
+            b: "NOP".to_string(),
+        }];
+        let value_description_for_signal1 =
+            DbcElement::ValueDescriptionsForSignal(id, name, descriptions);
+        let (_, value_signal_def) =
+            value_descriptions(def1).expect("Failed to parse value desc for signal");
+        assert_eq!(value_description_for_signal1, value_signal_def);
+    }
 
-      #[test]
-     fn value_description_for_env_var_test() {
-         let def1 = "VAL_ MY_ENV_VAR 255 \"NOP\" ;";
-         let name = "MY_ENV_VAR".to_string();
-         let descriptions = vec!(ValueDescription {a: 255.0, b: "NOP".to_string()});
-         let value_env_var1 = DbcElement::ValueDescriptionsForEnvVar( name, descriptions);
-         let (_, value_env_var) = value_descriptions(def1).expect("Failed to parse value desc for env var");
-         assert_eq!(value_env_var1, value_env_var);
-     }
+    #[test]
+    fn value_description_for_env_var_test() {
+        let def1 = "VAL_ MY_ENV_VAR 255 \"NOP\" ;";
+        let name = "MY_ENV_VAR".to_string();
+        let descriptions = vec![ValueDescription {
+            a: 255.0,
+            b: "NOP".to_string(),
+        }];
+        let value_env_var1 = DbcElement::ValueDescriptionsForEnvVar(name, descriptions);
+        let (_, value_env_var) =
+            value_descriptions(def1).expect("Failed to parse value desc for env var");
+        assert_eq!(value_env_var1, value_env_var);
+    }
 
-     #[test]
-     fn environment_variable_test() {
-         let def1 = "EV_ IUV: 0 [-22|20] \"mm\" 3 7 DUMMY_NODE_VECTOR0 VECTOR_XXX;";
-         let nodes1 = vec!(AccessNode::AccessNodeVectorXXX);
-         let env_var1 = DbcElement::EnvVariable("IUV".to_string(),  EnvType::EnvTypeFloat, -22, 20, "mm".to_string(), 3.0, 7,  AccessType::DUMMY_NODE_VECTOR0, nodes1);
-         let (_, env_var) = environment_variable(def1).expect("Failed to parse environment variable");
-         assert_eq!(env_var1, env_var);
-     }
+    #[test]
+    fn environment_variable_test() {
+        let def1 = "EV_ IUV: 0 [-22|20] \"mm\" 3 7 DUMMY_NODE_VECTOR0 VECTOR_XXX;";
+        let nodes1 = vec![AccessNode::AccessNodeVectorXXX];
+        let env_var1 = DbcElement::EnvVariable(
+            "IUV".to_string(),
+            EnvType::EnvTypeFloat,
+            -22,
+            20,
+            "mm".to_string(),
+            3.0,
+            7,
+            AccessType::DUMMY_NODE_VECTOR0,
+            nodes1,
+        );
+        let (_, env_var) =
+            environment_variable(def1).expect("Failed to parse environment variable");
+        assert_eq!(env_var1, env_var);
+    }
 }
 
 #[derive(Debug, PartialEq)]
