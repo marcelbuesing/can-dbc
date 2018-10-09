@@ -109,6 +109,15 @@ mod tests {
          let (_, value_env_var) = value_descriptions(def1).expect("Failed to parse value desc for env var");
          assert_eq!(value_env_var1, value_env_var);
      }
+
+     #[test]
+     fn environment_variable_test() {
+         let def1 = "EV_ IUV: 0 [-22|20] \"mm\" 3 7 DUMMY_NODE_VECTOR0 VECTOR_XXX;";
+         let nodes1 = vec!(AccessNode::AccessNodeVectorXXX);
+         let env_var1 = DbcElement::EnvVariable("IUV".to_string(),  EnvType::EnvTypeFloat, -22, 20, "mm".to_string(), 3.0, 7,  AccessType::DUMMY_NODE_VECTOR0, nodes1);
+         let (_, env_var) = environment_variable(def1).expect("Failed to parse environment variable");
+         assert_eq!(env_var1, env_var);
+     }
 }
 
 #[derive(Debug, PartialEq)]
@@ -359,6 +368,10 @@ named!(u64_digit<&str, u64>,
     )
 );
 
+named!(i64_digit<&str, i64>,
+    flat_map!(recognize!(tuple!(opt!(alt!(char!('+') | char!('-'))), digit)), parse_to!(i64))
+);
+
 named!(quoted<&str, &str>,
     do_parse!(
             quote                     >>
@@ -576,4 +589,61 @@ named!(pub value_description_for_env_var<&str, DbcElement>,
 
 named!(pub value_descriptions<&str, DbcElement>,
     alt!(value_description_for_signal | value_description_for_env_var)
+);
+
+named!(env_float<&str,  EnvType>, value!(EnvType::EnvTypeFloat, char!('0')));
+named!(env_int<&str,  EnvType>, value!(EnvType::EnvTypeu64, char!('1')));
+named!(env_data<&str,  EnvType>, value!(EnvType::EnvTypeData, char!('2')));
+
+/// 9 Environment Variable Definitions
+named!(pub env_var_type<&str, EnvType>, alt!(env_float | env_int | env_data));
+
+named!(dummy_node_vector_0<&str,  AccessType>, value!(AccessType::DUMMY_NODE_VECTOR0, char!('0')));
+named!(dummy_node_vector_1<&str,  AccessType>, value!(AccessType::DUMMY_NODE_VECTOR1, char!('1')));
+named!(dummy_node_vector_2<&str,  AccessType>, value!(AccessType::DUMMY_NODE_VECTOR2, char!('2')));
+named!(dummy_node_vector_3<&str,  AccessType>, value!(AccessType::DUMMY_NODE_VECTOR3, char!('3')));
+
+/// 9 Environment Variable Definitions
+named!(pub access_type<&str, AccessType>,
+    do_parse!(
+        tag!("DUMMY_NODE_VECTOR") >>
+        node: alt!(dummy_node_vector_0 | dummy_node_vector_1 | dummy_node_vector_2 | dummy_node_vector_3) >>
+        (node)
+    )
+);
+
+named!(access_node_vector_xxx<&str, AccessNode>,  value!(AccessNode::AccessNodeVectorXXX, tag!("VECTOR_XXX")));
+named!(access_node_name<&str, AccessNode>,  map!(c_ident, |name| AccessNode::AccessNodeName(name.to_string())));
+
+/// 9 Environment Variable Definitions
+named!(pub access_node<&str, AccessNode>, alt!(access_node_vector_xxx | access_node_name));
+
+/// 9 Environment Variable Definitions
+named!(environment_variable<&str, DbcElement>,
+    do_parse!(
+        tag!("EV_") >>
+        ss >>
+        name: c_ident >>
+        colon >>
+        ss >>
+        type_: env_var_type >>
+        ss >>
+        brk_open >>
+        min: i64_digit >>
+        pipe >>
+        max: i64_digit >>
+        brk_close >>
+        ss >>
+        unit: quoted >>
+        ss >>
+        initial_value: double_s >>
+        ss >>
+        id: i64_digit >>
+        ss >>
+        access_type: access_type >>
+        ss >>
+        access_nodes: separated_nonempty_list!(comma, access_node) >>
+        semi_colon >>
+       (DbcElement::EnvVariable(name.to_string(), type_, min, max, unit.to_string(), initial_value, id, access_type, access_nodes))
+    )
 );
