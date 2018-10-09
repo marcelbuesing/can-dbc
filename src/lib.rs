@@ -88,6 +88,27 @@ mod tests {
         let (_, comment1_def) = comment(def1).expect("Failed to parse message definition comment definition");
         assert_eq!(comment1, comment1_def);
      }
+
+     #[test]
+     fn value_description_for_signal_test() {
+         let def1 = "VAL_ 837 UF_HZ_OI 255 \"NOP\" ;";
+         let id = MessageId(837);
+         let name = "UF_HZ_OI".to_string();
+         let descriptions = vec!(ValueDescription {a: 255.0, b: "NOP".to_string()});
+         let value_description_for_signal1 = DbcElement::ValueDescriptionsForSignal(id, name, descriptions);
+         let (_, value_signal_def) = value_descriptions(def1).expect("Failed to parse value desc for signal");
+         assert_eq!(value_description_for_signal1, value_signal_def);
+     }
+
+      #[test]
+     fn value_description_for_env_var_test() {
+         let def1 = "VAL_ MY_ENV_VAR 255 \"NOP\" ;";
+         let name = "MY_ENV_VAR".to_string();
+         let descriptions = vec!(ValueDescription {a: 255.0, b: "NOP".to_string()});
+         let value_env_var1 = DbcElement::ValueDescriptionsForEnvVar( name, descriptions);
+         let (_, value_env_var) = value_descriptions(def1).expect("Failed to parse value desc for env var");
+         assert_eq!(value_env_var1, value_env_var);
+     }
 }
 
 #[derive(Debug, PartialEq)]
@@ -520,4 +541,39 @@ named!(pub comment<&str, DbcElement>,
         semi_colon >>
         (c)
     )
+);
+
+named!(pub value_description<&str, ValueDescription>,
+    do_parse!(
+        a: double_s >>
+        ss >>
+        b: quoted >>
+        (ValueDescription { a: a, b: b.to_string() })
+    )
+);
+
+named!(pub value_description_for_signal<&str, DbcElement>,
+    do_parse!(
+        tag!("VAL_") >>
+        ss >>
+        id: message_id >>
+        ss >>
+        name: c_ident >>
+        descriptions:  many_till!(preceded!(ss, value_description), preceded!(ss, semi_colon)) >>
+        (DbcElement::ValueDescriptionsForSignal(id, name.to_string(), descriptions.0))
+    )
+);
+
+named!(pub value_description_for_env_var<&str, DbcElement>,
+    do_parse!(
+        tag!("VAL_") >>
+        ss >>
+        name: c_ident >>
+        descriptions:  many_till!(preceded!(ss, value_description), preceded!(ss, semi_colon)) >>
+        (DbcElement::ValueDescriptionsForEnvVar(name.to_string(), descriptions.0))
+    )
+);
+
+named!(pub value_descriptions<&str, DbcElement>,
+    alt!(value_description_for_signal | value_description_for_env_var)
 );
