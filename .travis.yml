@@ -1,6 +1,7 @@
 language: rust
 rust:
-  - stable
+# Waiting for Rust 2018 edition support
+#  - stable
   - beta
   - nightly
 script:
