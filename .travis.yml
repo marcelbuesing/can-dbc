@@ -8,4 +8,4 @@ script:
   - cargo test --verbose --no-run
 matrix:
   allow_failures:
-- rust: nightly
+    - rust: nightly
