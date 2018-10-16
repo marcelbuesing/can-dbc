@@ -149,6 +149,42 @@ mod tests {
             environment_variable(def1).expect("Failed to parse environment variable");
         assert_eq!(env_var1, env_var);
     }
+
+    #[test]
+    fn network_node_attribute_value_test() {
+        let def = "BA_ \"AttrName\" BU_ NodeName 12\n";
+        let node = AttributeValuedForObjectType::NetworkNodeAttributeValue("NodeName".to_string(), AttributeValue::AttributeValueU64(12));
+        let attr_val_exp= DbcElement::AttributeValueForObject("AttrName".to_string(), node);
+        let (_, attr_val) = attribute_value_for_object(def).unwrap();
+        assert_eq!(attr_val_exp, attr_val);
+    }
+
+    #[test]
+    fn message_definition_attribute_value_test() {
+        let def = "BA_ \"AttrName\" BO_ 298 13\n";
+        let msg_def = AttributeValuedForObjectType::MessageDefinitionAttributeValue(MessageId(298), AttributeValue::AttributeValueU64(13));
+        let attr_val_exp= DbcElement::AttributeValueForObject("AttrName".to_string(), msg_def);
+        let (_, attr_val) = attribute_value_for_object(def).unwrap();
+        assert_eq!(attr_val_exp, attr_val);
+    }
+
+    #[test]
+    fn signal_attribute_value_test() {
+        let def = "BA_ \"AttrName\" SG_ 198 SGName 13\n";
+        let msg_def = AttributeValuedForObjectType::SignalAttributeValue(MessageId(198), "SGName".to_string(), AttributeValue::AttributeValueU64(13));
+        let attr_val_exp= DbcElement::AttributeValueForObject("AttrName".to_string(), msg_def);
+        let (_, attr_val) = attribute_value_for_object(def).unwrap();
+        assert_eq!(attr_val_exp, attr_val);
+    }
+
+    #[test]
+    fn env_var_attribute_value_test() {
+        let def = "BA_ \"AttrName\" EV_ EvName \"CharStr\"\n";
+        let msg_def = AttributeValuedForObjectType::EnvVariableAttributeValue("EvName".to_string(), AttributeValue::AttributeValueCharString("CharStr".to_string()));
+        let attr_val_exp= DbcElement::AttributeValueForObject("AttrName".to_string(), msg_def);
+        let (_, attr_val) = attribute_value_for_object(def).unwrap();
+        assert_eq!(attr_val_exp, attr_val);
+    }
 }
 
 #[derive(Debug, PartialEq)]
@@ -288,9 +324,9 @@ pub struct AttributeDefault {
 
 #[derive(Debug, PartialEq)]
 pub enum AttributeValue {
-    AttributeValueUu64(u64),
-    AttributeValueu64(u64),
-    AttributeValuef64(f64),
+    AttributeValueU64(u64),
+    AttributeValueI64(i64),
+    AttributeValueF64(f64),
     AttributeValueCharString(String),
 }
 
@@ -676,5 +712,92 @@ named!(environment_variable<&str, DbcElement>,
         access_nodes: separated_nonempty_list!(comma, access_node) >>
         semi_colon >>
        (DbcElement::EnvVariable(name.to_string(), type_, min, max, unit.to_string(), initial_value, id, access_type, access_nodes))
+    )
+);
+
+named!(pub attribute_value_uint64<&str, AttributeValue>, 
+    map!(u64_digit, AttributeValue::AttributeValueU64)
+);
+
+named!(pub attribute_value_int64<&str, AttributeValue>, 
+    map!(i64_digit, AttributeValue::AttributeValueI64)
+);
+
+named!(pub attribute_value_f64<&str, AttributeValue>, 
+    map!(double_s, AttributeValue::AttributeValueF64)
+);
+
+named!(pub attribute_value_charstr<&str, AttributeValue>, 
+    map!(quoted, |x| AttributeValue::AttributeValueCharString(x.to_string()))
+);
+
+named!(pub attribute_value<&str, AttributeValue>,
+    alt!(
+        attribute_value_uint64 |
+        attribute_value_int64 |
+        attribute_value_f64 |
+        attribute_value_charstr
+    )
+);
+
+named!(pub network_node_attribute_value<&str, AttributeValuedForObjectType>,
+    do_parse!(
+        tag!("BU_") >>
+        ss >>
+        node_name: c_ident >>
+        ss >>
+        value: attribute_value >>
+        (AttributeValuedForObjectType::NetworkNodeAttributeValue(node_name.to_string(), value))
+    )
+);
+
+named!(pub message_definition_attribute_value<&str, AttributeValuedForObjectType>,
+    do_parse!(
+        tag!("BO_") >>
+        ss >>
+        message_id: message_id >>
+        ss >>
+        value: attribute_value >>
+        (AttributeValuedForObjectType::MessageDefinitionAttributeValue(message_id, value))
+    )
+);
+
+named!(pub signal_attribute_value<&str, AttributeValuedForObjectType>,
+    do_parse!(
+        tag!("SG_") >>
+        ss >>
+        message_id: message_id >>
+        ss >>
+        signal_name: c_ident >>
+        ss >>
+        value: attribute_value >>
+        (AttributeValuedForObjectType::SignalAttributeValue(message_id, signal_name.to_string(), value))
+    )
+);
+
+named!(pub env_variable_attribute_value<&str, AttributeValuedForObjectType>,
+    do_parse!(
+        tag!("EV_") >>
+        ss >>
+        env_var_name: c_ident >>
+        ss >>
+        value: attribute_value >>
+        (AttributeValuedForObjectType::EnvVariableAttributeValue(env_var_name.to_string(), value))
+    )
+);
+
+named!(pub attribute_value_for_object<&str, DbcElement>,
+    do_parse!(
+        tag!("BA_") >>
+        ss >>
+        name: quoted >>
+        ss >>
+        value: alt!(
+            network_node_attribute_value |
+            message_definition_attribute_value |
+            signal_attribute_value |
+            env_variable_attribute_value
+            ) >>
+        (DbcElement::AttributeValueForObject(name.to_string(), value))
     )
 );
