@@ -152,7 +152,7 @@ mod tests {
 
     #[test]
     fn network_node_attribute_value_test() {
-        let def = "BA_ \"AttrName\" BU_ NodeName 12\n";
+        let def = "BA_ \"AttrName\" BU_ NodeName 12;\n";
         let node = AttributeValuedForObjectType::NetworkNodeAttributeValue("NodeName".to_string(), AttributeValue::AttributeValueU64(12));
         let attr_val_exp= DbcElement::AttributeValueForObject("AttrName".to_string(), node);
         let (_, attr_val) = attribute_value_for_object(def).unwrap();
@@ -161,7 +161,7 @@ mod tests {
 
     #[test]
     fn message_definition_attribute_value_test() {
-        let def = "BA_ \"AttrName\" BO_ 298 13\n";
+        let def = "BA_ \"AttrName\" BO_ 298 13;\n";
         let msg_def = AttributeValuedForObjectType::MessageDefinitionAttributeValue(MessageId(298), AttributeValue::AttributeValueU64(13));
         let attr_val_exp= DbcElement::AttributeValueForObject("AttrName".to_string(), msg_def);
         let (_, attr_val) = attribute_value_for_object(def).unwrap();
@@ -170,7 +170,7 @@ mod tests {
 
     #[test]
     fn signal_attribute_value_test() {
-        let def = "BA_ \"AttrName\" SG_ 198 SGName 13\n";
+        let def = "BA_ \"AttrName\" SG_ 198 SGName 13;\n";
         let msg_def = AttributeValuedForObjectType::SignalAttributeValue(MessageId(198), "SGName".to_string(), AttributeValue::AttributeValueU64(13));
         let attr_val_exp= DbcElement::AttributeValueForObject("AttrName".to_string(), msg_def);
         let (_, attr_val) = attribute_value_for_object(def).unwrap();
@@ -179,8 +179,17 @@ mod tests {
 
     #[test]
     fn env_var_attribute_value_test() {
-        let def = "BA_ \"AttrName\" EV_ EvName \"CharStr\"\n";
+        let def = "BA_ \"AttrName\" EV_ EvName \"CharStr\";\n";
         let msg_def = AttributeValuedForObjectType::EnvVariableAttributeValue("EvName".to_string(), AttributeValue::AttributeValueCharString("CharStr".to_string()));
+        let attr_val_exp= DbcElement::AttributeValueForObject("AttrName".to_string(), msg_def);
+        let (_, attr_val) = attribute_value_for_object(def).unwrap();
+        assert_eq!(attr_val_exp, attr_val);
+    }
+
+        #[test]
+    fn raw_attribute_value_test() {
+        let def = "BA_ \"AttrName\" \"RAW\";\n";
+        let msg_def = AttributeValuedForObjectType::RawAttributeValue(AttributeValue::AttributeValueCharString("RAW".to_string()));
         let attr_val_exp= DbcElement::AttributeValueForObject("AttrName".to_string(), msg_def);
         let (_, attr_val) = attribute_value_for_object(def).unwrap();
         assert_eq!(attr_val_exp, attr_val);
@@ -786,6 +795,10 @@ named!(pub env_variable_attribute_value<&str, AttributeValuedForObjectType>,
     )
 );
 
+named!(pub raw_attribute_value<&str, AttributeValuedForObjectType>,
+    map!(attribute_value, AttributeValuedForObjectType::RawAttributeValue)
+);
+
 named!(pub attribute_value_for_object<&str, DbcElement>,
     do_parse!(
         tag!("BA_") >>
@@ -793,11 +806,13 @@ named!(pub attribute_value_for_object<&str, DbcElement>,
         name: quoted >>
         ss >>
         value: alt!(
-            network_node_attribute_value |
-            message_definition_attribute_value |
-            signal_attribute_value |
-            env_variable_attribute_value
-            ) >>
+                    network_node_attribute_value |
+                    message_definition_attribute_value |
+                    signal_attribute_value |
+                    env_variable_attribute_value |
+                    raw_attribute_value
+                ) >>
+        semi_colon >>
         (DbcElement::AttributeValueForObject(name.to_string(), value))
     )
 );
