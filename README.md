@@ -11,30 +11,30 @@ A CAN-dbc format parser written with Rust's nom parser.
 - [x] BA_ (Signal Attribute)
 - [x] BA_ (Env Var Attribute)
 - [x] BA_ (Raw Attribute)
-- [] BA_DEF_
-- [] BA_DEF_DEF_
-- [] BA_DEF_SGTYPE_
-- [] BA_SGTYPE_
-- [] BU_
+- [ ] BA_DEF_
+- [ ] BA_DEF_DEF_
+- [ ] BA_DEF_SGTYPE_
+- [ ] BA_SGTYPE_
+- [ ] BU_
 - [x] BO_
-- [] CAT_
-- [] CAT_DEF_
+- [ ] CAT_
+- [ ] CAT_DEF_
 - [x] CM_ SG_
 - [x] CM_ BO_
-- [] ENVVAR_DATA_
+- [ ] ENVVAR_DATA_
 - [x] EV_
-- [] EV_DATA_
-- [] FILTER
-- [] NS_
-- [] NS_DESC_
-- [] SG_
-- [] SGTYPE_
-- [] SGTYPE_VAL_
-- [] SIG_GROUP_
-- [] SIG_TYPE_REF_
-- [] SIG_VALTYPE_
-- [] SIGTYPE_VALTYPE_
+- [ ] EV_DATA_
+- [ ] FILTER
+- [ ] NS_
+- [ ] NS_DESC_
+- [ ] SG_
+- [ ] SGTYPE_
+- [ ] SGTYPE_VAL_
+- [ ] SIG_GROUP_
+- [ ] SIG_TYPE_REF_
+- [ ] SIG_VALTYPE_
+- [ ] SIGTYPE_VALTYPE_
 - [x] VAL_ (ENV_VAR)
 - [x] VAL_ (SIGNAL)
-- [] VAL_TABLE_
-- [] VERSION
+- [ ] VAL_TABLE_
+- [ ] VERSION
