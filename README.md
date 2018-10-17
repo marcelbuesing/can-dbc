@@ -15,7 +15,7 @@ A CAN-dbc format parser written with Rust's nom parser.
 - [ ] BA_DEF_DEF_
 - [ ] BA_DEF_SGTYPE_
 - [ ] BA_SGTYPE_
-- [ ] BU_
+- [x] BU_
 - [x] BO_
 - [ ] CAT_
 - [ ] CAT_DEF_
@@ -27,7 +27,6 @@ A CAN-dbc format parser written with Rust's nom parser.
 - [ ] FILTER
 - [x] NS_
 - [ ] NS_DESC_
-- [ ] SG_
 - [ ] SGTYPE_
 - [ ] SGTYPE_VAL_
 - [ ] SIG_GROUP_

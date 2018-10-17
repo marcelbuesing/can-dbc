@@ -208,6 +208,15 @@ mod tests {
         let (_, symbols) = new_symbols(def).unwrap();
         assert_eq!(symbols_exp, symbols);
     }
+
+    #[test]
+    fn network_node_test() {
+        let def = "BU_: ZU XYZ ABC OIU\n";
+        let nodes = vec!("ZU".to_string(), "XYZ".to_string(), "ABC".to_string(), "OIU".to_string());
+        let (_, node) = network_node(def).unwrap();
+        let node_exp = DbcElement::NetworkNode(nodes);
+        assert_eq!(node_exp, node);
+    }
 }
 
 #[derive(Debug, PartialEq)]
@@ -845,5 +854,14 @@ named!(pub new_symbols<&str, Vec<Symbol>>,
         line_ending >>
         symbols: separated_nonempty_list!(line_ending, symbol) >>
         (symbols)
+    )
+);
+
+named!(pub network_node<&str, DbcElement>,
+    do_parse!(
+        tag!("BU_:") >>
+        ss >>
+        li: map!(separated_nonempty_list!(ss, c_ident), |li| li.iter().map(|s| s.to_string()).collect())>>
+        (DbcElement::NetworkNode(li))
     )
 );
