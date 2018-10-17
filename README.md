@@ -36,4 +36,4 @@ A CAN-dbc format parser written with Rust's nom parser.
 - [x] VAL_ (ENV_VAR)
 - [x] VAL_ (SIGNAL)
 - [ ] VAL_TABLE_
-- [ ] VERSION
+- [x] VERSION

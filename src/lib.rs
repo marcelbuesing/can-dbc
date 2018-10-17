@@ -217,6 +217,15 @@ mod tests {
         let node_exp = DbcElement::NetworkNode(nodes);
         assert_eq!(node_exp, node);
     }
+
+    #[test]
+    fn version_test() {
+        let def = "VERSION \"HNPBNNNYNNNNNNNNNNNNNNNNNNNNNNNNYNYYYYYYYY>4>%%%/4>'%**4YYY///\"";
+        let version_exp = Version("HNPBNNNYNNNNNNNNNNNNNNNNNNNNNNNNYNYYYYYYYY>4>%%%/4>'%**4YYY///".to_string());
+        let (_, version) = version(def).unwrap();
+        assert_eq!(version_exp, version);
+    }
+
 }
 
 #[derive(Debug, PartialEq)]
@@ -547,6 +556,15 @@ named!(pub plain<&str, SignalType>,
     do_parse!(
         ss >>
         (SignalType::Plain)
+    )
+);
+
+named!(pub version<&str, Version>,
+    do_parse!(
+        tag!("VERSION") >>
+        ss >>
+        v: quoted >>
+        (Version(v.to_string()))
     )
 );
 
