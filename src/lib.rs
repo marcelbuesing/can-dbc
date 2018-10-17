@@ -186,13 +186,27 @@ mod tests {
         assert_eq!(attr_val_exp, attr_val);
     }
 
-        #[test]
+    #[test]
     fn raw_attribute_value_test() {
         let def = "BA_ \"AttrName\" \"RAW\";\n";
         let msg_def = AttributeValuedForObjectType::RawAttributeValue(AttributeValue::AttributeValueCharString("RAW".to_string()));
         let attr_val_exp= DbcElement::AttributeValueForObject("AttrName".to_string(), msg_def);
         let (_, attr_val) = attribute_value_for_object(def).unwrap();
         assert_eq!(attr_val_exp, attr_val);
+    }
+
+    #[test]
+    fn new_symbols_test() {
+        let def =
+            "NS_ :
+                NS_DESC_
+                CM_
+                BA_DEF_
+
+            ";
+        let symbols_exp = vec!(Symbol("NS_DESC_".to_string()), Symbol("CM_".to_string()), Symbol("BA_DEF_".to_string()));
+        let (_, symbols) = new_symbols(def).unwrap();
+        assert_eq!(symbols_exp, symbols);
     }
 }
 
@@ -814,5 +828,22 @@ named!(pub attribute_value_for_object<&str, DbcElement>,
                 ) >>
         semi_colon >>
         (DbcElement::AttributeValueForObject(name.to_string(), value))
+    )
+);
+
+named!(pub symbol<&str, Symbol>,
+    do_parse!(
+        space >>
+        symbol: c_ident >>
+        (Symbol(symbol.to_string()))
+    )
+);
+
+named!(pub new_symbols<&str, Vec<Symbol>>,
+    do_parse!(
+        tag!("NS_ :") >>
+        line_ending >>
+        symbols: separated_nonempty_list!(line_ending, symbol) >>
+        (symbols)
     )
 );
