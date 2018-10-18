@@ -37,3 +37,7 @@ A CAN-dbc format parser written with Rust's nom parser.
 - [x] VAL_ (SIGNAL)
 - [ ] VAL_TABLE_
 - [x] VERSION
+
+# Example
+The file parser simply parses a dbc input file.
+`cargo test && ./target/debug/examples/file_parser -i examples/sample.dbc`

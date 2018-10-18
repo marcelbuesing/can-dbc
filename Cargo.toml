@@ -6,5 +6,9 @@ version = "0.1.0"
 authors = ["marcelbuesing <buesing.marcel@googlemail.com>"]
 edition = "2018"
 
-[dependencies]
-nom = "4.0"
+[dependencies.nom]
+version = "4.1"
+features = ["verbose-errors"]
+
+[dev-dependencies]
+clap = "2.32"

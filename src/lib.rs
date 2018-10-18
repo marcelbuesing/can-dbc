@@ -1,5 +1,4 @@
 use nom::*;
-use nom::types::CompleteStr;
 use std::str;
 
 #[cfg(test)]
@@ -986,11 +985,11 @@ named!(pub dbc_element<DbcElement>,
 
 named!(pub dbc_definition<DbcDefinition>,
     do_parse!(
-                   multispace                                                >>
+                   opt!(multispace)                                          >>
         version:   version                                                   >>
-                   multispace                                                >>
+                   opt!(multispace)                                          >>
         symbols:   new_symbols                                               >>
-                   multispace                                                >>
+                   opt!(multispace)                                          >>
         elements: separated_nonempty_list_complete!(multispace, dbc_element) >>
         (DbcDefinition { version, symbols, elements })
     )
