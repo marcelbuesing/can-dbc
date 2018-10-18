@@ -1,4 +1,6 @@
 use nom::*;
+use nom::types::CompleteStr;
+use std::str;
 
 #[cfg(test)]
 mod tests {
@@ -6,7 +8,7 @@ mod tests {
 
     #[test]
     fn c_ident_test() {
-        let cid = "EALL_DUSasb18 ";
+        let cid = b"EALL_DUSasb18 ";
         let (_, cid1) = c_ident(cid).unwrap();
 
         assert_eq!("EALL_DUSasb18", cid1);
@@ -14,12 +16,12 @@ mod tests {
 
     #[test]
     fn c_ident_vec_test() {
-        let cid = "FZHL_DUSasb18 ";
+        let cid = b"FZHL_DUSasb18 ";
         let (_, cid1) = c_ident_vec(cid).unwrap();
 
         assert_eq!(vec!("FZHL_DUSasb18".to_string()), cid1);
 
-        let cid_vec = "FZHL_DUSasb19,xkask_3298 ";
+        let cid_vec = b"FZHL_DUSasb19,xkask_3298 ";
         let (_, cid2) = c_ident_vec(cid_vec).unwrap();
 
         assert_eq!(
@@ -30,42 +32,42 @@ mod tests {
 
     #[test]
     fn signal_test() {
-        let signal_line = " SG_ NAME : 3|2@1- (1,0) [0|0] \"x\" UFA\r\n\r\n";
+        let signal_line = b" SG_ NAME : 3|2@1- (1,0) [0|0] \"x\" UFA\r\n\r\n";
         let signal1 = signal(signal_line).unwrap();
     }
     #[test]
     fn endianess_test() {
-        let (_, big_endian) = endianess("0").expect("Failed to parse big endian");
+        let (_, big_endian) = endianess(b"0").expect("Failed to parse big endian");
         assert_eq!(Endianess::BigEndian, big_endian);
 
-        let (_, little_endian) = endianess("1").expect("Failed to parse little endian");
+        let (_, little_endian) = endianess(b"1").expect("Failed to parse little endian");
         assert_eq!(Endianess::LittleEndian, little_endian);
     }
 
     #[test]
     fn signal_type_test() {
-        let (_, multiplexer) = signal_type("m34920 ").expect("Failed to parse multiplexer");
+        let (_, multiplexer) = signal_type(b"m34920 ").expect("Failed to parse multiplexer");
         assert_eq!(SignalType::MultiplexedSignal(34920), multiplexer);
 
-        let (_, multiplexor) = signal_type("M ").expect("Failed to parse multiplexor");
+        let (_, multiplexor) = signal_type(b"M ").expect("Failed to parse multiplexor");
         assert_eq!(SignalType::Multiplexor, multiplexor);
 
-        let (_, plain) = signal_type(" ").expect("Failed to parse plain");
+        let (_, plain) = signal_type(b" ").expect("Failed to parse plain");
         assert_eq!(SignalType::Plain, plain);
     }
 
     #[test]
     fn value_type_test() {
-        let (_, vt) = value_type("- ").expect("Failed to parse value type");
+        let (_, vt) = value_type(b"- ").expect("Failed to parse value type");
         assert_eq!(ValueType::Signed, vt);
 
-        let (_, vt) = value_type("+ ").expect("Failed to parse value type");
+        let (_, vt) = value_type(b"+ ").expect("Failed to parse value type");
         assert_eq!(ValueType::Unsigned, vt);
     }
 
     #[test]
     fn message_definition_test() {
-        let def = "BO_ 1 MCA_A1: 6 MFA
+        let def = b"BO_ 1 MCA_A1: 6 MFA
         SG_ ABC_1 : 9|2@1+ (1,0) [0|0] \"x\" XYZ_OUS
         SG_ BasL2 : 3|2@0- (1,0) [0|0] \"x\" DFA_FUS\r\n\r\n";
         let (_, message_def) = message_definition(def).expect("Failed to parse message definition");
@@ -73,7 +75,7 @@ mod tests {
 
     #[test]
     fn signal_comment_test() {
-        let def1 = "CM_ SG_ 193 KLU_R_X \"This is a signal comment test\";";
+        let def1 = b"CM_ SG_ 193 KLU_R_X \"This is a signal comment test\";";
         let id1 = SignalCommentId(193);
         let comment1 = DbcElement::SignalComment(
             id1,
@@ -87,7 +89,7 @@ mod tests {
 
     #[test]
     fn message_definition_comment_test() {
-        let def1 = "CM_ BO_ 34544 XYZ \"Some Message comment\";";
+        let def1 = b"CM_ BO_ 34544 XYZ \"Some Message comment\";";
         let id1 = MessageId(34544);
         let comment1 = DbcElement::MessageDefinitionComment(
             id1,
@@ -102,7 +104,7 @@ mod tests {
 
     #[test]
     fn value_description_for_signal_test() {
-        let def1 = "VAL_ 837 UF_HZ_OI 255 \"NOP\" ;";
+        let def1 = b"VAL_ 837 UF_HZ_OI 255 \"NOP\" ;";
         let id = MessageId(837);
         let name = "UF_HZ_OI".to_string();
         let descriptions = vec![ValueDescription {
@@ -118,7 +120,7 @@ mod tests {
 
     #[test]
     fn value_description_for_env_var_test() {
-        let def1 = "VAL_ MY_ENV_VAR 255 \"NOP\" ;";
+        let def1 = b"VAL_ MY_ENV_VAR 255 \"NOP\" ;";
         let name = "MY_ENV_VAR".to_string();
         let descriptions = vec![ValueDescription {
             a: 255.0,
@@ -132,7 +134,7 @@ mod tests {
 
     #[test]
     fn environment_variable_test() {
-        let def1 = "EV_ IUV: 0 [-22|20] \"mm\" 3 7 DUMMY_NODE_VECTOR0 VECTOR_XXX;";
+        let def1 = b"EV_ IUV: 0 [-22|20] \"mm\" 3 7 DUMMY_NODE_VECTOR0 VECTOR_XXX;";
         let nodes1 = vec![AccessNode::AccessNodeVectorXXX];
         let env_var1 = DbcElement::EnvVariable(
             "IUV".to_string(),
@@ -152,7 +154,7 @@ mod tests {
 
     #[test]
     fn network_node_attribute_value_test() {
-        let def = "BA_ \"AttrName\" BU_ NodeName 12;\n";
+        let def = b"BA_ \"AttrName\" BU_ NodeName 12;\n";
         let node = AttributeValuedForObjectType::NetworkNodeAttributeValue("NodeName".to_string(), AttributeValue::AttributeValueU64(12));
         let attr_val_exp= DbcElement::AttributeValueForObject("AttrName".to_string(), node);
         let (_, attr_val) = attribute_value_for_object(def).unwrap();
@@ -161,7 +163,7 @@ mod tests {
 
     #[test]
     fn message_definition_attribute_value_test() {
-        let def = "BA_ \"AttrName\" BO_ 298 13;\n";
+        let def = b"BA_ \"AttrName\" BO_ 298 13;\n";
         let msg_def = AttributeValuedForObjectType::MessageDefinitionAttributeValue(MessageId(298), AttributeValue::AttributeValueU64(13));
         let attr_val_exp= DbcElement::AttributeValueForObject("AttrName".to_string(), msg_def);
         let (_, attr_val) = attribute_value_for_object(def).unwrap();
@@ -170,7 +172,7 @@ mod tests {
 
     #[test]
     fn signal_attribute_value_test() {
-        let def = "BA_ \"AttrName\" SG_ 198 SGName 13;\n";
+        let def = b"BA_ \"AttrName\" SG_ 198 SGName 13;\n";
         let msg_def = AttributeValuedForObjectType::SignalAttributeValue(MessageId(198), "SGName".to_string(), AttributeValue::AttributeValueU64(13));
         let attr_val_exp= DbcElement::AttributeValueForObject("AttrName".to_string(), msg_def);
         let (_, attr_val) = attribute_value_for_object(def).unwrap();
@@ -179,7 +181,7 @@ mod tests {
 
     #[test]
     fn env_var_attribute_value_test() {
-        let def = "BA_ \"AttrName\" EV_ EvName \"CharStr\";\n";
+        let def = b"BA_ \"AttrName\" EV_ EvName \"CharStr\";\n";
         let msg_def = AttributeValuedForObjectType::EnvVariableAttributeValue("EvName".to_string(), AttributeValue::AttributeValueCharString("CharStr".to_string()));
         let attr_val_exp= DbcElement::AttributeValueForObject("AttrName".to_string(), msg_def);
         let (_, attr_val) = attribute_value_for_object(def).unwrap();
@@ -188,7 +190,7 @@ mod tests {
 
     #[test]
     fn raw_attribute_value_test() {
-        let def = "BA_ \"AttrName\" \"RAW\";\n";
+        let def = b"BA_ \"AttrName\" \"RAW\";\n";
         let msg_def = AttributeValuedForObjectType::RawAttributeValue(AttributeValue::AttributeValueCharString("RAW".to_string()));
         let attr_val_exp= DbcElement::AttributeValueForObject("AttrName".to_string(), msg_def);
         let (_, attr_val) = attribute_value_for_object(def).unwrap();
@@ -198,7 +200,7 @@ mod tests {
     #[test]
     fn new_symbols_test() {
         let def =
-            "NS_ :
+            b"NS_ :
                 NS_DESC_
                 CM_
                 BA_DEF_
@@ -211,7 +213,7 @@ mod tests {
 
     #[test]
     fn network_node_test() {
-        let def = "BU_: ZU XYZ ABC OIU\n";
+        let def = b"BU_: ZU XYZ ABC OIU\n";
         let nodes = vec!("ZU".to_string(), "XYZ".to_string(), "ABC".to_string(), "OIU".to_string());
         let (_, node) = network_node(def).unwrap();
         let node_exp = DbcElement::NetworkNode(nodes);
@@ -220,12 +222,80 @@ mod tests {
 
     #[test]
     fn version_test() {
-        let def = "VERSION \"HNPBNNNYNNNNNNNNNNNNNNNNNNNNNNNNYNYYYYYYYY>4>%%%/4>'%**4YYY///\"";
+        let def = b"VERSION \"HNPBNNNYNNNNNNNNNNNNNNNNNNNNNNNNYNYYYYYYYY>4>%%%/4>'%**4YYY///\"";
         let version_exp = Version("HNPBNNNYNNNNNNNNNNNNNNNNNNNNNNNNYNYYYYYYYY>4>%%%/4>'%**4YYY///".to_string());
         let (_, version) = version(def).unwrap();
         assert_eq!(version_exp, version);
     }
 
+    #[test]
+    fn dbc_definition_test() {
+        let sample_dbc = 
+        b"
+        VERSION \"0.1\"
+
+        NS_ :
+            NS_DESC_
+            CM_
+            BA_DEF_
+            BA_
+            VAL_
+            CAT_DEF_
+            CAT_
+            FILTER
+            BA_DEF_DEF_
+            EV_DATA_
+            ENVVAR_DATA_
+            SGTYPE_
+            SGTYPE_VAL_
+            BA_DEF_SGTYPE_
+            BA_SGTYPE_
+            SIG_TYPE_REF_
+            VAL_TABLE_
+            SIG_GROUP_
+            SIG_VALTYPE_
+            SIGTYPE_VALTYPE_
+            BO_TX_BU_
+            BA_DEF_REL_
+            BA_REL_
+            BA_DEF_DEF_REL_
+            BU_SG_REL_
+            BU_EV_REL_
+            BU_BO_REL_
+            SG_MUL_VAL_
+
+        BU_: PC
+
+        BO_ 2000 WebData_2000: 4 Vector__XXX
+            SG_ Signal_8 : 24|8@1+ (1,0) [0|255] \"\" Vector__XXX
+            SG_ Signal_7 : 16|8@1+ (1,0) [0|255] \"\" Vector__XXX
+            SG_ Signal_6 : 8|8@1+ (1,0) [0|255] \"\" Vector__XXX
+            SG_ Signal_5 : 0|8@1+ (1,0) [0|255] \"\" Vector__XXX
+
+        BO_ 1840 WebData_1840: 4 PC
+            SG_ Signal_4 : 24|8@1+ (1,0) [0|255] \"\" Vector__XXX
+            SG_ Signal_3 : 16|8@1+ (1,0) [0|255] \"\" Vector__XXX
+            SG_ Signal_2 : 8|8@1+ (1,0) [0|255] \"\" Vector__XXX
+            SG_ Signal_1 : 0|8@1+ (1,0) [0|0] \"\" Vector__XXX
+
+        EV_ Environment1: 0 [0|220] \"\" 0 6 DUMMY_NODE_VECTOR0 DUMMY_NODE_VECTOR2;
+
+        EV_ Environment2: 0 [0|177] \"\" 0 7 DUMMY_NODE_VECTOR1 DUMMY_NODE_VECTOR2;
+
+        CM_ SG_ 4 TestSigLittleUnsigned1 \"asaklfjlsdfjlsdfgls
+        HH?=(%)/&KKDKFSDKFKDFKSDFKSDFNKCnvsdcvsvxkcv\";
+        CM_ SG_ 5 TestSigLittleUnsigned1 \"asaklfjlsdfjlsdfgls
+        =0943503450KFSDKFKDFKSDFKSDFNKCnvsdcvsvxkcv\";
+        BA_ \"Attr\" BO_ 4358435 283;
+        BA_ \"Attr\" BO_ 56949545 344;
+        VAL_ 3454 TestValue 3423232 \"positive\" 359595 \"doe\" -1393 \"john\" ;
+        VAL_ 3454 TestValue 3423232 \"positive\" 359595 \"doe\" -1393 \"positive\" 359595 \"doe\" -1393 \"john\" ;
+        ";
+
+        let (_, dbc_def) = dbc_definition(sample_dbc).unwrap();
+
+        println!("{:?}", dbc_def);
+    }
 }
 
 #[derive(Debug, PartialEq)]
@@ -429,122 +499,119 @@ fn is_quote(chr: char) -> bool {
 }
 
 /// Single space
-named!(ss<&str, char>, char!(' '));
+named!(ss<char>, char!(' '));
 
 /// Colon
-named!(colon<&str,  char>, char!(':'));
+named!(colon<char>, char!(':'));
 
 /// Comma aka ','
-named!(comma<&str,  char>, char!(','));
+named!(comma<char>, char!(','));
 
 /// Comma aka ';'
-named!(semi_colon<&str,  char>, char!(';'));
+named!(semi_colon<char>, char!(';'));
 
 /// Quote aka '"'
-named!(quote<&str,  char>, char!('"'));
+named!(quote<char>, char!('"'));
 
-named!(pipe<&str,  char>, char!('|'));
+named!(pipe<char>, char!('|'));
 
-named!(at<&str,  char>, char!('@'));
+named!(at<char>, char!('@'));
 
 /// brace open aka '('
-named!(brc_open<&str,  char>, char!('('));
+named!(brc_open<char>, char!('('));
 
 /// brace close aka '('
-named!(brc_close<&str,  char>, char!(')'));
+named!(brc_close<char>, char!(')'));
 
 /// bracket open aka '['
-named!(brk_open<&str,  char>, char!('['));
+named!(brk_open<char>, char!('['));
 
 /// bracket close aka ']'
-named!(brk_close<&str,  char>, char!(']'));
+named!(brk_close<char>, char!(']'));
 
 // TODO fix first character
 /// C_String
 /// a valid C_identifier. C_identifiers have to start with a  alphacharacter or an underscore
 /// and may further consist of alpha­numeric, characters and underscore
-named!(c_ident<&str, &str>, take_while!(is_c_string_char));
+named!(c_ident<&str>, map!(take_while!(|x| is_c_string_char(x as char)), |v| str::from_utf8(v).unwrap()));
 
-named!(c_ident_vec<&str, Vec<String>>,
-    map!(separated_nonempty_list!(comma, c_ident), |li| li.iter().map(|s| s.to_string()).collect())
-);
+named!(c_ident_vec<Vec<&str>>, separated_nonempty_list!(comma, c_ident));
 
-named!(u64_digit<&str, u64>,
-    map_res!(
+named!(u64_s<u64>, map_res!(
         digit,
-        std::str::FromStr::from_str
+        |s| std::str::FromStr::from_str(str::from_utf8(s).unwrap())
     )
-);
+ );
 
-named!(i64_digit<&str, i64>,
+named!(i64_digit<i64>,
     flat_map!(recognize!(tuple!(opt!(alt!(char!('+') | char!('-'))), digit)), parse_to!(i64))
 );
 
-named!(quoted<&str, &str>,
+named!(quoted<&str>,
     do_parse!(
-            quote                     >>
-        s: take_till_s!(is_quote) >>
-            quote                     >>
-        (s)
+            quote                                >>
+        s:  take_till_s!(|c |is_quote(c as char))>>
+            quote                                >>
+        (str::from_utf8(s).unwrap())
     )
 );
 
-named!(little_endian<&str, Endianess>,
+named!(little_endian<Endianess>,
     do_parse!(
         char!('1') >>
         (Endianess::LittleEndian)
     )
 );
 
-named!(big_endian<&str, Endianess>,
+named!(big_endian<Endianess>,
     do_parse!(
         char!('0') >>
         (Endianess::BigEndian)
     )
 );
 
-named!(endianess<&str, Endianess>, alt!(little_endian | big_endian));
+named!(endianess<Endianess>, alt!(little_endian | big_endian));
 
-named!(pub message_id<&str, MessageId>,
+named!(pub message_id<MessageId>,
     do_parse!(
-        id:  u64_digit >>
+        id:  u64_s >>
         (MessageId(id))
     )
 );
 
-named!(pub signal_comment_id<&str, SignalCommentId>,
+named!(pub signal_comment_id<SignalCommentId>,
     do_parse!(
-        id:  u64_digit >>
+        id:  u64_s >>
         (SignalCommentId(id))
     )
 );
 
-named!(signed<&str, ValueType>,
+named!(signed<ValueType>,
     do_parse!(
         char!('-') >>
         (ValueType::Signed)
     )
 );
 
-named!(unsigned<&str, ValueType>,
+named!(unsigned<ValueType>,
     do_parse!(
         char!('+') >>
         (ValueType::Unsigned)
     )
 );
 
-named!(value_type<&str, ValueType>, alt!(signed | unsigned));
+named!(value_type<ValueType>, alt!(signed | unsigned));
 
-named!(pub multiplexer<&str, SignalType>,
+named!(pub multiplexer<SignalType>,
     do_parse!(
             char!('m') >>
-        d: u64_digit >>
+        d: u64_s >>
             ss >>
         (SignalType::MultiplexedSignal(d))
     )
 );
 
-named!(pub multiplexor<&str, SignalType>,
+named!(pub multiplexor<SignalType>,
     do_parse!(
         char!('M') >>
         ss >>
@@ -552,14 +619,14 @@ named!(pub multiplexor<&str, SignalType>,
     )
 );
 
-named!(pub plain<&str, SignalType>,
+named!(pub plain<SignalType>,
     do_parse!(
         ss >>
         (SignalType::Plain)
     )
 );
 
-named!(pub version<&str, Version>,
+named!(pub version<Version>,
     do_parse!(
         tag!("VERSION") >>
         ss >>
@@ -568,39 +635,39 @@ named!(pub version<&str, Version>,
     )
 );
 
-named!(pub signal_type<&str, SignalType>, alt!(multiplexer | multiplexor | plain));
+named!(pub signal_type<SignalType>, alt!(multiplexer | multiplexor | plain));
 
-named!(pub signal<&str, Signal>,
+named!(pub signal<Signal>,
     do_parse!(
                              space >>
-                              tag!("SG_") >>
-                              ss                >>
-        name:            c_ident        >>
-        signal_type: signal_type >>
-                              colon           >>
-                              ss                >>
-       offset:             u64_digit         >>
-                              pipe             >>
-       length:            u64_digit         >>
-                              at                  >>
-      endianess:    endianess    >>
-       value_type:  value_type    >>
-                             ss                 >>
-                             brc_open      >>
-       slope:            double_s             >>
-                            comma          >>
-       intercept:       double_s        >>
-                             brc_close     >>
-                             ss                 >>
-                             brk_open      >>
-       min:               double_s            >>
-                             pipe               >>
-       max:              double_s            >>
-                             brk_close      >>
-                             ss                  >>
-       unit:               quoted           >>
-                             ss                  >>
-        receivers: c_ident_vec     >>
+                             tag!("SG_") >>
+                             ss          >>
+       name:                 c_ident     >>
+       signal_type:          signal_type >>
+                             colon       >>
+                             ss          >>
+       offset:               u64_s       >>
+                             pipe        >>
+       length:               u64_s       >>
+                             at          >>
+       endianess:            endianess   >>
+       value_type:           value_type  >>
+                             ss          >>
+                             brc_open    >>
+       slope:                double      >>
+                             comma       >>
+       intercept:            double      >>
+                             brc_close   >>
+                             ss          >>
+                             brk_open    >>
+       min:                  double      >>
+                             pipe        >>
+       max:                  double      >>
+                             brk_close   >>
+                             ss          >>
+       unit:                 quoted      >>
+                             ss          >>
+       receivers:            c_ident_vec >>
         (Signal {
             name: name.to_string(),
             signal_type: signal_type,
@@ -613,21 +680,21 @@ named!(pub signal<&str, Signal>,
             min: min,
             max: max,
             unit:  unit.to_string(),
-            receivers: receivers,
+            receivers: receivers.iter().map(|s| s.to_string()).collect(),
         })
     )
 );
 
-named!(pub message_definition<&str, DbcElement>,
+named!(pub message_definition<DbcElement>,
   do_parse!(
     tag!("BO_") >>
     ss >>
     id:   message_id >>
     ss >>
-    name: take_till_s!(is_colon) >>
+    name: map!(take_till_s!(|c| is_colon(c as char)), |s| str::from_utf8(s).unwrap()) >>
     colon >>
     ss >>
-    size:  u64_digit >>
+    size:  u64_s >>
     ss >>
     transmitter: c_ident >>
     line_ending >>
@@ -636,7 +703,7 @@ named!(pub message_definition<&str, DbcElement>,
   )
 );
 
-named!(pub signal_comment<&str, DbcElement>,
+named!(pub signal_comment<DbcElement>,
     do_parse!(
         tag!("SG_") >>
         ss >>
@@ -649,21 +716,21 @@ named!(pub signal_comment<&str, DbcElement>,
     )
 );
 
-named!(pub message_definition_comment<&str, DbcElement>,
+named!(pub message_definition_comment<DbcElement>,
     do_parse!(
         tag!("BO_") >>
         ss >>
         id: message_id >>
         ss >>
         // TODO not only c ident ?
-        name: take_till_s!(is_space_s) >>
+        name: map!(take_till_s!(|c| is_space_s(c as char)), |s| str::from_utf8(s).unwrap()) >>
         ss >>
         comment: quoted >>
         (DbcElement::MessageDefinitionComment(id, name.to_string(), comment.to_string(), false))
     )
 );
 
-named!(pub comment<&str, DbcElement>,
+named!(pub comment<DbcElement>,
     do_parse!(
         tag!("CM_") >>
         ss >>
@@ -673,16 +740,16 @@ named!(pub comment<&str, DbcElement>,
     )
 );
 
-named!(pub value_description<&str, ValueDescription>,
+named!(pub value_description<ValueDescription>,
     do_parse!(
-        a: double_s >>
+        a: double >>
         ss >>
         b: quoted >>
         (ValueDescription { a: a, b: b.to_string() })
     )
 );
 
-named!(pub value_description_for_signal<&str, DbcElement>,
+named!(pub value_description_for_signal<DbcElement>,
     do_parse!(
         tag!("VAL_") >>
         ss >>
@@ -694,7 +761,7 @@ named!(pub value_description_for_signal<&str, DbcElement>,
     )
 );
 
-named!(pub value_description_for_env_var<&str, DbcElement>,
+named!(pub value_description_for_env_var<DbcElement>,
     do_parse!(
         tag!("VAL_") >>
         ss >>
@@ -704,24 +771,24 @@ named!(pub value_description_for_env_var<&str, DbcElement>,
     )
 );
 
-named!(pub value_descriptions<&str, DbcElement>,
+named!(pub value_descriptions<DbcElement>,
     alt!(value_description_for_signal | value_description_for_env_var)
 );
 
-named!(env_float<&str,  EnvType>, value!(EnvType::EnvTypeFloat, char!('0')));
-named!(env_int<&str,  EnvType>, value!(EnvType::EnvTypeu64, char!('1')));
-named!(env_data<&str,  EnvType>, value!(EnvType::EnvTypeData, char!('2')));
+named!(env_float<EnvType>, value!(EnvType::EnvTypeFloat, char!('0')));
+named!(env_int<EnvType>, value!(EnvType::EnvTypeu64, char!('1')));
+named!(env_data<EnvType>, value!(EnvType::EnvTypeData, char!('2')));
 
 /// 9 Environment Variable Definitions
-named!(pub env_var_type<&str, EnvType>, alt!(env_float | env_int | env_data));
+named!(pub env_var_type<EnvType>, alt!(env_float | env_int | env_data));
 
-named!(dummy_node_vector_0<&str,  AccessType>, value!(AccessType::DUMMY_NODE_VECTOR0, char!('0')));
-named!(dummy_node_vector_1<&str,  AccessType>, value!(AccessType::DUMMY_NODE_VECTOR1, char!('1')));
-named!(dummy_node_vector_2<&str,  AccessType>, value!(AccessType::DUMMY_NODE_VECTOR2, char!('2')));
-named!(dummy_node_vector_3<&str,  AccessType>, value!(AccessType::DUMMY_NODE_VECTOR3, char!('3')));
+named!(dummy_node_vector_0<AccessType>, value!(AccessType::DUMMY_NODE_VECTOR0, char!('0')));
+named!(dummy_node_vector_1<AccessType>, value!(AccessType::DUMMY_NODE_VECTOR1, char!('1')));
+named!(dummy_node_vector_2<AccessType>, value!(AccessType::DUMMY_NODE_VECTOR2, char!('2')));
+named!(dummy_node_vector_3<AccessType>, value!(AccessType::DUMMY_NODE_VECTOR3, char!('3')));
 
 /// 9 Environment Variable Definitions
-named!(pub access_type<&str, AccessType>,
+named!(pub access_type<AccessType>,
     do_parse!(
         tag!("DUMMY_NODE_VECTOR") >>
         node: alt!(dummy_node_vector_0 | dummy_node_vector_1 | dummy_node_vector_2 | dummy_node_vector_3) >>
@@ -729,14 +796,14 @@ named!(pub access_type<&str, AccessType>,
     )
 );
 
-named!(access_node_vector_xxx<&str, AccessNode>,  value!(AccessNode::AccessNodeVectorXXX, tag!("VECTOR_XXX")));
-named!(access_node_name<&str, AccessNode>,  map!(c_ident, |name| AccessNode::AccessNodeName(name.to_string())));
+named!(access_node_vector_xxx<AccessNode>,  value!(AccessNode::AccessNodeVectorXXX, tag!("VECTOR_XXX")));
+named!(access_node_name<AccessNode>,  map!(c_ident, |name| AccessNode::AccessNodeName(name.to_string())));
 
 /// 9 Environment Variable Definitions
-named!(pub access_node<&str, AccessNode>, alt!(access_node_vector_xxx | access_node_name));
+named!(pub access_node<AccessNode>, alt!(access_node_vector_xxx | access_node_name));
 
 /// 9 Environment Variable Definitions
-named!(environment_variable<&str, DbcElement>,
+named!(environment_variable<DbcElement>,
     do_parse!(
         tag!("EV_") >>
         ss >>
@@ -753,7 +820,7 @@ named!(environment_variable<&str, DbcElement>,
         ss >>
         unit: quoted >>
         ss >>
-        initial_value: double_s >>
+        initial_value: double >>
         ss >>
         id: i64_digit >>
         ss >>
@@ -765,23 +832,23 @@ named!(environment_variable<&str, DbcElement>,
     )
 );
 
-named!(pub attribute_value_uint64<&str, AttributeValue>, 
-    map!(u64_digit, AttributeValue::AttributeValueU64)
+named!(pub attribute_value_uint64<AttributeValue>, 
+    map!(u64_s, AttributeValue::AttributeValueU64)
 );
 
-named!(pub attribute_value_int64<&str, AttributeValue>, 
+named!(pub attribute_value_int64<AttributeValue>, 
     map!(i64_digit, AttributeValue::AttributeValueI64)
 );
 
-named!(pub attribute_value_f64<&str, AttributeValue>, 
-    map!(double_s, AttributeValue::AttributeValueF64)
+named!(pub attribute_value_f64<AttributeValue>, 
+    map!(double, AttributeValue::AttributeValueF64)
 );
 
-named!(pub attribute_value_charstr<&str, AttributeValue>, 
+named!(pub attribute_value_charstr<AttributeValue>, 
     map!(quoted, |x| AttributeValue::AttributeValueCharString(x.to_string()))
 );
 
-named!(pub attribute_value<&str, AttributeValue>,
+named!(pub attribute_value<AttributeValue>,
     alt!(
         attribute_value_uint64 |
         attribute_value_int64 |
@@ -790,7 +857,7 @@ named!(pub attribute_value<&str, AttributeValue>,
     )
 );
 
-named!(pub network_node_attribute_value<&str, AttributeValuedForObjectType>,
+named!(pub network_node_attribute_value<AttributeValuedForObjectType>,
     do_parse!(
         tag!("BU_") >>
         ss >>
@@ -801,7 +868,7 @@ named!(pub network_node_attribute_value<&str, AttributeValuedForObjectType>,
     )
 );
 
-named!(pub message_definition_attribute_value<&str, AttributeValuedForObjectType>,
+named!(pub message_definition_attribute_value<AttributeValuedForObjectType>,
     do_parse!(
         tag!("BO_") >>
         ss >>
@@ -812,7 +879,7 @@ named!(pub message_definition_attribute_value<&str, AttributeValuedForObjectType
     )
 );
 
-named!(pub signal_attribute_value<&str, AttributeValuedForObjectType>,
+named!(pub signal_attribute_value<AttributeValuedForObjectType>,
     do_parse!(
         tag!("SG_") >>
         ss >>
@@ -825,7 +892,7 @@ named!(pub signal_attribute_value<&str, AttributeValuedForObjectType>,
     )
 );
 
-named!(pub env_variable_attribute_value<&str, AttributeValuedForObjectType>,
+named!(pub env_variable_attribute_value<AttributeValuedForObjectType>,
     do_parse!(
         tag!("EV_") >>
         ss >>
@@ -836,11 +903,11 @@ named!(pub env_variable_attribute_value<&str, AttributeValuedForObjectType>,
     )
 );
 
-named!(pub raw_attribute_value<&str, AttributeValuedForObjectType>,
+named!(pub raw_attribute_value<AttributeValuedForObjectType>,
     map!(attribute_value, AttributeValuedForObjectType::RawAttributeValue)
 );
 
-named!(pub attribute_value_for_object<&str, DbcElement>,
+named!(pub attribute_value_for_object<DbcElement>,
     do_parse!(
         tag!("BA_") >>
         ss >>
@@ -858,7 +925,7 @@ named!(pub attribute_value_for_object<&str, DbcElement>,
     )
 );
 
-named!(pub symbol<&str, Symbol>,
+named!(pub symbol<Symbol>,
     do_parse!(
         space >>
         symbol: c_ident >>
@@ -866,7 +933,7 @@ named!(pub symbol<&str, Symbol>,
     )
 );
 
-named!(pub new_symbols<&str, Vec<Symbol>>,
+named!(pub new_symbols<Vec<Symbol>>,
     do_parse!(
         tag!("NS_ :") >>
         line_ending >>
@@ -875,11 +942,35 @@ named!(pub new_symbols<&str, Vec<Symbol>>,
     )
 );
 
-named!(pub network_node<&str, DbcElement>,
+named!(pub network_node<DbcElement>,
     do_parse!(
         tag!("BU_:") >>
         ss >>
         li: map!(separated_nonempty_list!(ss, c_ident), |li| li.iter().map(|s| s.to_string()).collect())>>
         (DbcElement::NetworkNode(li))
+    )
+);
+
+named!(pub dbc_element<DbcElement>,
+    alt!(
+        message_definition |
+        environment_variable |
+        comment |
+        value_description_for_env_var |
+        value_description_for_signal |
+        attribute_value_for_object |
+        network_node
+    )
+);
+
+named!(pub dbc_definition<DbcDefinition>,
+    do_parse!(
+        multispace >>
+        version: version >> 
+        multispace >>
+        symbols: new_symbols >>
+        multispace >>
+        elements: separated_nonempty_list!(multispace, dbc_element) >>
+        (DbcDefinition { version, symbols, elements })
     )
 );
