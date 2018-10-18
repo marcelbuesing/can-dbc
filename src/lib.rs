@@ -312,9 +312,9 @@ mod tests {
         VAL_ 3454 TestValue 3423232 \"positive\" 359595 \"doe\" -1393 \"positive\" 359595 \"doe\" -1393 \"john\" ;
         ";
 
-        let (_, dbc_def) = dbc_definition(sample_dbc).unwrap();
+        let (remaining, dbc_def) = dbc_definition(sample_dbc).unwrap();
 
-        println!("{:?}", dbc_def);
+        println!("Remaining {:?}\nResult {:?}", str::from_utf8(remaining).unwrap(), dbc_def);
     }
 }
 
@@ -704,6 +704,7 @@ named!(pub attribute_default<DbcElement>,
         attribute_name:  quoted              >>
                          ss                  >>
         attribute_value: attribute_value     >>
+                         semi_colon          >>
         (DbcElement::AttributeDefault(attribute_name.to_string(), attribute_value))
     )
 );
