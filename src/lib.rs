@@ -220,6 +220,14 @@ mod tests {
         assert_eq!(node_exp, node);
     }
 
+     #[test]
+    fn envvar_data_test() {
+        let def = b"ENVVAR_DATA_ SomeEnvVarData: 399;";
+        let (_, envvar_data) = envvar_data(def).unwrap();
+        let envvar_data_exp = DbcElement::EnvVarData("SomeEnvVarData".to_string(), 399);
+        assert_eq!(envvar_data_exp, envvar_data);
+    }
+
     #[test]
     fn version_test() {
         let def = b"VERSION \"HNPBNNNYNNNNNNNNNNNNNNNNNNNNNNNNYNYYYYYYYY>4>%%%/4>'%**4YYY///\"";
@@ -799,6 +807,19 @@ named!(environment_variable<DbcElement>,
         access_nodes:  separated_nonempty_list!(comma, access_node) >>
                        semi_colon >>
        (DbcElement::EnvVariable(name.to_string(), type_, min, max, unit.to_string(), initial_value, id, access_type, access_nodes))
+    )
+);
+
+named!(pub envvar_data<DbcElement>,
+    do_parse!(
+                      tag!("ENVVAR_DATA_") >>
+                      ss                   >>
+        env_var_name: c_ident              >>
+                      colon                >>
+                      ss                   >>
+        data_size:    u64_s                >>
+                      semi_colon           >>
+        (DbcElement::EnvVarData(env_var_name.to_string(), data_size))
     )
 );
 

@@ -21,7 +21,7 @@ A CAN-dbc format parser written with Rust's nom parser.
 - [ ] CAT_DEF_
 - [x] CM_ SG_
 - [x] CM_ BO_
-- [ ] ENVVAR_DATA_
+- [x] ENVVAR_DATA_
 - [x] EV_
 - [ ] EV_DATA_
 - [ ] FILTER
