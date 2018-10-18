@@ -372,7 +372,7 @@ type KeyValue = (String, i64);
 #[derive(Debug, PartialEq)]
 pub struct LabelDescription {
     id: u64,
-    signalName: String,
+    signal_name: String,
     labels: Vec<Label>,
     extended: bool,
 }
@@ -935,12 +935,12 @@ named!(pub dbc_element<DbcElement>,
 
 named!(pub dbc_definition<DbcDefinition>,
     do_parse!(
-                   multispace                                       >>
-        version:   version                                          >>
-                   multispace                                       >>
-        symbols:   new_symbols                                      >>
-                   multispace                                       >>
-        elements: separated_nonempty_list!(multispace, dbc_element) >>
+                   multispace                                                >>
+        version:   version                                                   >>
+                   multispace                                                >>
+        symbols:   new_symbols                                               >>
+                   multispace                                                >>
+        elements: separated_nonempty_list_complete!(multispace, dbc_element) >>
         (DbcDefinition { version, symbols, elements })
     )
 );
