@@ -549,64 +549,34 @@ named!(i64_digit<i64>,
 
 named!(quoted<&str>,
     do_parse!(
-            quote                                >>
-        s:  take_till_s!(|c |is_quote(c as char))>>
-            quote                                >>
+            quote                                 >>
+        s:  take_till_s!(|c |is_quote(c as char)) >>
+            quote                                 >>
         (str::from_utf8(s).unwrap())
     )
 );
 
-named!(little_endian<Endianess>,
-    do_parse!(
-        char!('1') >>
-        (Endianess::LittleEndian)
-    )
-);
+named!(pub little_endian<Endianess>, map!(char!('1'), |_| Endianess::LittleEndian));
 
-named!(big_endian<Endianess>,
-    do_parse!(
-        char!('0') >>
-        (Endianess::BigEndian)
-    )
-);
+named!(pub big_endian<Endianess>, map!(char!('0'), |_| Endianess::BigEndian));
 
-named!(endianess<Endianess>, alt!(little_endian | big_endian));
+named!(pub endianess<Endianess>, alt!(little_endian | big_endian));
 
-named!(pub message_id<MessageId>,
-    do_parse!(
-        id:  u64_s >>
-        (MessageId(id))
-    )
-);
+named!(pub message_id<MessageId>, map!(u64_s, MessageId));
 
-named!(pub signal_comment_id<SignalCommentId>,
-    do_parse!(
-        id:  u64_s >>
-        (SignalCommentId(id))
-    )
-);
+named!(pub signal_comment_id<SignalCommentId>, map!(u64_s, SignalCommentId));
 
-named!(signed<ValueType>,
-    do_parse!(
-        char!('-') >>
-        (ValueType::Signed)
-    )
-);
+named!(pub signed<ValueType>, map!(char!('-'), |_| ValueType::Signed));
 
-named!(unsigned<ValueType>,
-    do_parse!(
-        char!('+') >>
-        (ValueType::Unsigned)
-    )
-);
+named!(pub unsigned<ValueType>, map!(char!('+'), |_| ValueType::Unsigned));
 
-named!(value_type<ValueType>, alt!(signed | unsigned));
+named!(pub value_type<ValueType>, alt!(signed | unsigned));
 
 named!(pub multiplexer<SignalType>,
     do_parse!(
-            char!('m') >>
-        d: u64_s >>
-            ss >>
+           char!('m') >>
+        d: u64_s      >>
+           ss         >>
         (SignalType::MultiplexedSignal(d))
     )
 );
@@ -614,7 +584,7 @@ named!(pub multiplexer<SignalType>,
 named!(pub multiplexor<SignalType>,
     do_parse!(
         char!('M') >>
-        ss >>
+        ss         >>
         (SignalType::Multiplexor)
     )
 );
@@ -628,9 +598,9 @@ named!(pub plain<SignalType>,
 
 named!(pub version<Version>,
     do_parse!(
-        tag!("VERSION") >>
-        ss >>
-        v: quoted >>
+           tag!("VERSION") >>
+           ss              >>
+        v: quoted          >>
         (Version(v.to_string()))
     )
 );
@@ -687,55 +657,55 @@ named!(pub signal<Signal>,
 
 named!(pub message_definition<DbcElement>,
   do_parse!(
-    tag!("BO_") >>
-    ss >>
-    id:   message_id >>
-    ss >>
-    name: map!(take_till_s!(|c| is_colon(c as char)), |s| str::from_utf8(s).unwrap()) >>
-    colon >>
-    ss >>
-    size:  u64_s >>
-    ss >>
-    transmitter: c_ident >>
-    line_ending >>
-    signals: separated_nonempty_list!(line_ending, signal) >>
+                 tag!("BO_")                                                                 >>
+                 ss                                                                          >>
+    id:          message_id                                                                  >>
+                 ss                                                                          >>
+    name:        map!(take_till_s!(|c| is_colon(c as char)), |s| str::from_utf8(s).unwrap()) >>
+                 colon                                                                       >>
+                 ss                                                                          >>
+    size:        u64_s                                                                       >>
+                 ss                                                                          >>
+    transmitter: c_ident                                                                     >>
+                 line_ending                                                                 >>
+    signals: separated_nonempty_list!(line_ending, signal)                                   >>
     (DbcElement::Message(id, false, name.to_string(), size, transmitter.to_string(), signals))
   )
 );
 
 named!(pub signal_comment<DbcElement>,
     do_parse!(
-        tag!("SG_") >>
-        ss >>
-        id: signal_comment_id >>
-        ss >>
-        name: c_ident >>
-        ss >>
-        comment: quoted >>
+                 tag!("SG_")       >>
+                 ss                >>
+        id:      signal_comment_id >>
+                 ss                >>
+        name:    c_ident           >>
+                 ss                >>
+        comment: quoted            >>
         (DbcElement::SignalComment(id, name.to_string(), comment.to_string(), false))
     )
 );
 
 named!(pub message_definition_comment<DbcElement>,
     do_parse!(
-        tag!("BO_") >>
-        ss >>
-        id: message_id >>
-        ss >>
-        // TODO not only c ident ?
-        name: map!(take_till_s!(|c| is_space_s(c as char)), |s| str::from_utf8(s).unwrap()) >>
-        ss >>
-        comment: quoted >>
+                  tag!("BO_")                                                                   >>
+                  ss                                                                            >>
+        id:       message_id                                                                    >>
+                  ss                                                                            >>
+                  // TODO not only c ident ?
+        name:     map!(take_till_s!(|c| is_space_s(c as char)), |s| str::from_utf8(s).unwrap()) >>
+                  ss                                                                            >>
+        comment: quoted                                                                         >>
         (DbcElement::MessageDefinitionComment(id, name.to_string(), comment.to_string(), false))
     )
 );
 
 named!(pub comment<DbcElement>,
     do_parse!(
-        tag!("CM_") >>
-        ss >>
+           tag!("CM_")                                       >>
+           ss                                                >>
         c: alt!(signal_comment | message_definition_comment) >>
-        semi_colon >>
+           semi_colon                                        >>
         (c)
     )
 );
@@ -743,7 +713,7 @@ named!(pub comment<DbcElement>,
 named!(pub value_description<ValueDescription>,
     do_parse!(
         a: double >>
-        ss >>
+           ss     >>
         b: quoted >>
         (ValueDescription { a: a, b: b.to_string() })
     )
@@ -751,11 +721,11 @@ named!(pub value_description<ValueDescription>,
 
 named!(pub value_description_for_signal<DbcElement>,
     do_parse!(
-        tag!("VAL_") >>
-        ss >>
-        id: message_id >>
-        ss >>
-        name: c_ident >>
+              tag!("VAL_")                                                                     >>
+              ss                                                                               >>
+        id:   message_id                                                                       >>
+              ss                                                                               >>
+        name: c_ident                                                                          >>
         descriptions:  many_till!(preceded!(ss, value_description), preceded!(ss, semi_colon)) >>
         (DbcElement::ValueDescriptionsForSignal(id, name.to_string(), descriptions.0))
     )
@@ -763,10 +733,10 @@ named!(pub value_description_for_signal<DbcElement>,
 
 named!(pub value_description_for_env_var<DbcElement>,
     do_parse!(
-        tag!("VAL_") >>
-        ss >>
-        name: c_ident >>
-        descriptions:  many_till!(preceded!(ss, value_description), preceded!(ss, semi_colon)) >>
+                      tag!("VAL_")                                                            >>
+                      ss                                                                      >>
+        name:         c_ident                                                                 >>
+        descriptions: many_till!(preceded!(ss, value_description), preceded!(ss, semi_colon)) >>
         (DbcElement::ValueDescriptionsForEnvVar(name.to_string(), descriptions.0))
     )
 );
@@ -790,7 +760,7 @@ named!(dummy_node_vector_3<AccessType>, value!(AccessType::DUMMY_NODE_VECTOR3, c
 /// 9 Environment Variable Definitions
 named!(pub access_type<AccessType>,
     do_parse!(
-        tag!("DUMMY_NODE_VECTOR") >>
+              tag!("DUMMY_NODE_VECTOR") >>
         node: alt!(dummy_node_vector_0 | dummy_node_vector_1 | dummy_node_vector_2 | dummy_node_vector_3) >>
         (node)
     )
@@ -805,29 +775,29 @@ named!(pub access_node<AccessNode>, alt!(access_node_vector_xxx | access_node_na
 /// 9 Environment Variable Definitions
 named!(environment_variable<DbcElement>,
     do_parse!(
-        tag!("EV_") >>
-        ss >>
-        name: c_ident >>
-        colon >>
-        ss >>
-        type_: env_var_type >>
-        ss >>
-        brk_open >>
-        min: i64_digit >>
-        pipe >>
-        max: i64_digit >>
-        brk_close >>
-        ss >>
-        unit: quoted >>
-        ss >>
-        initial_value: double >>
-        ss >>
-        id: i64_digit >>
-        ss >>
-        access_type: access_type >>
-        ss >>
-        access_nodes: separated_nonempty_list!(comma, access_node) >>
-        semi_colon >>
+                       tag!("EV_")                                  >>
+                       ss                                           >>
+        name:          c_ident                                      >>
+                       colon                                        >>
+                       ss                                           >>
+        type_:         env_var_type                                 >>
+                       ss                                           >>
+                       brk_open                                     >>
+        min:           i64_digit                                    >>
+                       pipe                                         >>
+        max:           i64_digit                                    >>
+                       brk_close                                    >>
+                       ss                                           >>
+        unit:          quoted                                       >>
+                       ss                                           >>
+        initial_value: double                                       >>
+                       ss                                           >>
+        id:            i64_digit                                    >>
+                       ss                                           >>
+        access_type:   access_type                                  >>
+                       ss                                           >>
+        access_nodes:  separated_nonempty_list!(comma, access_node) >>
+                       semi_colon >>
        (DbcElement::EnvVariable(name.to_string(), type_, min, max, unit.to_string(), initial_value, id, access_type, access_nodes))
     )
 );
@@ -851,54 +821,54 @@ named!(pub attribute_value_charstr<AttributeValue>,
 named!(pub attribute_value<AttributeValue>,
     alt!(
         attribute_value_uint64 |
-        attribute_value_int64 |
-        attribute_value_f64 |
+        attribute_value_int64  |
+        attribute_value_f64    |
         attribute_value_charstr
     )
 );
 
 named!(pub network_node_attribute_value<AttributeValuedForObjectType>,
     do_parse!(
-        tag!("BU_") >>
-        ss >>
-        node_name: c_ident >>
-        ss >>
-        value: attribute_value >>
+                   tag!("BU_")     >>
+                   ss              >>
+        node_name: c_ident         >>
+                   ss              >>
+        value:     attribute_value >>
         (AttributeValuedForObjectType::NetworkNodeAttributeValue(node_name.to_string(), value))
     )
 );
 
 named!(pub message_definition_attribute_value<AttributeValuedForObjectType>,
     do_parse!(
-        tag!("BO_") >>
-        ss >>
-        message_id: message_id >>
-        ss >>
-        value: attribute_value >>
+                    tag!("BO_")     >>
+                    ss              >>
+        message_id: message_id      >>
+                    ss              >>
+        value:      attribute_value >>
         (AttributeValuedForObjectType::MessageDefinitionAttributeValue(message_id, value))
     )
 );
 
 named!(pub signal_attribute_value<AttributeValuedForObjectType>,
     do_parse!(
-        tag!("SG_") >>
-        ss >>
-        message_id: message_id >>
-        ss >>
-        signal_name: c_ident >>
-        ss >>
-        value: attribute_value >>
+                     tag!("SG_")     >>
+                     ss              >>
+        message_id:  message_id      >>
+                     ss              >>
+        signal_name: c_ident         >>
+                     ss              >>
+        value:       attribute_value >>
         (AttributeValuedForObjectType::SignalAttributeValue(message_id, signal_name.to_string(), value))
     )
 );
 
 named!(pub env_variable_attribute_value<AttributeValuedForObjectType>,
     do_parse!(
-        tag!("EV_") >>
-        ss >>
-        env_var_name: c_ident >>
-        ss >>
-        value: attribute_value >>
+                      tag!("EV_")     >>
+                      ss              >>
+        env_var_name: c_ident         >>
+                      ss              >>
+        value:        attribute_value >>
         (AttributeValuedForObjectType::EnvVariableAttributeValue(env_var_name.to_string(), value))
     )
 );
@@ -909,25 +879,25 @@ named!(pub raw_attribute_value<AttributeValuedForObjectType>,
 
 named!(pub attribute_value_for_object<DbcElement>,
     do_parse!(
-        tag!("BA_") >>
-        ss >>
-        name: quoted >>
-        ss >>
+               tag!("BA_") >>
+               ss          >>
+        name:  quoted      >>
+               ss          >>
         value: alt!(
-                    network_node_attribute_value |
+                    network_node_attribute_value       |
                     message_definition_attribute_value |
-                    signal_attribute_value |
-                    env_variable_attribute_value |
+                    signal_attribute_value             |
+                    env_variable_attribute_value       |
                     raw_attribute_value
-                ) >>
-        semi_colon >>
+                )          >>
+                semi_colon >>
         (DbcElement::AttributeValueForObject(name.to_string(), value))
     )
 );
 
 named!(pub symbol<Symbol>,
     do_parse!(
-        space >>
+                space   >>
         symbol: c_ident >>
         (Symbol(symbol.to_string()))
     )
@@ -935,8 +905,8 @@ named!(pub symbol<Symbol>,
 
 named!(pub new_symbols<Vec<Symbol>>,
     do_parse!(
-        tag!("NS_ :") >>
-        line_ending >>
+                 tag!("NS_ :")                                 >>
+                 line_ending                                   >>
         symbols: separated_nonempty_list!(line_ending, symbol) >>
         (symbols)
     )
@@ -944,8 +914,8 @@ named!(pub new_symbols<Vec<Symbol>>,
 
 named!(pub network_node<DbcElement>,
     do_parse!(
-        tag!("BU_:") >>
-        ss >>
+            tag!("BU_:") >>
+            ss           >>
         li: map!(separated_nonempty_list!(ss, c_ident), |li| li.iter().map(|s| s.to_string()).collect())>>
         (DbcElement::NetworkNode(li))
     )
@@ -953,23 +923,23 @@ named!(pub network_node<DbcElement>,
 
 named!(pub dbc_element<DbcElement>,
     alt!(
-        message_definition |
-        environment_variable |
-        comment |
+        message_definition            |
+        environment_variable          |
+        comment                       |
         value_description_for_env_var |
-        value_description_for_signal |
-        attribute_value_for_object |
+        value_description_for_signal  |
+        attribute_value_for_object    |
         network_node
     )
 );
 
 named!(pub dbc_definition<DbcDefinition>,
     do_parse!(
-        multispace >>
-        version: version >> 
-        multispace >>
-        symbols: new_symbols >>
-        multispace >>
+                   multispace                                       >>
+        version:   version                                          >>
+                   multispace                                       >>
+        symbols:   new_symbols                                      >>
+                   multispace                                       >>
         elements: separated_nonempty_list!(multispace, dbc_element) >>
         (DbcDefinition { version, symbols, elements })
     )
