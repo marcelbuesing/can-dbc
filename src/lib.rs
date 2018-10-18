@@ -236,6 +236,19 @@ mod tests {
     }
 
     #[test]
+    fn custom_attr_def_test() {
+        let def_bo = b"BA_DEF_ BO_  \"BaDef1BO\" INT 0 1000000;";
+        let (_, bo_def) = custom_attr_def(def_bo).unwrap();
+        let bo_def_exp = DbcElement::BODef(" \"BaDef1BO\" INT 0 1000000".to_string());
+        assert_eq!(bo_def_exp, bo_def);
+
+        let def_bu = b"BA_DEF_ BU_  \"BuDef1BO\" INT 0 1000000;";
+        let (_, bu_def) = custom_attr_def(def_bu).unwrap();
+        let bu_def_exp = DbcElement::BUDef(" \"BuDef1BO\" INT 0 1000000".to_string());
+        assert_eq!(bu_def_exp, bu_def);
+    }
+
+    #[test]
     fn version_test() {
         let def = b"VERSION \"HNPBNNNYNNNNNNNNNNNNNNNNNNNNNNNNYNYYYYYYYY>4>%%%/4>'%**4YYY///\"";
         let version_exp = Version("HNPBNNNYNNNNNNNNNNNNNNNNNNNNNNNNYNYYYYYYYY>4>%%%/4>'%**4YYY///".to_string());
@@ -488,8 +501,14 @@ pub enum DbcElement {
     AttributeDefault(String, AttributeValue),
     AttributeValueForObject(String, AttributeValuedForObjectType),
     Def,
-    BODef,
-    BUDef,
+    ///
+    /// BA_DEF BO
+    ///
+    BODef(String),
+    ///
+    /// BA_DEF BU
+    ///
+    BUDef(String),
     ValueDescriptionsForSignal(MessageId, String, Vec<ValueDescription>),
     ValueDescriptionsForEnvVar(String, Vec<ValueDescription>),
 }
@@ -940,6 +959,33 @@ named!(pub attribute_value_for_object<DbcElement>,
                 )          >>
                 semi_colon >>
         (DbcElement::AttributeValueForObject(name.to_string(), value))
+    )
+);
+
+named!(pub bu_def<DbcElement>,
+    do_parse!(
+           tag!("BU_") >>
+           ss          >>
+        x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| str::from_utf8(x).unwrap()) >>
+        (DbcElement::BUDef(x.to_string()))
+    )
+);
+
+named!(pub bo_def<DbcElement>,
+    do_parse!(
+           tag!("BO_") >>
+           ss          >>
+        x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| str::from_utf8(x).unwrap()) >>
+        (DbcElement::BODef(x.to_string()))
+    )
+);
+
+named!(pub custom_attr_def<DbcElement>,
+    do_parse!(
+        tag!("BA_DEF_")            >>
+        ss                         >>
+        def: alt!(bu_def | bo_def) >>
+        (def)
     )
 );
 

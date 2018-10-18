@@ -11,7 +11,8 @@ A CAN-dbc format parser written with Rust's nom parser.
 - [x] BA_ (Signal Attribute)
 - [x] BA_ (Env Var Attribute)
 - [x] BA_ (Raw Attribute)
-- [ ] BA_DEF_
+- [x] BA_DEF_ BU_
+- [x] BA_DEF_ BO_
 - [x] BA_DEF_DEF_
 - [ ] BA_DEF_SGTYPE_
 - [ ] BA_SGTYPE_
