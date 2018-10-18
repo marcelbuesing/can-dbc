@@ -229,6 +229,14 @@ mod tests {
     }
 
     #[test]
+    fn attribute_default_test() {
+        let def = b"BA_DEF_DEF_ \"ZUV\" \"OAL\";";
+        let (_, attr_default) = attribute_default(def).unwrap();
+        let attr_default_exp = DbcElement::AttributeDefault("ZUV".to_string(), AttributeValue::AttributeValueCharString("OAL".to_string()));
+        assert_eq!(attr_default_exp, attr_default);
+    }
+
+    #[test]
     fn version_test() {
         let def = b"VERSION \"HNPBNNNYNNNNNNNNNNNNNNNNNNNNNNNNYNYYYYYYYY>4>%%%/4>'%**4YYY///\"";
         let version_exp = Version("HNPBNNNYNNNNNNNNNNNNNNNNNNNNNNNNYNYYYYYYYY>4>%%%/4>'%**4YYY///".to_string());
@@ -289,6 +297,10 @@ mod tests {
         EV_ Environment1: 0 [0|220] \"\" 0 6 DUMMY_NODE_VECTOR0 DUMMY_NODE_VECTOR2;
 
         EV_ Environment2: 0 [0|177] \"\" 0 7 DUMMY_NODE_VECTOR1 DUMMY_NODE_VECTOR2;
+
+        BA_DEF_DEF_ \"BusType\" \"AS\";
+
+        ENVVAR_DATA_ SomeEnvVarData: 399;
 
         CM_ SG_ 4 TestSigLittleUnsigned1 \"asaklfjlsdfjlsdfgls
         HH?=(%)/&KKDKFSDKFKDFKSDFKSDFNKCnvsdcvsvxkcv\";
@@ -471,6 +483,10 @@ pub enum DbcElement {
     BitTimingSection,
     EnvVarData(String, u64),
     NetworkNode(Vec<String>),
+    ///
+    /// BA_DEF_DEF
+    ///
+    AttributeDefault(String, AttributeValue),
     AttributeValueForObject(String, AttributeValuedForObjectType),
     Def,
     BODef,
@@ -679,6 +695,17 @@ named!(pub message_definition<DbcElement>,
     signals: separated_nonempty_list!(line_ending, signal)                                   >>
     (DbcElement::Message(id, false, name.to_string(), size, transmitter.to_string(), signals))
   )
+);
+
+named!(pub attribute_default<DbcElement>,
+    do_parse!(
+                         tag!("BA_DEF_DEF_") >>
+                         ss                  >>
+        attribute_name:  quoted              >>
+                         ss                  >>
+        attribute_value: attribute_value     >>
+        (DbcElement::AttributeDefault(attribute_name.to_string(), attribute_value))
+    )
 );
 
 named!(pub signal_comment<DbcElement>,
@@ -950,7 +977,9 @@ named!(pub dbc_element<DbcElement>,
         value_description_for_env_var |
         value_description_for_signal  |
         attribute_value_for_object    |
-        network_node
+        network_node                  |
+        envvar_data                   |
+        attribute_default
     )
 );
 
