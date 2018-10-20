@@ -3,8 +3,17 @@ cargo-features = ["edition"]
 [package]
 name = "dbc-parser"
 version = "0.1.0"
+license = "MIT"
+description = "A parser for the DBC format. The DBC format is used to exchange CAN network data."
+homepage = "https://github.com/marcelbuesing/dbc-parser"
+repository = "https://github.com/marcelbuesing/dbc-parser.git"
 authors = ["marcelbuesing <buesing.marcel@googlemail.com>"]
+keywords = ["dbc", "can", "automotive", "car", "vehicle", "ecu"]
 edition = "2018"
+
+[badges]
+travis-ci = { repository = "marcelbuesing/dbc-rs", branch = "dev" }
+coveralls = { repository = "https://github.com/marcelbuesing/dbc-parser.git", branch = "dev", service = "github" }
 
 [dependencies.nom]
 version = "4.1"
