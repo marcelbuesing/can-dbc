@@ -42,6 +42,7 @@ mod tests {
         let signal_line = b" SG_ NAME : 3|2@1- (1,0) [0|0] \"x\" UFA\r\n\r\n";
         let signal1 = signal(signal_line).unwrap();
     }
+
     #[test]
     fn endianess_test() {
         let (_, big_endian) = endianess(b"0").expect("Failed to parse big endian");
@@ -77,14 +78,14 @@ mod tests {
         let def = b"BO_ 1 MCA_A1: 6 MFA
         SG_ ABC_1 : 9|2@1+ (1,0) [0|0] \"x\" XYZ_OUS
         SG_ BasL2 : 3|2@0- (1,0) [0|0] \"x\" DFA_FUS\r\n\r\n";
-        let (_, message_def) = message_definition(def).expect("Failed to parse message definition");
+        let (_, message_def) = message(def).expect("Failed to parse message definition");
     }
 
     #[test]
     fn signal_comment_test() {
         let def1 = b"CM_ SG_ 193 KLU_R_X \"This is a signal comment test\";";
         let id1 = SignalCommentId(193);
-        let comment1 = DbcElement::SignalComment(
+        let comment1 = Comment::Signal(
             id1,
             "KLU_R_X".to_string(),
             "This is a signal comment test".to_string(),
@@ -98,7 +99,7 @@ mod tests {
     fn message_definition_comment_test() {
         let def1 = b"CM_ BO_ 34544 XYZ \"Some Message comment\";";
         let id1 = MessageId(34544);
-        let comment1 = DbcElement::MessageDefinitionComment(
+        let comment1 = Comment::MessageDefinition(
             id1,
             "XYZ".to_string(),
             "Some Message comment".to_string(),
@@ -114,12 +115,12 @@ mod tests {
         let def1 = b"VAL_ 837 UF_HZ_OI 255 \"NOP\" ;";
         let id = MessageId(837);
         let name = "UF_HZ_OI".to_string();
-        let descriptions = vec![ValueDescription {
+        let descriptions = vec![ValDescription {
             a: 255.0,
             b: "NOP".to_string(),
         }];
         let value_description_for_signal1 =
-            DbcElement::ValueDescriptionsForSignal(id, name, descriptions);
+            ValueDescription::Signal(id, name, descriptions);
         let (_, value_signal_def) =
             value_descriptions(def1).expect("Failed to parse value desc for signal");
         assert_eq!(value_description_for_signal1, value_signal_def);
@@ -129,11 +130,11 @@ mod tests {
     fn value_description_for_env_var_test() {
         let def1 = b"VAL_ MY_ENV_VAR 255 \"NOP\" ;";
         let name = "MY_ENV_VAR".to_string();
-        let descriptions = vec![ValueDescription {
+        let descriptions = vec![ValDescription {
             a: 255.0,
             b: "NOP".to_string(),
         }];
-        let value_env_var1 = DbcElement::ValueDescriptionsForEnvVar(name, descriptions);
+        let value_env_var1 = ValueDescription::EnvironmentVariable(name, descriptions);
         let (_, value_env_var) =
             value_descriptions(def1).expect("Failed to parse value desc for env var");
         assert_eq!(value_env_var1, value_env_var);
@@ -143,7 +144,7 @@ mod tests {
     fn environment_variable_test() {
         let def1 = b"EV_ IUV: 0 [-22|20] \"mm\" 3 7 DUMMY_NODE_VECTOR0 VECTOR_XXX;";
         let nodes1 = vec![AccessNode::AccessNodeVectorXXX];
-        let env_var1 = DbcElement::EnvVariable(
+        let env_var1 = EnvironmentVariable(
             "IUV".to_string(),
             EnvType::EnvTypeFloat,
             -22,
@@ -163,7 +164,7 @@ mod tests {
     fn network_node_attribute_value_test() {
         let def = b"BA_ \"AttrName\" BU_ NodeName 12;\n";
         let node = AttributeValuedForObjectType::NetworkNodeAttributeValue("NodeName".to_string(), AttributeValue::AttributeValueU64(12));
-        let attr_val_exp= DbcElement::AttributeValueForObject("AttrName".to_string(), node);
+        let attr_val_exp= AttributeValueForObject("AttrName".to_string(), node);
         let (_, attr_val) = attribute_value_for_object(def).unwrap();
         assert_eq!(attr_val_exp, attr_val);
     }
@@ -172,7 +173,7 @@ mod tests {
     fn message_definition_attribute_value_test() {
         let def = b"BA_ \"AttrName\" BO_ 298 13;\n";
         let msg_def = AttributeValuedForObjectType::MessageDefinitionAttributeValue(MessageId(298), AttributeValue::AttributeValueU64(13));
-        let attr_val_exp= DbcElement::AttributeValueForObject("AttrName".to_string(), msg_def);
+        let attr_val_exp= AttributeValueForObject("AttrName".to_string(), msg_def);
         let (_, attr_val) = attribute_value_for_object(def).unwrap();
         assert_eq!(attr_val_exp, attr_val);
     }
@@ -181,7 +182,7 @@ mod tests {
     fn signal_attribute_value_test() {
         let def = b"BA_ \"AttrName\" SG_ 198 SGName 13;\n";
         let msg_def = AttributeValuedForObjectType::SignalAttributeValue(MessageId(198), "SGName".to_string(), AttributeValue::AttributeValueU64(13));
-        let attr_val_exp= DbcElement::AttributeValueForObject("AttrName".to_string(), msg_def);
+        let attr_val_exp= AttributeValueForObject("AttrName".to_string(), msg_def);
         let (_, attr_val) = attribute_value_for_object(def).unwrap();
         assert_eq!(attr_val_exp, attr_val);
     }
@@ -190,7 +191,7 @@ mod tests {
     fn env_var_attribute_value_test() {
         let def = b"BA_ \"AttrName\" EV_ EvName \"CharStr\";\n";
         let msg_def = AttributeValuedForObjectType::EnvVariableAttributeValue("EvName".to_string(), AttributeValue::AttributeValueCharString("CharStr".to_string()));
-        let attr_val_exp= DbcElement::AttributeValueForObject("AttrName".to_string(), msg_def);
+        let attr_val_exp= AttributeValueForObject("AttrName".to_string(), msg_def);
         let (_, attr_val) = attribute_value_for_object(def).unwrap();
         assert_eq!(attr_val_exp, attr_val);
     }
@@ -199,7 +200,7 @@ mod tests {
     fn raw_attribute_value_test() {
         let def = b"BA_ \"AttrName\" \"RAW\";\n";
         let msg_def = AttributeValuedForObjectType::RawAttributeValue(AttributeValue::AttributeValueCharString("RAW".to_string()));
-        let attr_val_exp= DbcElement::AttributeValueForObject("AttrName".to_string(), msg_def);
+        let attr_val_exp= AttributeValueForObject("AttrName".to_string(), msg_def);
         let (_, attr_val) = attribute_value_for_object(def).unwrap();
         assert_eq!(attr_val_exp, attr_val);
     }
@@ -222,16 +223,16 @@ mod tests {
     fn network_node_test() {
         let def = b"BU_: ZU XYZ ABC OIU\n";
         let nodes = vec!("ZU".to_string(), "XYZ".to_string(), "ABC".to_string(), "OIU".to_string());
-        let (_, node) = network_node(def).unwrap();
-        let node_exp = DbcElement::NetworkNode(nodes);
+        let (_, node) = node(def).unwrap();
+        let node_exp = Node(nodes);
         assert_eq!(node_exp, node);
     }
 
      #[test]
     fn envvar_data_test() {
         let def = b"ENVVAR_DATA_ SomeEnvVarData: 399;";
-        let (_, envvar_data) = envvar_data(def).unwrap();
-        let envvar_data_exp = DbcElement::EnvVarData("SomeEnvVarData".to_string(), 399);
+        let (_, envvar_data) = environment_variable_data(def).unwrap();
+        let envvar_data_exp = EnvironmentVariableData("SomeEnvVarData".to_string(), 399);
         assert_eq!(envvar_data_exp, envvar_data);
     }
 
@@ -239,21 +240,31 @@ mod tests {
     fn attribute_default_test() {
         let def = b"BA_DEF_DEF_ \"ZUV\" \"OAL\";";
         let (_, attr_default) = attribute_default(def).unwrap();
-        let attr_default_exp = DbcElement::AttributeDefault("ZUV".to_string(), AttributeValue::AttributeValueCharString("OAL".to_string()));
+        let attr_default_exp = AttributeDefault("ZUV".to_string(), AttributeValue::AttributeValueCharString("OAL".to_string()));
         assert_eq!(attr_default_exp, attr_default);
     }
 
     #[test]
-    fn custom_attr_def_test() {
+    fn attribute_definition_test() {
         let def_bo = b"BA_DEF_ BO_  \"BaDef1BO\" INT 0 1000000;";
-        let (_, bo_def) = custom_attr_def(def_bo).unwrap();
-        let bo_def_exp = DbcElement::BODef(" \"BaDef1BO\" INT 0 1000000".to_string());
+        let (_, bo_def) = attribute_definition(def_bo).unwrap();
+        let bo_def_exp = AttributeDefinition::Message(" \"BaDef1BO\" INT 0 1000000".to_string());
         assert_eq!(bo_def_exp, bo_def);
 
         let def_bu = b"BA_DEF_ BU_  \"BuDef1BO\" INT 0 1000000;";
-        let (_, bu_def) = custom_attr_def(def_bu).unwrap();
-        let bu_def_exp = DbcElement::BUDef(" \"BuDef1BO\" INT 0 1000000".to_string());
+        let (_, bu_def) = attribute_definition(def_bu).unwrap();
+        let bu_def_exp = AttributeDefinition::Node(" \"BuDef1BO\" INT 0 1000000".to_string());
         assert_eq!(bu_def_exp, bu_def);
+
+        let def_signal = b"BA_DEF_ SG_  \"SgDef1BO\" INT 0 1000000;";
+        let (_, signal_def) = attribute_definition(def_bu).unwrap();
+        let signal_def_exp = AttributeDefinition::Signal(" \"SgDef1BO\" INT 0 1000000".to_string());
+        assert_eq!(signal_def_exp, signal_def);
+
+        let def_env_var = b"BA_DEF_ EV_  \"EvDef1BO\" INT 0 1000000;";
+        let (_, env_var_def) = attribute_definition(def_bu).unwrap();
+        let env_var_def_exp = AttributeDefinition::EnvironmentVariable(" \"EvDef1BO\" INT 0 1000000".to_string());
+        assert_eq!(env_var_def_exp, env_var_def);
     }
 
     #[test]
@@ -332,7 +343,7 @@ mod tests {
         VAL_ 3454 TestValue 3423232 \"positive\" 359595 \"doe\" -1393 \"positive\" 359595 \"doe\" -1393 \"john\" ;
         ";
 
-        let (remaining, dbc_def) = dbc_definition(sample_dbc).unwrap();
+        let (remaining, dbc_def) = dbc_file(sample_dbc).unwrap();
 
         println!("Remaining {:?}\nResult {:?}", str::from_utf8(remaining).unwrap(), dbc_def);
     }
@@ -367,7 +378,19 @@ pub struct SignalCommentId(u64);
 pub struct MessageId(u64);
 
 #[derive(Debug, PartialEq)]
-pub struct MessageTransmitter(String);
+pub enum Transmitter {
+    ///
+    /// No Sender
+    ///
+    TransmitterVectorXXX,
+    TransmitterNodeName(String),
+}
+
+#[derive(Debug, PartialEq)]
+pub struct MessageTransmitter {
+    message_id: MessageId,
+    transmitter: Transmitter,
+}
 
 #[derive(Debug, PartialEq)]
 pub struct Version(String);
@@ -407,20 +430,12 @@ pub enum EnvType {
 #[derive(Debug, PartialEq)]
 pub struct ECUDef(String);
 
-type KeyValue = (String, i64);
-
 #[derive(Debug, PartialEq)]
 pub struct LabelDescription {
     id: u64,
     signal_name: String,
     labels: Vec<Label>,
     extended: bool,
-}
-
-#[derive(Debug, PartialEq)]
-pub enum Transmitter {
-    TransmitterNodeName(String),
-    TransmitterNoSender,
 }
 
 #[derive(Debug, PartialEq)]
@@ -462,13 +477,13 @@ pub enum AttributeValueType {
 }
 
 #[derive(Debug, PartialEq)]
-pub struct ValueDescription {
+pub struct ValDescription {
     a: f64,
     b: String,
 }
 
 #[derive(Debug, PartialEq)]
-pub struct AttributeDefault {
+pub struct AttrDefault {
     name: String,
     value: AttributeValue,
 }
@@ -482,14 +497,25 @@ pub enum AttributeValue {
 }
 
 #[derive(Debug, PartialEq)]
-pub enum DbcElement {
-    ValueTable(String, Vec<KeyValue>),
-    NetworkNodeComment(String),
-    MessageDefinitionComment(MessageId, String, String, bool),
-    SignalComment(SignalCommentId, String, String, bool),
-    EnvVarComment(String),
-    Message(MessageId, bool, String, u64, String, Vec<Signal>),
-    EnvVariable(
+pub struct ValueTable {
+    value_table_name: String,
+    value_descriptions: Vec<ValDescription>
+}
+
+#[derive(Debug, PartialEq)]
+pub enum Comment {
+    NetworkNode(String),
+    MessageDefinition(MessageId, String, String, bool),
+    Signal(SignalCommentId, String, String, bool),
+    EnvVar(String),
+}
+
+
+#[derive(Debug, PartialEq)]
+pub struct Message(MessageId, bool, String, u64, String, Vec<Signal>);
+
+#[derive(Debug, PartialEq)]
+pub struct EnvironmentVariable(
         String,
         EnvType,
         i64,
@@ -499,33 +525,112 @@ pub enum DbcElement {
         i64,
         AccessType,
         Vec<AccessNode>,
-    ),
-    BitTimingSection,
-    EnvVarData(String, u64),
-    NetworkNode(Vec<String>),
-    ///
-    /// BA_DEF_DEF
-    ///
-    AttributeDefault(String, AttributeValue),
-    AttributeValueForObject(String, AttributeValuedForObjectType),
-    Def,
-    ///
-    /// BA_DEF BO
-    ///
-    BODef(String),
-    ///
-    /// BA_DEF BU
-    ///
-    BUDef(String),
-    ValueDescriptionsForSignal(MessageId, String, Vec<ValueDescription>),
-    ValueDescriptionsForEnvVar(String, Vec<ValueDescription>),
+    );
+
+#[derive(Debug, PartialEq)]
+pub struct BitTimingSection();
+
+#[derive(Debug, PartialEq)]
+pub struct EnvironmentVariableData(String, u64);
+
+///
+/// Network node
+/// 
+#[derive(Debug, PartialEq)]
+pub struct Node(Vec<String>);
+
+///
+/// BA_DEF_DEF
+///
+#[derive(Debug, PartialEq)]
+pub struct AttributeDefault(String, AttributeValue);
+
+#[derive(Debug, PartialEq)]
+pub struct AttributeValueForObject(String, AttributeValuedForObjectType);
+
+#[derive(Debug, PartialEq)]
+pub enum AttributeDefinition {
+    // TODO add properties
+    Message(String),
+    // TODO add properties
+    Node(String),
+    // TODO add properties
+    Signal(String),
+    // TODO add properties
+    EnvironmentVariable(String),
 }
 
 #[derive(Debug, PartialEq)]
-pub struct DbcDefinition {
+pub enum ValueDescription {
+    Signal(MessageId, String, Vec<ValDescription>),
+    EnvironmentVariable(String, Vec<ValDescription>),
+}
+
+#[derive(Debug, PartialEq)]
+pub struct SignalTypeRef {
+    message_id: MessageId,
+    signal_name: String,
+    signal_type_name: String,
+}
+
+#[derive(Debug, PartialEq)]
+pub struct SignalGroups {
+    message_id: MessageId,
+    signal_group_name: String,
+    repetitions: u64,
+    signal_names: Vec<String>,
+}
+
+#[derive(Debug, PartialEq)]
+pub enum SignalExtendedValueType {
+    SignedOrUnsignedInteger,
+    IEEEfloat32Bit,
+    IEEEdouble64bit,
+}
+
+#[derive(Debug, PartialEq)]
+pub struct SignalExtendedValueTypeList {
+    message_id: MessageId,
+    signal_name: String,
+    signal_extended_value_type: SignalExtendedValueType
+}
+
+#[derive(Debug, PartialEq)]
+pub struct DBCFile {
     version: Version,
-    symbols: Vec<Symbol>,
-    elements: Vec<DbcElement>,
+    new_symbols: Vec<Symbol>,
+    nodes: Vec<Node>,
+    value_tables: Vec<ValueTable>,
+    messages: Vec<Message>,
+    message_transmitters: Vec<MessageTransmitter>,
+    environment_variables: Vec<EnvironmentVariable>,
+    environment_variable_data: Vec<EnvironmentVariableData>,
+    signal_types: Vec<SignalType>,
+    ///
+    /// Object comments.
+    ///
+    comments: Vec<Comment>,
+    attribute_definitions: Vec<AttributeDefinition>,
+    // undefined
+    // sigtype_attr_list: SigtypeAttrList,
+    attribute_defaults: Vec<AttributeDefault>,
+    attribute_values: Vec<AttributeValueForObject>,
+    ///
+    /// Encoding for signal raw values.
+    ///
+    value_descriptions: Vec<ValueDescription>,
+    // obsolete + undefined
+    // category_definitions: Vec<CategoryDefinition>,
+    // obsolete + undefined
+    //categories: Vec<Category>,
+    // obsolete + undefined
+    //filter: Vec<Filter>,
+    signal_type_refs: Vec<SignalTypeRef>,
+    ///
+    /// signal groups define a group of signals within a message
+    ///
+    signal_groups: SignalGroups,
+    signal_extended_value_type_list: SignalExtendedValueTypeList,
 }
 
 fn is_colon(chr: char) -> bool {
@@ -718,7 +823,7 @@ named!(pub signal<Signal>,
     )
 );
 
-named!(pub message_definition<DbcElement>,
+named!(pub message<Message>,
   do_parse!(
                  tag!("BO_")                                                                 >>
                  ss                                                                          >>
@@ -732,11 +837,11 @@ named!(pub message_definition<DbcElement>,
     transmitter: c_ident                                                                     >>
                  line_ending                                                                 >>
     signals: separated_nonempty_list!(line_ending, signal)                                   >>
-    (DbcElement::Message(id, false, name.to_string(), size, transmitter.to_string(), signals))
+    (Message(id, false, name.to_string(), size, transmitter.to_string(), signals))
   )
 );
 
-named!(pub attribute_default<DbcElement>,
+named!(pub attribute_default<AttributeDefault>,
     do_parse!(
                          tag!("BA_DEF_DEF_") >>
                          ss                  >>
@@ -744,11 +849,11 @@ named!(pub attribute_default<DbcElement>,
                          ss                  >>
         attribute_value: attribute_value     >>
                          semi_colon          >>
-        (DbcElement::AttributeDefault(attribute_name.to_string(), attribute_value))
+        (AttributeDefault(attribute_name.to_string(), attribute_value))
     )
 );
 
-named!(pub signal_comment<DbcElement>,
+named!(pub signal_comment<Comment>,
     do_parse!(
                  tag!("SG_")       >>
                  ss                >>
@@ -757,11 +862,11 @@ named!(pub signal_comment<DbcElement>,
         name:    c_ident           >>
                  ss                >>
         comment: quoted            >>
-        (DbcElement::SignalComment(id, name.to_string(), comment.to_string(), false))
+        (Comment::Signal(id, name.to_string(), comment.to_string(), false))
     )
 );
 
-named!(pub message_definition_comment<DbcElement>,
+named!(pub message_definition_comment<Comment>,
     do_parse!(
                   tag!("BO_")                                                                   >>
                   ss                                                                            >>
@@ -771,11 +876,11 @@ named!(pub message_definition_comment<DbcElement>,
         name:     map!(take_till_s!(|c| is_space_s(c as char)), |s| str::from_utf8(s).unwrap()) >>
                   ss                                                                            >>
         comment: quoted                                                                         >>
-        (DbcElement::MessageDefinitionComment(id, name.to_string(), comment.to_string(), false))
+        (Comment::MessageDefinition(id, name.to_string(), comment.to_string(), false))
     )
 );
 
-named!(pub comment<DbcElement>,
+named!(pub comment<Comment>,
     do_parse!(
            tag!("CM_")                                       >>
            ss                                                >>
@@ -785,16 +890,16 @@ named!(pub comment<DbcElement>,
     )
 );
 
-named!(pub value_description<ValueDescription>,
+named!(pub value_description<ValDescription>,
     do_parse!(
         a: double >>
            ss     >>
         b: quoted >>
-        (ValueDescription { a: a, b: b.to_string() })
+        (ValDescription { a: a, b: b.to_string() })
     )
 );
 
-named!(pub value_description_for_signal<DbcElement>,
+named!(pub value_description_for_signal<ValueDescription>,
     do_parse!(
               tag!("VAL_")                                                                     >>
               ss                                                                               >>
@@ -802,21 +907,21 @@ named!(pub value_description_for_signal<DbcElement>,
               ss                                                                               >>
         name: c_ident                                                                          >>
         descriptions:  many_till!(preceded!(ss, value_description), preceded!(ss, semi_colon)) >>
-        (DbcElement::ValueDescriptionsForSignal(id, name.to_string(), descriptions.0))
+        (ValueDescription::Signal(id, name.to_string(), descriptions.0))
     )
 );
 
-named!(pub value_description_for_env_var<DbcElement>,
+named!(pub value_description_for_env_var<ValueDescription>,
     do_parse!(
                       tag!("VAL_")                                                            >>
                       ss                                                                      >>
         name:         c_ident                                                                 >>
         descriptions: many_till!(preceded!(ss, value_description), preceded!(ss, semi_colon)) >>
-        (DbcElement::ValueDescriptionsForEnvVar(name.to_string(), descriptions.0))
+        (ValueDescription::EnvironmentVariable(name.to_string(), descriptions.0))
     )
 );
 
-named!(pub value_descriptions<DbcElement>,
+named!(pub value_descriptions<ValueDescription>,
     alt!(value_description_for_signal | value_description_for_env_var)
 );
 
@@ -848,7 +953,7 @@ named!(access_node_name<AccessNode>,  map!(c_ident, |name| AccessNode::AccessNod
 named!(pub access_node<AccessNode>, alt!(access_node_vector_xxx | access_node_name));
 
 /// 9 Environment Variable Definitions
-named!(environment_variable<DbcElement>,
+named!(environment_variable<EnvironmentVariable>,
     do_parse!(
                        tag!("EV_")                                  >>
                        ss                                           >>
@@ -873,11 +978,11 @@ named!(environment_variable<DbcElement>,
                        ss                                           >>
         access_nodes:  separated_nonempty_list!(comma, access_node) >>
                        semi_colon >>
-       (DbcElement::EnvVariable(name.to_string(), type_, min, max, unit.to_string(), initial_value, id, access_type, access_nodes))
+       (EnvironmentVariable(name.to_string(), type_, min, max, unit.to_string(), initial_value, id, access_type, access_nodes))
     )
 );
 
-named!(pub envvar_data<DbcElement>,
+named!(pub environment_variable_data<EnvironmentVariableData>,
     do_parse!(
                       tag!("ENVVAR_DATA_") >>
                       ss                   >>
@@ -886,7 +991,7 @@ named!(pub envvar_data<DbcElement>,
                       ss                   >>
         data_size:    u64_s                >>
                       semi_colon           >>
-        (DbcElement::EnvVarData(env_var_name.to_string(), data_size))
+        (EnvironmentVariableData(env_var_name.to_string(), data_size))
     )
 );
 
@@ -965,7 +1070,7 @@ named!(pub raw_attribute_value<AttributeValuedForObjectType>,
     map!(attribute_value, AttributeValuedForObjectType::RawAttributeValue)
 );
 
-named!(pub attribute_value_for_object<DbcElement>,
+named!(pub attribute_value_for_object<AttributeValueForObject>,
     do_parse!(
                tag!("BA_") >>
                ss          >>
@@ -979,33 +1084,59 @@ named!(pub attribute_value_for_object<DbcElement>,
                     raw_attribute_value
                 )          >>
                 semi_colon >>
-        (DbcElement::AttributeValueForObject(name.to_string(), value))
+        (AttributeValueForObject(name.to_string(), value))
     )
 );
 
-named!(pub bu_def<DbcElement>,
+// TODO add properties
+named!(pub attribute_definition_node<AttributeDefinition>,
     do_parse!(
            tag!("BU_") >>
            ss          >>
         x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| str::from_utf8(x).unwrap()) >>
-        (DbcElement::BUDef(x.to_string()))
+        (AttributeDefinition::Node(x.to_string()))
     )
 );
 
-named!(pub bo_def<DbcElement>,
+// TODO add properties
+named!(pub attribute_definition_signal<AttributeDefinition>,
+    do_parse!(
+           tag!("SG_") >>
+           ss          >>
+        x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| str::from_utf8(x).unwrap()) >>
+        (AttributeDefinition::Signal(x.to_string()))
+    )
+);
+
+// TODO add properties
+named!(pub attribute_definition_environment_variable<AttributeDefinition>,
+    do_parse!(
+           tag!("EV_") >>
+           ss          >>
+        x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| str::from_utf8(x).unwrap()) >>
+        (AttributeDefinition::EnvironmentVariable(x.to_string()))
+    )
+);
+
+// TODO add properties
+named!(pub attribute_definition_message<AttributeDefinition>,
     do_parse!(
            tag!("BO_") >>
            ss          >>
         x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| str::from_utf8(x).unwrap()) >>
-        (DbcElement::BODef(x.to_string()))
+        (AttributeDefinition::Message(x.to_string()))
     )
 );
 
-named!(pub custom_attr_def<DbcElement>,
+named!(pub attribute_definition<AttributeDefinition>,
     do_parse!(
-        tag!("BA_DEF_")            >>
-        ss                         >>
-        def: alt!(bu_def | bo_def) >>
+        tag!("BA_DEF_") >>
+        ss              >>
+        def: alt!(attribute_definition_node                 |
+                  attribute_definition_signal               |
+                  attribute_definition_environment_variable |
+                  attribute_definition_message
+                 ) >>
         (def)
     )
 );
@@ -1027,37 +1158,178 @@ named!(pub new_symbols<Vec<Symbol>>,
     )
 );
 
-named!(pub network_node<DbcElement>,
+///
+/// Network node
+///
+named!(pub node<Node>,
     do_parse!(
             tag!("BU_:") >>
             ss           >>
         li: map!(separated_nonempty_list!(ss, c_ident), |li| li.iter().map(|s| s.to_string()).collect())>>
-        (DbcElement::NetworkNode(li))
+        (Node(li))
     )
 );
 
-named!(pub dbc_element<DbcElement>,
-    alt!(
-        message_definition            |
-        environment_variable          |
-        comment                       |
-        value_description_for_env_var |
-        value_description_for_signal  |
-        attribute_value_for_object    |
-        network_node                  |
-        envvar_data                   |
-        attribute_default
-    )
-);
-
-named!(pub dbc_definition<DbcDefinition>,
+named!(pub signal_type_ref<SignalTypeRef>,
     do_parse!(
-                   opt!(multispace)                                          >>
-        version:   version                                                   >>
-                   opt!(multispace)                                          >>
-        symbols:   new_symbols                                               >>
-                   opt!(multispace)                                          >>
-        elements: separated_nonempty_list_complete!(multispace, dbc_element) >>
-        (DbcDefinition { version, symbols, elements })
+                          tag!("SGTYPE_") >>
+                          ss              >>
+        message_id:       message_id      >>
+                          ss              >>
+        signal_name:      c_ident         >>
+                          ss              >>
+                          colon           >>
+                          ss              >>
+        signal_type_name: c_ident         >>
+                          semi_colon      >>
+        (SignalTypeRef {
+            message_id: message_id,
+            signal_name: signal_name.to_string(),
+            signal_type_name: signal_type_name.to_string(),
+        })
+    )
+);
+
+named!(pub value_table<ValueTable>,
+    do_parse!(
+                            tag!("VAL_TABLE_") >>
+                            ss                 >>
+        value_table_name:   c_ident            >>
+                            ss                 >> 
+        value_descriptions: many_till!(preceded!(ss, value_description), preceded!(ss, semi_colon)) >>
+        (ValueTable {
+            value_table_name: value_table_name.to_string(),
+            value_descriptions: value_descriptions.0
+        })
+    )
+);
+
+named!(pub signed_or_unsigned_integer<SignalExtendedValueType>, value!(SignalExtendedValueType::SignedOrUnsignedInteger, tag!("0")));
+named!(pub ieee_float_32bit<SignalExtendedValueType>, value!(SignalExtendedValueType::IEEEfloat32Bit, tag!("1")));
+named!(pub ieee_double_64bit<SignalExtendedValueType>, value!(SignalExtendedValueType::IEEEdouble64bit, tag!("2")));
+
+named!(pub signal_extended_value_type<SignalExtendedValueType>, 
+    alt!(
+        signed_or_unsigned_integer |
+        ieee_float_32bit           |
+        ieee_double_64bit
+    )
+);
+
+named!(pub signal_extended_value_type_list<SignalExtendedValueTypeList>,
+    do_parse!(
+        tag!("SIG_VALTYPE_")   >>
+        ss                     >>
+        message_id: message_id >>
+        ss                     >>
+        signal_name: c_ident   >>
+        ss                     >>
+        signal_extended_value_type: signal_extended_value_type >>
+        semi_colon             >>
+        (SignalExtendedValueTypeList {
+            message_id: message_id,
+            signal_name: signal_name.to_string(),
+            signal_extended_value_type: signal_extended_value_type,
+        })
+    )
+);
+
+named!(pub transmitter_vector_xxx<Transmitter>, value!(Transmitter::TransmitterVectorXXX, tag!("Vector__XXX")));
+
+named!(pub transmitter_node_name<Transmitter>, map!(c_ident, |x| Transmitter::TransmitterNodeName(x.to_string())));
+
+named!(pub transmitter<Transmitter>, alt!(transmitter_vector_xxx | transmitter_node_name));
+
+named!(pub message_transmitter<MessageTransmitter>,
+    do_parse!(
+                     tag!("BO_TX_BU_") >>
+                     ss                >>
+        message_id:  message_id        >>
+                     ss                >>
+                     colon             >>
+                     ss                >>
+        transmitter: transmitter       >>
+                     semi_colon        >>
+        (MessageTransmitter {
+            message_id: message_id,
+            transmitter: transmitter,
+        })
+    )
+);
+
+named!(pub signal_groups<SignalGroups>,
+    do_parse!(
+        tag!("SIG_GROUP_") >>
+        message_id: message_id >>
+        signal_group_name: c_ident >>
+        repetitions: u64_s >>
+        ss >>
+        colon >>
+        ss >>
+        signal_names: c_ident_vec >>
+        semi_colon >>
+        (SignalGroups{
+            message_id: message_id,
+            signal_group_name: signal_group_name.to_string(),
+            repetitions: repetitions,
+            signal_names: signal_names.iter().map(|x| x.to_string()).collect(),
+        })
+    )
+);
+
+named!(pub dbc_file<DBCFile>,
+    do_parse!(
+                                         opt!(multispace)                                        >>
+        version:                         version                                                 >>
+                                         opt!(multispace)                                        >>
+        new_symbols:                     new_symbols                                             >>
+                                         opt!(multispace)                                        >>
+        nodes:                           separated_list!(multispace, node)                       >>
+                                         opt!(multispace)                                        >>
+        value_tables:                    separated_list!(multispace, value_table)                >>
+                                         opt!(multispace)                                        >>
+        messages:                        separated_list!(multispace, message)                    >>
+                                         opt!(multispace)                                        >>
+        message_transmitters:            separated_list!(multispace, message_transmitter)        >>
+                                         opt!(multispace)                                        >>
+        environment_variables:           separated_list!(multispace, environment_variable)       >>
+                                         opt!(multispace)                                        >>
+        environment_variable_data:       separated_list!(multispace, environment_variable_data)  >>
+                                         opt!(multispace)                                        >>
+        signal_types:                    separated_list!(multispace, signal_type)                >>
+                                         opt!(multispace)                                        >>
+        comments:                        separated_list!(multispace, comment)                    >>
+                                         opt!(multispace)                                        >>
+        attribute_definitions:           separated_list!(multispace, attribute_definition)       >>
+                                         opt!(multispace)                                        >>
+        attribute_defaults:              separated_list!(multispace, attribute_default)          >>
+                                         opt!(multispace)                                        >>
+        attribute_values:                separated_list!(multispace, attribute_value_for_object) >>
+                                         opt!(multispace)                                        >>
+        value_descriptions:              separated_list!(multispace, value_descriptions)         >>
+                                         opt!(multispace)                                        >>
+        signal_type_refs:                separated_list!(multispace, signal_type_ref)            >>
+        signal_groups:                   signal_groups                                           >>
+                                         opt!(multispace)                                        >>
+        signal_extended_value_type_list: signal_extended_value_type_list                         >>
+        (DBCFile {
+            version: version,
+            new_symbols: new_symbols,
+            nodes: nodes,
+            value_tables: value_tables,
+            messages: messages,
+            message_transmitters: message_transmitters,
+            environment_variables: environment_variables,
+            environment_variable_data: environment_variable_data,
+            signal_types: signal_types,
+            comments: comments,
+            attribute_definitions: attribute_definitions,
+            attribute_defaults: attribute_defaults,
+            attribute_values: attribute_values,
+            value_descriptions: value_descriptions,
+            signal_type_refs: signal_type_refs,
+            signal_groups: signal_groups,
+            signal_extended_value_type_list: signal_extended_value_type_list
+        })
     )
 );
