@@ -7,10 +7,18 @@ mod tests {
 
     #[test]
     fn c_ident_test() {
-        let cid = b"EALL_DUSasb18 ";
-        let (_, cid1) = c_ident(cid).unwrap();
-
+        let def1 = b"EALL_DUSasb18 ";
+        let (_, cid1) = c_ident(def1).unwrap();
         assert_eq!("EALL_DUSasb18", cid1);
+
+        let def2 = b"_EALL_DUSasb18 ";
+        let (_, cid2) = c_ident(def2).unwrap();
+        assert_eq!("_EALL_DUSasb18", cid2);
+
+        // identifiers must not start with digits
+        let def3 = b"3EALL_DUSasb18 ";
+        let cid3_result = c_ident(def3);
+        assert!(cid3_result.is_err());
     }
 
     #[test]
@@ -536,6 +544,10 @@ fn is_c_string_char(chr: char) -> bool {
     chr.is_digit(10) || chr.is_alphabetic() || chr == '_'
 }
 
+fn is_c_ident_head(chr: char) -> bool {
+   chr.is_alphabetic() || chr == '_'
+}
+
 fn is_quote(chr: char) -> bool {
     chr == '"'
 }
@@ -571,11 +583,20 @@ named!(brk_open<char>, char!('['));
 /// bracket close aka ']'
 named!(brk_close<char>, char!(']'));
 
-// TODO fix first character
-/// C_String
-/// a valid C_identifier. C_identifiers have to start with a  alphacharacter or an underscore
+/// A valid C_identifier. C_identifiers start with a  alphacharacter or an underscore
 /// and may further consist of alpha­numeric, characters and underscore
-named!(c_ident<&str>, map!(take_while!(|x| is_c_string_char(x as char)), |v| str::from_utf8(v).unwrap()));
+named!(c_ident<&str>,
+    map_res!(
+        recognize!(
+            do_parse!(
+                take_while1!(|x| is_c_ident_head(x as char))  >>
+                take_while!(|x| is_c_string_char(x as char)) >>
+                ()
+            )
+        ),
+        str::from_utf8
+    )
+);
 
 named!(c_ident_vec<Vec<&str>>, separated_nonempty_list!(comma, c_ident));
 
