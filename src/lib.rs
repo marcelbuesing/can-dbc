@@ -257,12 +257,12 @@ mod tests {
         assert_eq!(bu_def_exp, bu_def);
 
         let def_signal = b"BA_DEF_ SG_  \"SgDef1BO\" INT 0 1000000;";
-        let (_, signal_def) = attribute_definition(def_bu).unwrap();
+        let (_, signal_def) = attribute_definition(def_signal).unwrap();
         let signal_def_exp = AttributeDefinition::Signal(" \"SgDef1BO\" INT 0 1000000".to_string());
         assert_eq!(signal_def_exp, signal_def);
 
         let def_env_var = b"BA_DEF_ EV_  \"EvDef1BO\" INT 0 1000000;";
-        let (_, env_var_def) = attribute_definition(def_bu).unwrap();
+        let (_, env_var_def) = attribute_definition(def_env_var).unwrap();
         let env_var_def_exp = AttributeDefinition::EnvironmentVariable(" \"EvDef1BO\" INT 0 1000000".to_string());
         assert_eq!(env_var_def_exp, env_var_def);
     }
@@ -599,38 +599,38 @@ pub struct SignalExtendedValueTypeList {
 pub struct DBCFile {
     version: Version,
     new_symbols: Vec<Symbol>,
-    nodes: Vec<Node>,
-    value_tables: Vec<ValueTable>,
-    messages: Vec<Message>,
-    message_transmitters: Vec<MessageTransmitter>,
-    environment_variables: Vec<EnvironmentVariable>,
-    environment_variable_data: Vec<EnvironmentVariableData>,
-    signal_types: Vec<SignalType>,
+    nodes: Option<Vec<Node>>,
+    value_tables: Option<Vec<ValueTable>>,
+    messages: Option<Vec<Message>>,
+    message_transmitters: Option<Vec<MessageTransmitter>>,
+    environment_variables: Option<Vec<EnvironmentVariable>>,
+    environment_variable_data: Option<Vec<EnvironmentVariableData>>,
+    signal_types: Option<Vec<SignalType>>,
     ///
     /// Object comments.
     ///
-    comments: Vec<Comment>,
-    attribute_definitions: Vec<AttributeDefinition>,
+    comments: Option<Vec<Comment>>,
+    attribute_definitions: Option<Vec<AttributeDefinition>>,
     // undefined
     // sigtype_attr_list: SigtypeAttrList,
-    attribute_defaults: Vec<AttributeDefault>,
-    attribute_values: Vec<AttributeValueForObject>,
+    attribute_defaults: Option<Vec<AttributeDefault>>,
+    attribute_values: Option<Vec<AttributeValueForObject>>,
     ///
     /// Encoding for signal raw values.
     ///
-    value_descriptions: Vec<ValueDescription>,
+    value_descriptions: Option<Vec<ValueDescription>>,
     // obsolete + undefined
     // category_definitions: Vec<CategoryDefinition>,
     // obsolete + undefined
     //categories: Vec<Category>,
     // obsolete + undefined
     //filter: Vec<Filter>,
-    signal_type_refs: Vec<SignalTypeRef>,
+    signal_type_refs: Option<Vec<SignalTypeRef>>,
     ///
     /// signal groups define a group of signals within a message
     ///
-    signal_groups: SignalGroups,
-    signal_extended_value_type_list: SignalExtendedValueTypeList,
+    signal_groups: Option<SignalGroups>,
+    signal_extended_value_type_list: Option<SignalExtendedValueTypeList>,
 }
 
 fn is_colon(chr: char) -> bool {
@@ -1284,34 +1284,35 @@ named!(pub dbc_file<DBCFile>,
                                          opt!(multispace)                                        >>
         new_symbols:                     new_symbols                                             >>
                                          opt!(multispace)                                        >>
-        nodes:                           separated_list!(multispace, node)                       >>
+        nodes:                           opt!(separated_list!(multispace, node))                       >>
                                          opt!(multispace)                                        >>
-        value_tables:                    separated_list!(multispace, value_table)                >>
+        value_tables:                    opt!(separated_list!(multispace, value_table))                >>
                                          opt!(multispace)                                        >>
-        messages:                        separated_list!(multispace, message)                    >>
+        messages:                        opt!(separated_list!(multispace, message))                    >>
                                          opt!(multispace)                                        >>
-        message_transmitters:            separated_list!(multispace, message_transmitter)        >>
+        message_transmitters:            opt!(separated_list!(multispace, message_transmitter))        >>
                                          opt!(multispace)                                        >>
-        environment_variables:           separated_list!(multispace, environment_variable)       >>
+        environment_variables:           opt!(separated_list!(multispace, environment_variable))       >>
                                          opt!(multispace)                                        >>
-        environment_variable_data:       separated_list!(multispace, environment_variable_data)  >>
+        environment_variable_data:       opt!(separated_list!(multispace, environment_variable_data))  >>
                                          opt!(multispace)                                        >>
-        signal_types:                    separated_list!(multispace, signal_type)                >>
+        signal_types:                    opt!(separated_list!(multispace, signal_type))                >>
                                          opt!(multispace)                                        >>
-        comments:                        separated_list!(multispace, comment)                    >>
+        comments:                        opt!(separated_list!(multispace, comment))                    >>
                                          opt!(multispace)                                        >>
-        attribute_definitions:           separated_list!(multispace, attribute_definition)       >>
+        attribute_definitions:           opt!(separated_list!(multispace, attribute_definition))       >>
                                          opt!(multispace)                                        >>
-        attribute_defaults:              separated_list!(multispace, attribute_default)          >>
+        attribute_defaults:              opt!(separated_list!(multispace, attribute_default))          >>
                                          opt!(multispace)                                        >>
-        attribute_values:                separated_list!(multispace, attribute_value_for_object) >>
+        attribute_values:                opt!(separated_list!(multispace, attribute_value_for_object)) >>
                                          opt!(multispace)                                        >>
-        value_descriptions:              separated_list!(multispace, value_descriptions)         >>
+        value_descriptions:              opt!(separated_list!(multispace, value_descriptions))         >>
                                          opt!(multispace)                                        >>
-        signal_type_refs:                separated_list!(multispace, signal_type_ref)            >>
-        signal_groups:                   signal_groups                                           >>
+        signal_type_refs:                opt!(separated_list!(multispace, signal_type_ref))            >>
+        signal_groups:                   opt!(signal_groups)                                     >>
                                          opt!(multispace)                                        >>
-        signal_extended_value_type_list: signal_extended_value_type_list                         >>
+        signal_extended_value_type_list: opt!(signal_extended_value_type_list)                   >>
+                                         opt!(multispace)                                        >>
         (DBCFile {
             version: version,
             new_symbols: new_symbols,

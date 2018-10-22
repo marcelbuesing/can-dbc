@@ -13,10 +13,8 @@ use std::str;
 
 fn main() -> io::Result<()> {
 
-    let matches = App::new("My Super Program")
+    let matches = App::new("DBC Parser")
                           .version("1.0")
-                          .author("Kevin K. <kbknapp@gmail.com>")
-                          .about("Does awesome things")
                           .arg(Arg::with_name("input")
                                .short("i")
                                .long("input")
@@ -30,10 +28,10 @@ fn main() -> io::Result<()> {
     let mut buffer = Vec::new();
     f.read_to_end(&mut buffer)?;
 
-    match dbc_parser::dbc_definition(&buffer) {
+    match dbc_parser::dbc_file(&buffer) {
         Ok((remaining, dbc_content)) => {
-            println!("Remaining {:?}", remaining);
-            println!("DBC Content{:?}", dbc_content);
+            println!("Remaining {:#?}", remaining);
+            println!("DBC Content{:#?}", dbc_content);
         }, 
         Err(e) => {
             match e {

@@ -48,15 +48,17 @@ EV_ Environment1: 0 [0|220] "" 0 6 DUMMY_NODE_VECTOR0 DUMMY_NODE_VECTOR2;
 
 EV_ Environment2: 0 [0|177] "" 0 7 DUMMY_NODE_VECTOR1 DUMMY_NODE_VECTOR2;
 
-BA_DEF_DEF_ "BusType" "AS";
-
 ENVVAR_DATA_ SomeEnvVarData: 399;
 
 CM_ SG_ 4 TestSigLittleUnsigned1 "asaklfjlsdfjlsdfgls
 HH?=(%)/&KKDKFSDKFKDFKSDFKSDFNKCnvsdcvsvxkcv";
 CM_ SG_ 5 TestSigLittleUnsigned1 "asaklfjlsdfjlsdfgls
 =0943503450KFSDKFKDFKSDFKSDFNKCnvsdcvsvxkcv";
+
+BA_DEF_DEF_ "BusType" "AS";
+
 BA_ "Attr" BO_ 4358435 283;
 BA_ "Attr" BO_ 56949545 344;
+
 VAL_ 3454 TestValue 3423232 "positive" 359595 "doe" -1393 "john" ;
 VAL_ 3454 TestValue 3423232 "positive" 359595 "doe" -1393 "positive" 359595 "doe" -1393 "john" ;
