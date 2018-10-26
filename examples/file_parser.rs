@@ -10,6 +10,8 @@ use std::fs::File;
 use std::io;
 use std::io::prelude::*;
 use std::str;
+use nom_trace::*;
+use dbc_parser::NOM_TRACE;
 
 fn main() -> io::Result<()> {
 
@@ -22,7 +24,7 @@ fn main() -> io::Result<()> {
                                .help("DBC file path")
                                .takes_value(true))
                           .get_matches();
-    let path = matches.value_of("input").unwrap();
+    let path = matches.value_of("input").unwrap_or("./examples/sample.dbc");
 
     let mut f = File::open(path)?;
     let mut buffer = Vec::new();
@@ -34,6 +36,7 @@ fn main() -> io::Result<()> {
             println!("DBC Content{:#?}", dbc_content);
         }, 
         Err(e) => {
+            print_trace!();
             match e {
                 nom::Err::Incomplete(needed) => eprintln!("Error incomplete input, needed: {:?}", needed),
                 nom::Err::Error(ctx) => {

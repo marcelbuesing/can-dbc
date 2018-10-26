@@ -15,9 +15,13 @@ edition = "2018"
 travis-ci = { repository = "marcelbuesing/dbc-rs", branch = "dev" }
 coveralls = { repository = "https://github.com/marcelbuesing/dbc-parser.git", branch = "dev", service = "github" }
 
+[dependencies]
+nom-trace = "0.1.0"
+
 [dependencies.nom]
 version = "4.1"
 features = ["verbose-errors"]
+
 
 [dev-dependencies]
 clap = "2.32"
