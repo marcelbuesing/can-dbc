@@ -32,13 +32,15 @@ fn main() -> io::Result<()> {
 
     match dbc_parser::dbc_file(&buffer) {
         Ok((remaining, dbc_content)) => {
-            println!("Remaining {:#?}", remaining);
             println!("DBC Content{:#?}", dbc_content);
-        }, 
+            println!("Remaining {:#?}", str::from_utf8(remaining));
+        },
         Err(e) => {
             print_trace!();
             match e {
-                nom::Err::Incomplete(needed) => eprintln!("Error incomplete input, needed: {:?}", needed),
+                nom::Err::Incomplete(needed) => {
+                    eprintln!("Error incomplete input, needed: {:?}", needed)
+                },
                 nom::Err::Error(ctx) => {
                     match ctx {
                         verbose_errors::Context::Code(i, kind) => eprintln!("Error Kind: {:?}, Code: {:?}", kind, str::from_utf8(i)),

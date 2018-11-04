@@ -1,4 +1,5 @@
 use nom::*;
+use nom::types::CompleteStr;
 use std::str;
 use nom_trace::*;
 
@@ -40,7 +41,7 @@ mod tests {
 
     #[test]
     fn signal_test() {
-        let signal_line = b" SG_ NAME : 3|2@1- (1,0) [0|0] \"x\" UFA\r\n\r\n";
+        let signal_line = b"  SG_ NAME : 3|2@1- (1,0) [0|0] \"x\" UFA\n";
         let signal1 = signal(signal_line).unwrap();
     }
 
@@ -84,7 +85,7 @@ mod tests {
 
     #[test]
     fn signal_comment_test() {
-        let def1 = b"CM_ SG_ 193 KLU_R_X \"This is a signal comment test\";";
+        let def1 = b"CM_ SG_ 193 KLU_R_X \"This is a signal comment test\";\n";
         let id1 = SignalCommentId(193);
         let comment1 = Comment::Signal(
             id1,
@@ -98,7 +99,7 @@ mod tests {
 
     #[test]
     fn message_definition_comment_test() {
-        let def1 = b"CM_ BO_ 34544 XYZ \"Some Message comment\";";
+        let def1 = b"CM_ BO_ 34544 XYZ \"Some Message comment\";\n";
         let id1 = MessageId(34544);
         let comment1 = Comment::MessageDefinition(
             id1,
@@ -113,7 +114,7 @@ mod tests {
 
     #[test]
     fn value_description_for_signal_test() {
-        let def1 = b"VAL_ 837 UF_HZ_OI 255 \"NOP\" ;";
+        let def1 = b"VAL_ 837 UF_HZ_OI 255 \"NOP\" ;\n";
         let id = MessageId(837);
         let name = "UF_HZ_OI".to_string();
         let descriptions = vec![ValDescription {
@@ -129,7 +130,7 @@ mod tests {
 
     #[test]
     fn value_description_for_env_var_test() {
-        let def1 = b"VAL_ MY_ENV_VAR 255 \"NOP\" ;";
+        let def1 = b"VAL_ MY_ENV_VAR 255 \"NOP\" ;\n";
         let name = "MY_ENV_VAR".to_string();
         let descriptions = vec![ValDescription {
             a: 255.0,
@@ -143,7 +144,7 @@ mod tests {
 
     #[test]
     fn environment_variable_test() {
-        let def1 = b"EV_ IUV: 0 [-22|20] \"mm\" 3 7 DUMMY_NODE_VECTOR0 VECTOR_XXX;";
+        let def1 = b"EV_ IUV: 0 [-22|20] \"mm\" 3 7 DUMMY_NODE_VECTOR0 VECTOR_XXX;\n";
         let nodes1 = vec![AccessNode::AccessNodeVectorXXX];
         let env_var1 = EnvironmentVariable(
             "IUV".to_string(),
@@ -231,7 +232,7 @@ mod tests {
 
      #[test]
     fn envvar_data_test() {
-        let def = b"ENVVAR_DATA_ SomeEnvVarData: 399;";
+        let def = b"ENVVAR_DATA_ SomeEnvVarData: 399;\n";
         let (_, envvar_data) = environment_variable_data(def).unwrap();
         let envvar_data_exp = EnvironmentVariableData("SomeEnvVarData".to_string(), 399);
         assert_eq!(envvar_data_exp, envvar_data);
@@ -239,7 +240,7 @@ mod tests {
 
     #[test]
     fn attribute_default_test() {
-        let def = b"BA_DEF_DEF_ \"ZUV\" \"OAL\";";
+        let def = b"BA_DEF_DEF_ \"ZUV\" \"OAL\";\n";
         let (_, attr_default) = attribute_default(def).unwrap();
         let attr_default_exp = AttributeDefault("ZUV".to_string(), AttributeValue::AttributeValueCharString("OAL".to_string()));
         assert_eq!(attr_default_exp, attr_default);
@@ -247,30 +248,30 @@ mod tests {
 
     #[test]
     fn attribute_definition_test() {
-        let def_bo = b"BA_DEF_ BO_  \"BaDef1BO\" INT 0 1000000;";
+        let def_bo = b"BA_DEF_ BO_ \"BaDef1BO\" INT 0 1000000;\n";
         let (_, bo_def) = attribute_definition(def_bo).unwrap();
-        let bo_def_exp = AttributeDefinition::Message(" \"BaDef1BO\" INT 0 1000000".to_string());
+        let bo_def_exp = AttributeDefinition::Message("\"BaDef1BO\" INT 0 1000000".to_string());
         assert_eq!(bo_def_exp, bo_def);
 
-        let def_bu = b"BA_DEF_ BU_  \"BuDef1BO\" INT 0 1000000;";
+        let def_bu = b"BA_DEF_ BU_ \"BuDef1BO\" INT 0 1000000;\n";
         let (_, bu_def) = attribute_definition(def_bu).unwrap();
-        let bu_def_exp = AttributeDefinition::Node(" \"BuDef1BO\" INT 0 1000000".to_string());
+        let bu_def_exp = AttributeDefinition::Node("\"BuDef1BO\" INT 0 1000000".to_string());
         assert_eq!(bu_def_exp, bu_def);
 
-        let def_signal = b"BA_DEF_ SG_  \"SgDef1BO\" INT 0 1000000;";
+        let def_signal = b"BA_DEF_ SG_ \"SgDef1BO\" INT 0 1000000;\n";
         let (_, signal_def) = attribute_definition(def_signal).unwrap();
-        let signal_def_exp = AttributeDefinition::Signal(" \"SgDef1BO\" INT 0 1000000".to_string());
+        let signal_def_exp = AttributeDefinition::Signal("\"SgDef1BO\" INT 0 1000000".to_string());
         assert_eq!(signal_def_exp, signal_def);
 
-        let def_env_var = b"BA_DEF_ EV_  \"EvDef1BO\" INT 0 1000000;";
+        let def_env_var = b"BA_DEF_ EV_ \"EvDef1BO\" INT 0 1000000;\n";
         let (_, env_var_def) = attribute_definition(def_env_var).unwrap();
-        let env_var_def_exp = AttributeDefinition::EnvironmentVariable(" \"EvDef1BO\" INT 0 1000000".to_string());
+        let env_var_def_exp = AttributeDefinition::EnvironmentVariable("\"EvDef1BO\" INT 0 1000000".to_string());
         assert_eq!(env_var_def_exp, env_var_def);
     }
 
     #[test]
     fn version_test() {
-        let def = b"VERSION \"HNPBNNNYNNNNNNNNNNNNNNNNNNNNNNNNYNYYYYYYYY>4>%%%/4>'%**4YYY///\"";
+        let def = b"VERSION \"HNPBNNNYNNNNNNNNNNNNNNNNNNNNNNNNYNYYYYYYYY>4>%%%/4>'%**4YYY///\"\n";
         let version_exp = Version("HNPBNNNYNNNNNNNNNNNNNNNNNNNNNNNNYNYYYYYYYY>4>%%%/4>'%**4YYY///".to_string());
         let (_, version) = version(def).unwrap();
         assert_eq!(version_exp, version);
@@ -280,75 +281,85 @@ mod tests {
     fn dbc_definition_test() {
         let sample_dbc = 
         b"
-        VERSION \"0.1\"
+VERSION \"0.1\"
+NS_ :
+    NS_DESC_
+    CM_
+    BA_DEF_
+    BA_
+    VAL_
+    CAT_DEF_
+    CAT_
+    FILTER
+    BA_DEF_DEF_
+    EV_DATA_
+    ENVVAR_DATA_
+    SGTYPE_
+    SGTYPE_VAL_
+    BA_DEF_SGTYPE_
+    BA_SGTYPE_
+    SIG_TYPE_REF_
+    VAL_TABLE_
+    SIG_GROUP_
+    SIG_VALTYPE_
+    SIGTYPE_VALTYPE_
+    BO_TX_BU_
+    BA_DEF_REL_
+    BA_REL_
+    BA_DEF_DEF_REL_
+    BU_SG_REL_
+    BU_EV_REL_
+    BU_BO_REL_
+    SG_MUL_VAL_
+BU_: PC
+BO_ 2000 WebData_2000: 4 Vector__XXX
+    SG_ Signal_8 : 24|8@1+ (1,0) [0|255] \"\" Vector__XXX
+    SG_ Signal_7 : 16|8@1+ (1,0) [0|255] \"\" Vector__XXX
+    SG_ Signal_6 : 8|8@1+ (1,0) [0|255] \"\" Vector__XXX
+    SG_ Signal_5 : 0|8@1+ (1,0) [0|255] \"\" Vector__XXX
+BO_ 1840 WebData_1840: 4 PC
+    SG_ Signal_4 : 24|8@1+ (1,0) [0|255] \"\" Vector__XXX
+    SG_ Signal_3 : 16|8@1+ (1,0) [0|255] \"\" Vector__XXX
+    SG_ Signal_2 : 8|8@1+ (1,0) [0|255] \"\" Vector__XXX
+    SG_ Signal_1 : 0|8@1+ (1,0) [0|0] \"\" Vector__XXX
 
-        NS_ :
-            NS_DESC_
-            CM_
-            BA_DEF_
-            BA_
-            VAL_
-            CAT_DEF_
-            CAT_
-            FILTER
-            BA_DEF_DEF_
-            EV_DATA_
-            ENVVAR_DATA_
-            SGTYPE_
-            SGTYPE_VAL_
-            BA_DEF_SGTYPE_
-            BA_SGTYPE_
-            SIG_TYPE_REF_
-            VAL_TABLE_
-            SIG_GROUP_
-            SIG_VALTYPE_
-            SIGTYPE_VALTYPE_
-            BO_TX_BU_
-            BA_DEF_REL_
-            BA_REL_
-            BA_DEF_DEF_REL_
-            BU_SG_REL_
-            BU_EV_REL_
-            BU_BO_REL_
-            SG_MUL_VAL_
+EV_ Environment1: 0 [0|220] \"\" 0 6 DUMMY_NODE_VECTOR0 DUMMY_NODE_VECTOR2;
+EV_ Environment2: 0 [0|177] \"\" 0 7 DUMMY_NODE_VECTOR1 DUMMY_NODE_VECTOR2;
+ENVVAR_DATA_ SomeEnvVarData: 399;
 
-        BU_: PC
+CM_ SG_ 4 TestSigLittleUnsigned1 \"asaklfjlsdfjlsdfgls
+HH?=(%)/&KKDKFSDKFKDFKSDFKSDFNKCnvsdcvsvxkcv\";
+CM_ SG_ 5 TestSigLittleUnsigned1 \"asaklfjlsdfjlsdfgls
+=0943503450KFSDKFKDFKSDFKSDFNKCnvsdcvsvxkcv\";
 
-        BO_ 2000 WebData_2000: 4 Vector__XXX
-            SG_ Signal_8 : 24|8@1+ (1,0) [0|255] \"\" Vector__XXX
-            SG_ Signal_7 : 16|8@1+ (1,0) [0|255] \"\" Vector__XXX
-            SG_ Signal_6 : 8|8@1+ (1,0) [0|255] \"\" Vector__XXX
-            SG_ Signal_5 : 0|8@1+ (1,0) [0|255] \"\" Vector__XXX
+BA_DEF_DEF_ \"BusType\" \"AS\";
 
-        BO_ 1840 WebData_1840: 4 PC
-            SG_ Signal_4 : 24|8@1+ (1,0) [0|255] \"\" Vector__XXX
-            SG_ Signal_3 : 16|8@1+ (1,0) [0|255] \"\" Vector__XXX
-            SG_ Signal_2 : 8|8@1+ (1,0) [0|255] \"\" Vector__XXX
-            SG_ Signal_1 : 0|8@1+ (1,0) [0|0] \"\" Vector__XXX
+BA_ \"Attr\" BO_ 4358435 283;
+BA_ \"Attr\" BO_ 56949545 344;
+";
 
-        EV_ Environment1: 0 [0|220] \"\" 0 6 DUMMY_NODE_VECTOR0 DUMMY_NODE_VECTOR2;
+       // let (remaining, dbc_def) = dbc_file(sample_dbc).unwrap();
 
-        EV_ Environment2: 0 [0|177] \"\" 0 7 DUMMY_NODE_VECTOR1 DUMMY_NODE_VECTOR2;
-
-        ENVVAR_DATA_ SomeEnvVarData: 399;
-
-        CM_ SG_ 4 TestSigLittleUnsigned1 \"asaklfjlsdfjlsdfgls
-        HH?=(%)/&KKDKFSDKFKDFKSDFKSDFNKCnvsdcvsvxkcv\";
-        CM_ SG_ 5 TestSigLittleUnsigned1 \"asaklfjlsdfjlsdfgls
-        =0943503450KFSDKFKDFKSDFKSDFNKCnvsdcvsvxkcv\";
-
-        BA_DEF_DEF_ \"BusType\" \"AS\";
-
-        BA_ \"Attr\" BO_ 4358435 283;
-        BA_ \"Attr\" BO_ 56949545 344;
-
-        VAL_ 3454 TestValue 3423232 \"positive\" 359595 \"doe\" -1393 \"john\" ;
-        VAL_ 3454 TestValue 3423232 \"positive\" 359595 \"doe\" -1393 \"positive\" 359595 \"doe\" -1393 \"john\" ;
-        ";
-
-        let (remaining, dbc_def) = dbc_file(sample_dbc).unwrap();
-
-        println!("Remaining {:?}\nResult {:?}", str::from_utf8(remaining).unwrap(), dbc_def);
+        match dbc_file(sample_dbc) {
+            Ok((remaining, dbc_content)) => {
+                println!("DBC Content{:#?}", dbc_content);
+                println!("Remaining {:#?}", str::from_utf8(remaining));
+            },
+            Err(e) => {
+                print_trace!();
+                match e {
+                    nom::Err::Incomplete(needed) => eprintln!("Error incomplete input, needed: {:?}", needed),
+                    nom::Err::Error(ctx) => {
+                        match ctx {
+                            verbose_errors::Context::Code(i, kind) => eprintln!("Error Kind: {:?}, Code: {:?}", kind, str::from_utf8(i)),
+                            verbose_errors::Context::List(l)=> eprintln!("Error List: {:?}", l),
+                        }
+                    }
+                    nom::Err::Failure(ctx) => eprintln!("Failure {:?}", ctx),
+                }
+            }
+        }
+        //println!("Remaining {:?}\nResult {:?}", str::from_utf8(remaining).unwrap(), dbc_def);
     }
 }
 
@@ -538,7 +549,7 @@ pub struct EnvironmentVariableData(String, u64);
 
 ///
 /// Network node
-/// 
+///
 #[derive(Debug, PartialEq)]
 pub struct Node(Vec<String>);
 
@@ -660,6 +671,10 @@ fn is_quote(chr: char) -> bool {
     chr == '"'
 }
 
+fn is_newline(chr: char) -> bool {
+    chr == '\n' || chr == '\r'
+}
+
 /// Single space
 named!(ss<char>, char!(' '));
 
@@ -715,7 +730,7 @@ named!(u64_s<u64>, map_res!(
  );
 
 named!(i64_digit<i64>,
-    flat_map!(recognize!(tuple!(opt!(alt!(char!('+') | char!('-'))), digit)), parse_to!(i64))
+    flat_map!(recognize!(tuple!(opt!(alt_complete!(char!('+') | char!('-'))), digit)), parse_to!(i64))
 );
 
 named!(quoted<&str>,
@@ -731,7 +746,7 @@ named!(pub little_endian<Endianess>, map!(char!('1'), |_| Endianess::LittleEndia
 
 named!(pub big_endian<Endianess>, map!(char!('0'), |_| Endianess::BigEndian));
 
-named!(pub endianess<Endianess>, alt!(little_endian | big_endian));
+named!(pub endianess<Endianess>, alt_complete!(little_endian | big_endian));
 
 named!(pub message_id<MessageId>, map!(u64_s, MessageId));
 
@@ -741,7 +756,7 @@ named!(pub signed<ValueType>, map!(char!('-'), |_| ValueType::Signed));
 
 named!(pub unsigned<ValueType>, map!(char!('+'), |_| ValueType::Unsigned));
 
-named!(pub value_type<ValueType>, alt!(signed | unsigned));
+named!(pub value_type<ValueType>, alt_complete!(signed | unsigned));
 
 named!(pub multiplexer<SignalType>,
     do_parse!(
@@ -772,15 +787,20 @@ named!(pub version<Version>,
            tag!("VERSION") >>
            ss              >>
         v: quoted          >>
+        eol >>
         (Version(v.to_string()))
     )
 );
 
-named!(pub signal_type<SignalType>, alt!(multiplexer | multiplexor | plain));
+named!(pub signal_type<SignalType>, 
+    do_parse!(
+        x: alt_complete!(multiplexer | multiplexor | plain) >>
+        (x)
+    )
+);
 
 named!(pub signal<Signal>,
-    do_parse!(
-                             space >>
+    do_parse!(               space  >>
                              tag!("SG_") >>
                              ss          >>
        name:                 c_ident     >>
@@ -809,6 +829,7 @@ named!(pub signal<Signal>,
        unit:                 quoted      >>
                              ss          >>
        receivers:            c_ident_vec >>
+       eol                               >>
         (Signal {
             name: name.to_string(),
             signal_type: signal_type,
@@ -838,8 +859,8 @@ named!(pub message<Message>,
     size:        u64_s                                                                       >>
                  ss                                                                          >>
     transmitter: c_ident                                                                     >>
-                 line_ending                                                                 >>
-    signals: separated_nonempty_list!(line_ending, signal)                                   >>
+                 eol                                                                         >>
+    signals: many1!(signal)                                   >>
     (Message(id, false, name.to_string(), size, transmitter.to_string(), signals))
   )
 );
@@ -852,6 +873,7 @@ named!(pub attribute_default<AttributeDefault>,
                          ss                  >>
         attribute_value: attribute_value     >>
                          semi_colon          >>
+                         eol                 >>
         (AttributeDefault(attribute_name.to_string(), attribute_value))
     )
 );
@@ -889,6 +911,7 @@ named!(pub comment<Comment>,
            ss                                                >>
         c: alt!(signal_comment | message_definition_comment) >>
            semi_colon                                        >>
+           eol >>
         (c)
     )
 );
@@ -925,7 +948,11 @@ named!(pub value_description_for_env_var<ValueDescription>,
 );
 
 named!(pub value_descriptions<ValueDescription>,
-    alt!(value_description_for_signal | value_description_for_env_var)
+    do_parse!(
+        x: alt_complete!(value_description_for_signal | value_description_for_env_var) >>
+        eol >>
+        (x)
+    )
 );
 
 named!(env_float<EnvType>, value!(EnvType::EnvTypeFloat, char!('0')));
@@ -933,7 +960,7 @@ named!(env_int<EnvType>, value!(EnvType::EnvTypeu64, char!('1')));
 named!(env_data<EnvType>, value!(EnvType::EnvTypeData, char!('2')));
 
 /// 9 Environment Variable Definitions
-named!(pub env_var_type<EnvType>, alt!(env_float | env_int | env_data));
+named!(pub env_var_type<EnvType>, alt_complete!(env_float | env_int | env_data));
 
 named!(dummy_node_vector_0<AccessType>, value!(AccessType::DUMMY_NODE_VECTOR0, char!('0')));
 named!(dummy_node_vector_1<AccessType>, value!(AccessType::DUMMY_NODE_VECTOR1, char!('1')));
@@ -944,7 +971,7 @@ named!(dummy_node_vector_3<AccessType>, value!(AccessType::DUMMY_NODE_VECTOR3, c
 named!(pub access_type<AccessType>,
     do_parse!(
               tag!("DUMMY_NODE_VECTOR") >>
-        node: alt!(dummy_node_vector_0 | dummy_node_vector_1 | dummy_node_vector_2 | dummy_node_vector_3) >>
+        node: alt_complete!(dummy_node_vector_0 | dummy_node_vector_1 | dummy_node_vector_2 | dummy_node_vector_3) >>
         (node)
     )
 );
@@ -953,7 +980,7 @@ named!(access_node_vector_xxx<AccessNode>,  value!(AccessNode::AccessNodeVectorX
 named!(access_node_name<AccessNode>,  map!(c_ident, |name| AccessNode::AccessNodeName(name.to_string())));
 
 /// 9 Environment Variable Definitions
-named!(pub access_node<AccessNode>, alt!(access_node_vector_xxx | access_node_name));
+named!(pub access_node<AccessNode>, alt_complete!(access_node_vector_xxx | access_node_name));
 
 /// 9 Environment Variable Definitions
 named!(environment_variable<EnvironmentVariable>,
@@ -981,6 +1008,7 @@ named!(environment_variable<EnvironmentVariable>,
                        ss                                           >>
         access_nodes:  separated_nonempty_list!(comma, access_node) >>
                        semi_colon >>
+                       eol >>
        (EnvironmentVariable(name.to_string(), type_, min, max, unit.to_string(), initial_value, id, access_type, access_nodes))
     )
 );
@@ -994,23 +1022,24 @@ named!(pub environment_variable_data<EnvironmentVariableData>,
                       ss                   >>
         data_size:    u64_s                >>
                       semi_colon           >>
+                      eol >>
         (EnvironmentVariableData(env_var_name.to_string(), data_size))
     )
 );
 
-named!(pub attribute_value_uint64<AttributeValue>, 
+named!(pub attribute_value_uint64<AttributeValue>,
     map!(u64_s, AttributeValue::AttributeValueU64)
 );
 
-named!(pub attribute_value_int64<AttributeValue>, 
+named!(pub attribute_value_int64<AttributeValue>,
     map!(i64_digit, AttributeValue::AttributeValueI64)
 );
 
-named!(pub attribute_value_f64<AttributeValue>, 
+named!(pub attribute_value_f64<AttributeValue>,
     map!(double, AttributeValue::AttributeValueF64)
 );
 
-named!(pub attribute_value_charstr<AttributeValue>, 
+named!(pub attribute_value_charstr<AttributeValue>,
     map!(quoted, |x| AttributeValue::AttributeValueCharString(x.to_string()))
 );
 
@@ -1085,8 +1114,9 @@ named!(pub attribute_value_for_object<AttributeValueForObject>,
                     signal_attribute_value             |
                     env_variable_attribute_value       |
                     raw_attribute_value
-                )          >>
-                semi_colon >>
+                )           >>
+                semi_colon  >>
+                eol >>
         (AttributeValueForObject(name.to_string(), value))
     )
 );
@@ -1140,6 +1170,8 @@ named!(pub attribute_definition<AttributeDefinition>,
                   attribute_definition_environment_variable |
                   attribute_definition_message
                  ) >>
+        semi_colon >>
+        eol >>
         (def)
     )
 );
@@ -1148,6 +1180,7 @@ named!(pub symbol<Symbol>,
     do_parse!(
                 space   >>
         symbol: c_ident >>
+        eol >>
         (Symbol(symbol.to_string()))
     )
 );
@@ -1156,7 +1189,7 @@ named!(pub new_symbols<Vec<Symbol>>,
     do_parse!(
                  tag!("NS_ :")                                 >>
                  line_ending                                   >>
-        symbols: separated_nonempty_list!(line_ending, symbol) >>
+        symbols: many0!(symbol) >>
         (symbols)
     )
 );
@@ -1169,6 +1202,7 @@ named!(pub node<Node>,
             tag!("BU_:") >>
             ss           >>
         li: map!(separated_nonempty_list!(ss, c_ident), |li| li.iter().map(|s| s.to_string()).collect())>>
+        eol >>
         (Node(li))
     )
 );
@@ -1185,6 +1219,7 @@ named!(pub signal_type_ref<SignalTypeRef>,
                           ss              >>
         signal_type_name: c_ident         >>
                           semi_colon      >>
+                          eol >>
         (SignalTypeRef {
             message_id: message_id,
             signal_name: signal_name.to_string(),
@@ -1198,8 +1233,9 @@ named!(pub value_table<ValueTable>,
                             tag!("VAL_TABLE_") >>
                             ss                 >>
         value_table_name:   c_ident            >>
-                            ss                 >> 
+                            ss                 >>
         value_descriptions: many_till!(preceded!(ss, value_description), preceded!(ss, semi_colon)) >>
+        eol >>
         (ValueTable {
             value_table_name: value_table_name.to_string(),
             value_descriptions: value_descriptions.0
@@ -1211,8 +1247,8 @@ named!(pub signed_or_unsigned_integer<SignalExtendedValueType>, value!(SignalExt
 named!(pub ieee_float_32bit<SignalExtendedValueType>, value!(SignalExtendedValueType::IEEEfloat32Bit, tag!("1")));
 named!(pub ieee_double_64bit<SignalExtendedValueType>, value!(SignalExtendedValueType::IEEEdouble64bit, tag!("2")));
 
-named!(pub signal_extended_value_type<SignalExtendedValueType>, 
-    alt!(
+named!(pub signal_extended_value_type<SignalExtendedValueType>,
+    alt_complete!(
         signed_or_unsigned_integer |
         ieee_float_32bit           |
         ieee_double_64bit
@@ -1241,7 +1277,7 @@ named!(pub transmitter_vector_xxx<Transmitter>, value!(Transmitter::TransmitterV
 
 named!(pub transmitter_node_name<Transmitter>, map!(c_ident, |x| Transmitter::TransmitterNodeName(x.to_string())));
 
-named!(pub transmitter<Transmitter>, alt!(transmitter_vector_xxx | transmitter_node_name));
+named!(pub transmitter<Transmitter>, alt_complete!(transmitter_vector_xxx | transmitter_node_name));
 
 named!(pub message_transmitter<MessageTransmitter>,
     do_parse!(
@@ -1253,6 +1289,7 @@ named!(pub message_transmitter<MessageTransmitter>,
                      ss                >>
         transmitter: transmitter       >>
                      semi_colon        >>
+                     eol >>
         (MessageTransmitter {
             message_id: message_id,
             transmitter: transmitter,
@@ -1271,6 +1308,7 @@ named!(pub signal_groups<SignalGroups>,
         ss >>
         signal_names: c_ident_vec >>
         semi_colon >>
+        eol >>
         (SignalGroups{
             message_id: message_id,
             signal_group_name: signal_group_name.to_string(),
@@ -1284,41 +1322,40 @@ declare_trace!();
 
 named!(pub dbc_file<DBCFile>,
     do_parse!(
-                                         tr!(opt!(multispace))                                        >>
         version:                         tr!(version)                                                 >>
-                                         tr!(opt!(multispace))                                        >>
+        tr!(many0!(multispace)) >>
         new_symbols:                     tr!(new_symbols)                                             >>
-                                         tr!(opt!(multispace))                                        >>
-        nodes:                           tr!(separated_list!(multispace, node))                       >>
-                                         tr!(opt!(multispace))                                        >>
-        value_tables:                    tr!(separated_list!(multispace, value_table))                >>
-                                         tr!(opt!(multispace))                                        >>
-        messages:                        tr!(separated_list!(multispace, message))                    >>
-                                         tr!(opt!(multispace))                                        >>
-        message_transmitters:            tr!(separated_list!(multispace, message_transmitter))        >>
-                                         tr!(opt!(multispace))                                        >>
-        environment_variables:           tr!(separated_list!(multispace, environment_variable))       >>
-                                         tr!(opt!(multispace))                                        >>
-        environment_variable_data:       tr!(separated_list!(multispace, environment_variable_data))  >>
-                                         tr!(opt!(multispace))                                        >>
-        signal_types:                    tr!(separated_list!(multispace, signal_type))                >>
-                                         tr!(opt!(multispace))                                        >>
-        comments:                        tr!(separated_list!(multispace, comment))                    >>
-                                         tr!(opt!(multispace))                                        >>
-        attribute_definitions:           tr!(separated_list!(multispace, attribute_definition))       >>
-                                         tr!(opt!(multispace))                                        >>
-        attribute_defaults:              tr!(separated_list!(multispace, attribute_default))          >>
-                                         tr!(opt!(multispace))                                        >>
-        attribute_values:                tr!(separated_list!(multispace, attribute_value_for_object)) >>
-                                         tr!(opt!(multispace))                                        >>
-        value_descriptions:              tr!(separated_list!(multispace, value_descriptions))         >>
-                                         tr!(opt!(multispace))                                        >>
-        signal_type_refs:                tr!(separated_list!(multispace, signal_type_ref))            >>
+        tr!(many0!(multispace)) >>
+        nodes:                           tr!(many0!(node))                       >>
+        tr!(many0!(multispace)) >>
+        value_tables:                    tr!(many0!(value_table))                >>
+        tr!(many0!(multispace)) >>
+        messages:                        tr!(many0!(message)) >>
+        tr!(many0!(multispace)) >>
+        message_transmitters:            tr!(many0!(message_transmitter))        >>
+        tr!(many0!(multispace)) >>
+        environment_variables:           tr!(many0!(environment_variable))       >>
+        tr!(many0!(multispace)) >>
+        environment_variable_data:       tr!(many0!(environment_variable_data))  >>
+        tr!(many0!(multispace)) >>
+        signal_types:                    tr!(many0!(signal_type))                >>
+        tr!(many0!(multispace)) >>
+        comments:                        tr!(many0!(comment))                    >>
+        tr!(many0!(multispace)) >>
+        attribute_definitions:           tr!(many0!(attribute_definition))       >>
+        tr!(many0!(multispace)) >>
+        attribute_defaults:              tr!(many0!(attribute_default))                        >>
+        tr!(many0!(multispace)) >>
+        attribute_values:                tr!(many0!(attribute_value_for_object))               >>
+        tr!(many0!(multispace)) >>
+        value_descriptions:              tr!(many0!(value_descriptions))         >>
+        tr!(many0!(multispace)) >>
+        signal_type_refs:                tr!(many0!(signal_type_ref))            >>
+        tr!(many0!(multispace)) >>
         signal_groups:                   tr!(opt!(signal_groups))                                     >>
-                                         tr!(opt!(multispace))                                        >>
-        signal_extended_value_type_list: tr!(opt!(signal_extended_value_type_list))                   >>
-                                         opt!(multispace)                                             >>
-                                         eof!()                                                       >>
+        tr!(many0!(multispace)) >>
+        signal_extended_value_type_list: tr!(opt!(signal_extended_value_type_list))                         >>
+        eof!() >>
         (DBCFile {
             version: version,
             new_symbols: new_symbols,
@@ -1336,7 +1373,7 @@ named!(pub dbc_file<DBCFile>,
             value_descriptions: value_descriptions,
             signal_type_refs: signal_type_refs,
             signal_groups: signal_groups,
-            signal_extended_value_type_list: signal_extended_value_type_list
+            signal_extended_value_type_list: signal_extended_value_type_list,
         })
     )
 );
