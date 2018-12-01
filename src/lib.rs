@@ -46,24 +46,24 @@ mod tests {
     }
 
     #[test]
-    fn endianess_test() {
-        let (_, big_endian) = endianess(b"0").expect("Failed to parse big endian");
-        assert_eq!(Endianess::BigEndian, big_endian);
+    fn byte_order_test() {
+        let (_, big_endian) = byte_order(b"0").expect("Failed to parse big endian");
+        assert_eq!(ByteOrder::BigEndian, big_endian);
 
-        let (_, little_endian) = endianess(b"1").expect("Failed to parse little endian");
-        assert_eq!(Endianess::LittleEndian, little_endian);
+        let (_, little_endian) = byte_order(b"1").expect("Failed to parse little endian");
+        assert_eq!(ByteOrder::LittleEndian, little_endian);
     }
 
     #[test]
-    fn signal_type_test() {
-        let (_, multiplexer) = signal_type(b"m34920 ").expect("Failed to parse multiplexer");
-        assert_eq!(SignalType::MultiplexedSignal(34920), multiplexer);
+    fn multiplexer_indicator_test() {
+        let (_, multiplexer) = multiplexer_indicator(b"m34920 ").expect("Failed to parse multiplexer");
+        assert_eq!(MultiplexIndicator::MultiplexedSignal(34920), multiplexer);
 
-        let (_, multiplexor) = signal_type(b"M ").expect("Failed to parse multiplexor");
-        assert_eq!(SignalType::Multiplexor, multiplexor);
+        let (_, multiplexor) = multiplexer_indicator(b"M ").expect("Failed to parse multiplexor");
+        assert_eq!(MultiplexIndicator::Multiplexor, multiplexor);
 
-        let (_, plain) = signal_type(b" ").expect("Failed to parse plain");
-        assert_eq!(SignalType::Plain, plain);
+        let (_, plain) = multiplexer_indicator(b" ").expect("Failed to parse plain");
+        assert_eq!(MultiplexIndicator::Plain, plain);
     }
 
     #[test]
@@ -372,13 +372,13 @@ pub struct Label(String);
 #[derive(Debug, PartialEq)]
 pub struct Signal {
     name: String,
-    signal_type: SignalType,
-    offset: u64,
-    length: u64,
-    endianess: Endianess,
+    multiplexer_indicator: MultiplexIndicator,
+    start_bit: u64,
+    signal_size: u64,
+    byte_order: ByteOrder,
     value_type: ValueType,
-    slope: f64,
-    intercept: f64,
+    factor: f64,
+    offset: f64,
     min: f64,
     max: f64,
     unit: String,
@@ -413,7 +413,7 @@ pub struct Version(String);
 pub struct Symbol(String);
 
 #[derive(Debug, PartialEq)]
-pub enum SignalType {
+pub enum MultiplexIndicator {
     /// Multiplexor switch
     Multiplexor,
     /// Signal us being multiplexed by the multiplexer switch.
@@ -423,7 +423,7 @@ pub enum SignalType {
 }
 
 #[derive(Debug, PartialEq)]
-pub enum Endianess {
+pub enum ByteOrder {
     LittleEndian,
     BigEndian,
 }
@@ -619,7 +619,7 @@ pub struct DBCFile {
     message_transmitters: Vec<MessageTransmitter>,
     environment_variables: Vec<EnvironmentVariable>,
     environment_variable_data: Vec<EnvironmentVariableData>,
-    signal_types: Vec<SignalType>,
+    multiplexer_indicator: Vec<MultiplexIndicator>,
     ///
     /// Object comments.
     ///
@@ -742,11 +742,11 @@ named!(quoted<&str>,
     )
 );
 
-named!(pub little_endian<Endianess>, map!(char!('1'), |_| Endianess::LittleEndian));
+named!(pub little_endian<ByteOrder>, map!(char!('1'), |_| ByteOrder::LittleEndian));
 
-named!(pub big_endian<Endianess>, map!(char!('0'), |_| Endianess::BigEndian));
+named!(pub big_endian<ByteOrder>, map!(char!('0'), |_| ByteOrder::BigEndian));
 
-named!(pub endianess<Endianess>, alt_complete!(little_endian | big_endian));
+named!(pub byte_order<ByteOrder>, alt_complete!(little_endian | big_endian));
 
 named!(pub message_id<MessageId>, map!(u64_s, MessageId));
 
@@ -758,27 +758,27 @@ named!(pub unsigned<ValueType>, map!(char!('+'), |_| ValueType::Unsigned));
 
 named!(pub value_type<ValueType>, alt_complete!(signed | unsigned));
 
-named!(pub multiplexer<SignalType>,
+named!(pub multiplexer<MultiplexIndicator>,
     do_parse!(
            char!('m') >>
         d: u64_s      >>
            ss         >>
-        (SignalType::MultiplexedSignal(d))
+        (MultiplexIndicator::MultiplexedSignal(d))
     )
 );
 
-named!(pub multiplexor<SignalType>,
+named!(pub multiplexor<MultiplexIndicator>,
     do_parse!(
         char!('M') >>
         ss         >>
-        (SignalType::Multiplexor)
+        (MultiplexIndicator::Multiplexor)
     )
 );
 
-named!(pub plain<SignalType>,
+named!(pub plain<MultiplexIndicator>,
     do_parse!(
         ss >>
-        (SignalType::Plain)
+        (MultiplexIndicator::Plain)
     )
 );
 
@@ -792,7 +792,7 @@ named!(pub version<Version>,
     )
 );
 
-named!(pub signal_type<SignalType>, 
+named!(pub multiplexer_indicator<MultiplexIndicator>,
     do_parse!(
         x: alt_complete!(multiplexer | multiplexor | plain) >>
         (x)
@@ -800,45 +800,45 @@ named!(pub signal_type<SignalType>,
 );
 
 named!(pub signal<Signal>,
-    do_parse!(               space  >>
-                             tag!("SG_") >>
-                             ss          >>
-       name:                 c_ident     >>
-       signal_type:          signal_type >>
-                             colon       >>
-                             ss          >>
-       offset:               u64_s       >>
-                             pipe        >>
-       length:               u64_s       >>
-                             at          >>
-       endianess:            endianess   >>
-       value_type:           value_type  >>
-                             ss          >>
-                             brc_open    >>
-       slope:                double      >>
-                             comma       >>
-       intercept:            double      >>
-                             brc_close   >>
-                             ss          >>
-                             brk_open    >>
-       min:                  double      >>
-                             pipe        >>
-       max:                  double      >>
-                             brk_close   >>
-                             ss          >>
-       unit:                 quoted      >>
-                             ss          >>
-       receivers:            c_ident_vec >>
-       eol                               >>
+    do_parse!(                space                 >>
+                              tag!("SG_")           >>
+                              ss                    >>
+       name:                  c_ident               >>
+       multiplexer_indicator: multiplexer_indicator >>
+                              colon                 >>
+                              ss                    >>
+       start_bit:             u64_s                 >>
+                              pipe                  >>
+       signal_size:           u64_s                 >>
+                              at                    >>
+       byte_order:            byte_order            >>
+       value_type:            value_type            >>
+                              ss                    >>
+                              brc_open              >>
+       factor:                double                >>
+                              comma                 >>
+       offset:                double                >>
+                              brc_close             >>
+                              ss                    >>
+                              brk_open              >>
+       min:                   double                >>
+                              pipe                  >>
+       max:                   double                >>
+                              brk_close             >>
+                              ss                    >>
+       unit:                  quoted                >>
+                              ss                    >>
+       receivers:             c_ident_vec           >>
+       eol                                          >>
         (Signal {
             name: name.to_string(),
-            signal_type: signal_type,
-            offset: offset,
-            length: length,
-            endianess: endianess,
+            multiplexer_indicator: multiplexer_indicator,
+            start_bit: start_bit,
+            signal_size: signal_size,
+            byte_order: byte_order,
             value_type: value_type,
-            slope: slope,
-            intercept: intercept,
+            factor: factor,
+            offset: offset,
             min: min,
             max: max,
             unit:  unit.to_string(),
@@ -1338,7 +1338,7 @@ named!(pub dbc_file<DBCFile>,
         tr!(many0!(multispace)) >>
         environment_variable_data:       tr!(many0!(environment_variable_data))  >>
         tr!(many0!(multispace)) >>
-        signal_types:                    tr!(many0!(signal_type))                >>
+        multiplexer_indicator:             tr!(many0!(multiplexer_indicator))                >>
         tr!(many0!(multispace)) >>
         comments:                        tr!(many0!(comment))                    >>
         tr!(many0!(multispace)) >>
@@ -1365,7 +1365,7 @@ named!(pub dbc_file<DBCFile>,
             message_transmitters: message_transmitters,
             environment_variables: environment_variables,
             environment_variable_data: environment_variable_data,
-            signal_types: signal_types,
+            multiplexer_indicator: multiplexer_indicator,
             comments: comments,
             attribute_definitions: attribute_definitions,
             attribute_defaults: attribute_defaults,
