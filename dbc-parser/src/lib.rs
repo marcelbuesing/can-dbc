@@ -373,16 +373,42 @@ pub struct Label(String);
 pub struct Signal {
     name: String,
     multiplexer_indicator: MultiplexIndicator,
-    start_bit: u64,
-    signal_size: u64,
+    pub start_bit: u64,
+    pub signal_size: u64,
     byte_order: ByteOrder,
     value_type: ValueType,
-    factor: f64,
-    offset: f64,
-    min: f64,
-    max: f64,
+    pub factor: f64,
+    pub offset: f64,
+    pub min: f64,
+    pub max: f64,
     unit: String,
     receivers: Vec<String>,
+}
+
+impl Signal {
+    pub fn name(&self) -> &str {
+        &self.name
+    } 
+
+    pub fn multiplexer_indicator(&self) -> &MultiplexIndicator {
+        &self.multiplexer_indicator
+    }
+
+    pub fn byte_order(&self) -> &ByteOrder {
+        &self.byte_order
+    }
+
+    pub fn value_type(&self) -> &ValueType {
+        &self.value_type
+    }
+
+    pub fn unit(&self) -> &str {
+        &self.unit
+    }
+
+    pub fn receivers(&self) -> &Vec<String> {
+        &self.receivers
+    }
 }
 
 #[derive(Debug, PartialEq)]
@@ -393,11 +419,10 @@ pub struct MessageId(u64);
 
 #[derive(Debug, PartialEq)]
 pub enum Transmitter {
-    ///
-    /// No Sender
-    ///
-    TransmitterVectorXXX,
-    TransmitterNodeName(String),
+    /// node transmitting the message
+    NodeName(String),
+    /// message has no sender
+    VectorXXX
 }
 
 #[derive(Debug, PartialEq)]
@@ -524,9 +549,28 @@ pub enum Comment {
     EnvVar(String),
 }
 
-
 #[derive(Debug, PartialEq)]
-pub struct Message(MessageId, bool, String, u64, String, Vec<Signal>);
+pub struct Message { 
+    message_id: MessageId, 
+    message_name: String,
+    message_size: u64, 
+    transmitter: Transmitter, 
+    signals: Vec<Signal>
+}
+
+impl Message {
+    pub fn message_name(&self) -> &str {
+        &self.message_name
+    }
+
+    pub fn transmitter(&self) -> &Transmitter {
+        &self.transmitter
+    }
+
+    pub fn signals(&self) -> &Vec<Signal> {
+        &self.signals
+    }
+}
 
 #[derive(Debug, PartialEq)]
 pub struct EnvironmentVariable(
@@ -849,19 +893,25 @@ named!(pub signal<Signal>,
 
 named!(pub message<Message>,
   do_parse!(
-                 tag!("BO_")                                                                 >>
-                 ss                                                                          >>
-    id:          message_id                                                                  >>
-                 ss                                                                          >>
-    name:        map!(take_till_s!(|c| is_colon(c as char)), |s| str::from_utf8(s).unwrap()) >>
-                 colon                                                                       >>
-                 ss                                                                          >>
-    size:        u64_s                                                                       >>
-                 ss                                                                          >>
-    transmitter: c_ident                                                                     >>
-                 eol                                                                         >>
-    signals: many1!(signal)                                   >>
-    (Message(id, false, name.to_string(), size, transmitter.to_string(), signals))
+                  tag!("BO_")                                                                 >>
+                  ss                                                                          >>
+    message_id:   message_id                                                                  >>
+                  ss                                                                          >>
+    message_name: map!(take_till_s!(|c| is_colon(c as char)), |s| str::from_utf8(s).unwrap()) >>
+                  colon                                                                       >>
+                  ss                                                                          >>
+    message_size: u64_s                                                                       >>
+                  ss                                                                          >>
+    transmitter:  transmitter                                                                 >>
+                  eol                                                                         >>
+    signals:     many1!(signal)                                                               >>
+    (Message {
+        message_id,
+        message_name: message_name.to_string(),
+        message_size,
+        transmitter,
+        signals
+    })
   )
 );
 
@@ -1273,9 +1323,9 @@ named!(pub signal_extended_value_type_list<SignalExtendedValueTypeList>,
     )
 );
 
-named!(pub transmitter_vector_xxx<Transmitter>, value!(Transmitter::TransmitterVectorXXX, tag!("Vector__XXX")));
+named!(pub transmitter_vector_xxx<Transmitter>, value!(Transmitter::VectorXXX, tag!("Vector__XXX")));
 
-named!(pub transmitter_node_name<Transmitter>, map!(c_ident, |x| Transmitter::TransmitterNodeName(x.to_string())));
+named!(pub transmitter_node_name<Transmitter>, map!(c_ident, |x| Transmitter::NodeName(x.to_string())));
 
 named!(pub transmitter<Transmitter>, alt_complete!(transmitter_vector_xxx | transmitter_node_name));
 
@@ -1319,6 +1369,16 @@ named!(pub signal_groups<SignalGroups>,
 );
 
 declare_trace!();
+
+named!(pub simple_dbc<(Version, Vec<Symbol>)>,
+    do_parse!(
+        version:                         tr!(version)                                                 >>
+        tr!(many0!(multispace)) >>
+        new_symbols:                     tr!(new_symbols)                                             >>
+        ((version, new_symbols))
+    )
+);
+
 
 named!(pub dbc_file<DBCFile>,
     do_parse!(

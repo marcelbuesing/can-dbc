@@ -30,7 +30,7 @@ fn main() -> io::Result<()> {
     let mut buffer = Vec::new();
     f.read_to_end(&mut buffer)?;
 
-    match dbc_parser::dbc_file(&buffer) {
+    match dbc_parser::simple_dbc(&buffer) {
         Ok((remaining, dbc_content)) => {
             println!("DBC Content{:#?}", dbc_content);
             println!("Remaining {:#?}", str::from_utf8(remaining));
