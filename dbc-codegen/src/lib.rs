@@ -3,7 +3,7 @@ extern crate dbc_parser;
 extern crate nom;
 
 
-use codegen::{Scope, Type};
+use codegen::Scope;
 use dbc_parser::Message;
 
 #[cfg(test)]
@@ -28,7 +28,7 @@ mod tests {
     }
 }
 
-fn message_reader(message: &Message) -> Scope {
+pub fn message_reader(message: &Message) -> Scope {
     let mut scope = Scope::new();
 
     // Message struct

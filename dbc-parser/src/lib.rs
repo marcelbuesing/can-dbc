@@ -42,7 +42,7 @@ mod tests {
     #[test]
     fn signal_test() {
         let signal_line = CompleteByteSlice(b"SG_ NAME : 3|2@1- (1,0) [0|0] \"x\" UFA\r\n");
-        let signal1 = signal(signal_line).unwrap();
+        let _signal = signal(signal_line).unwrap();
     }
 
     #[test]
@@ -79,7 +79,7 @@ mod tests {
     fn message_definition_test() {
         let def = CompleteByteSlice(b"BO_ 1 MCA_A1: 6 MFA\r\nSG_ ABC_1 : 9|2@1+ (1,0) [0|0] \"x\" XYZ_OUS\r\nSG_ BasL2 : 3|2@0- (1,0) [0|0] \"x\" DFA_FUS\r\n x");
         signal(CompleteByteSlice(b"\r\n\r\nSG_ BasL2 : 3|2@0- (1,0) [0|0] \"x\" DFA_FUS\r\n")).expect("Faield");
-        let (_, message_def) = message(def).expect("Failed to parse message definition");
+        let (_, _message_def) = message(def).expect("Failed to parse message definition");
     }
 
     #[test]
@@ -153,7 +153,7 @@ mod tests {
             "mm".to_string(),
             3.0,
             7,
-            AccessType::DUMMY_NODE_VECTOR0,
+            AccessType::DummyNodeVector0,
             nodes1,
         );
         let (_, env_var) =
@@ -239,7 +239,7 @@ mod tests {
 
     #[test]
     fn attribute_default_test() {
-        let def = CompleteByteSlice(b"BA_DEF_DEF_ \"ZUV\" \"OAL\";\n");
+        let def = CompleteByteSlice(b"BA_DEF_DEF_  \"ZUV\" \"OAL\";\n");
         let (_, attr_default) = attribute_default(def).unwrap();
         let attr_default_exp = AttributeDefault("ZUV".to_string(), AttributeValue::AttributeValueCharString("OAL".to_string()));
         assert_eq!(attr_default_exp, attr_default);
@@ -476,10 +476,10 @@ pub struct LabelDescription {
 
 #[derive(Debug, PartialEq)]
 pub enum AccessType {
-    DUMMY_NODE_VECTOR0,
-    DUMMY_NODE_VECTOR1,
-    DUMMY_NODE_VECTOR2,
-    DUMMY_NODE_VECTOR3,
+    DummyNodeVector0,
+    DummyNodeVector1,
+    DummyNodeVector2,
+    DummyNodeVector3,
 }
 
 #[derive(Debug, PartialEq)]
@@ -739,10 +739,6 @@ fn is_c_ident_head(chr: char) -> bool {
 
 fn is_quote(chr: char) -> bool {
     chr == '"'
-}
-
-fn is_newline(chr: char) -> bool {
-    chr == '\n' || chr == '\r'
 }
 
 /// Single space
@@ -1052,10 +1048,10 @@ named!(env_data<CompleteByteSlice, EnvType>, value!(EnvType::EnvTypeData, char!(
 /// 9 Environment Variable Definitions
 named!(pub env_var_type<CompleteByteSlice, EnvType>, alt_complete!(env_float | env_int | env_data));
 
-named!(dummy_node_vector_0<CompleteByteSlice, AccessType>, value!(AccessType::DUMMY_NODE_VECTOR0, char!('0')));
-named!(dummy_node_vector_1<CompleteByteSlice, AccessType>, value!(AccessType::DUMMY_NODE_VECTOR1, char!('1')));
-named!(dummy_node_vector_2<CompleteByteSlice, AccessType>, value!(AccessType::DUMMY_NODE_VECTOR2, char!('2')));
-named!(dummy_node_vector_3<CompleteByteSlice, AccessType>, value!(AccessType::DUMMY_NODE_VECTOR3, char!('3')));
+named!(dummy_node_vector_0<CompleteByteSlice, AccessType>, value!(AccessType::DummyNodeVector0, char!('0')));
+named!(dummy_node_vector_1<CompleteByteSlice, AccessType>, value!(AccessType::DummyNodeVector1, char!('1')));
+named!(dummy_node_vector_2<CompleteByteSlice, AccessType>, value!(AccessType::DummyNodeVector2, char!('2')));
+named!(dummy_node_vector_3<CompleteByteSlice, AccessType>, value!(AccessType::DummyNodeVector3, char!('3')));
 
 /// 9 Environment Variable Definitions
 named!(pub access_type<CompleteByteSlice, AccessType>,

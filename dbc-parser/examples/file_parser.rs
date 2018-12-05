@@ -10,7 +10,6 @@ use std::fs::File;
 use std::io;
 use std::io::prelude::*;
 use std::cmp;
-use nom::types::CompleteByteSlice;
 
 fn main() -> io::Result<()> {
 
