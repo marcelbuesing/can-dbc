@@ -30,7 +30,7 @@ NS_ :
     BU_BO_REL_
     SG_MUL_VAL_
 
-BU_: PC
+BU_: PC X
 
 BO_ 2000 WebData_2000: 4 Vector__XXX
     SG_ Signal_8 : 24|8@1+ (1,0) [0|255] "" Vector__XXX
@@ -57,3 +57,5 @@ BA_DEF_DEF_ "BusType" "AS";
 
 BA_ "Attr" BO_ 4358435 283;
 BA_ "Attr" BO_ 56949545 344;
+
+y

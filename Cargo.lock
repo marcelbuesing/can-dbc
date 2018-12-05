@@ -54,6 +54,7 @@ version = "0.1.0"
 dependencies = [
  "codegen 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "dbc-parser 0.1.0",
+ "nom 4.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]

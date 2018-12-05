@@ -1,5 +1,5 @@
 use nom::*;
-use nom::types::CompleteStr;
+use nom::types::CompleteByteSlice;
 use std::str;
 use nom_trace::*;
 
@@ -9,28 +9,28 @@ mod tests {
 
     #[test]
     fn c_ident_test() {
-        let def1 = b"EALL_DUSasb18 ";
+        let def1 = CompleteByteSlice(b"EALL_DUSasb18 ");
         let (_, cid1) = c_ident(def1).unwrap();
         assert_eq!("EALL_DUSasb18", cid1);
 
-        let def2 = b"_EALL_DUSasb18 ";
+        let def2 = CompleteByteSlice(b"_EALL_DUSasb18 ");
         let (_, cid2) = c_ident(def2).unwrap();
         assert_eq!("_EALL_DUSasb18", cid2);
 
         // identifiers must not start with digits
-        let def3 = b"3EALL_DUSasb18 ";
+        let def3 = CompleteByteSlice(b"3EALL_DUSasb18 ");
         let cid3_result = c_ident(def3);
         assert!(cid3_result.is_err());
     }
 
     #[test]
     fn c_ident_vec_test() {
-        let cid = b"FZHL_DUSasb18 ";
+        let cid = CompleteByteSlice(b"FZHL_DUSasb18 ");
         let (_, cid1) = c_ident_vec(cid).unwrap();
 
         assert_eq!(vec!("FZHL_DUSasb18".to_string()), cid1);
 
-        let cid_vec = b"FZHL_DUSasb19,xkask_3298 ";
+        let cid_vec = CompleteByteSlice(b"FZHL_DUSasb19,xkask_3298 ");
         let (_, cid2) = c_ident_vec(cid_vec).unwrap();
 
         assert_eq!(
@@ -41,51 +41,50 @@ mod tests {
 
     #[test]
     fn signal_test() {
-        let signal_line = b"  SG_ NAME : 3|2@1- (1,0) [0|0] \"x\" UFA\n";
+        let signal_line = CompleteByteSlice(b"SG_ NAME : 3|2@1- (1,0) [0|0] \"x\" UFA\r\n");
         let signal1 = signal(signal_line).unwrap();
     }
 
     #[test]
     fn byte_order_test() {
-        let (_, big_endian) = byte_order(b"0").expect("Failed to parse big endian");
+        let (_, big_endian) = byte_order(CompleteByteSlice(b"0")).expect("Failed to parse big endian");
         assert_eq!(ByteOrder::BigEndian, big_endian);
 
-        let (_, little_endian) = byte_order(b"1").expect("Failed to parse little endian");
+        let (_, little_endian) = byte_order(CompleteByteSlice(b"1")).expect("Failed to parse little endian");
         assert_eq!(ByteOrder::LittleEndian, little_endian);
     }
 
     #[test]
     fn multiplexer_indicator_test() {
-        let (_, multiplexer) = multiplexer_indicator(b"m34920 ").expect("Failed to parse multiplexer");
+        let (_, multiplexer) = multiplexer_indicator(CompleteByteSlice(b" m34920 ")).expect("Failed to parse multiplexer");
         assert_eq!(MultiplexIndicator::MultiplexedSignal(34920), multiplexer);
 
-        let (_, multiplexor) = multiplexer_indicator(b"M ").expect("Failed to parse multiplexor");
+        let (_, multiplexor) = multiplexer_indicator(CompleteByteSlice(b" M ")).expect("Failed to parse multiplexor");
         assert_eq!(MultiplexIndicator::Multiplexor, multiplexor);
 
-        let (_, plain) = multiplexer_indicator(b" ").expect("Failed to parse plain");
+        let (_, plain) = multiplexer_indicator(CompleteByteSlice(b" ")).expect("Failed to parse plain");
         assert_eq!(MultiplexIndicator::Plain, plain);
     }
 
     #[test]
     fn value_type_test() {
-        let (_, vt) = value_type(b"- ").expect("Failed to parse value type");
+        let (_, vt) = value_type(CompleteByteSlice(b"- ")).expect("Failed to parse value type");
         assert_eq!(ValueType::Signed, vt);
 
-        let (_, vt) = value_type(b"+ ").expect("Failed to parse value type");
+        let (_, vt) = value_type(CompleteByteSlice(b"+ ")).expect("Failed to parse value type");
         assert_eq!(ValueType::Unsigned, vt);
     }
 
     #[test]
     fn message_definition_test() {
-        let def = b"BO_ 1 MCA_A1: 6 MFA
-        SG_ ABC_1 : 9|2@1+ (1,0) [0|0] \"x\" XYZ_OUS
-        SG_ BasL2 : 3|2@0- (1,0) [0|0] \"x\" DFA_FUS\r\n\r\n";
+        let def = CompleteByteSlice(b"BO_ 1 MCA_A1: 6 MFA\r\nSG_ ABC_1 : 9|2@1+ (1,0) [0|0] \"x\" XYZ_OUS\r\nSG_ BasL2 : 3|2@0- (1,0) [0|0] \"x\" DFA_FUS\r\n x");
+        signal(CompleteByteSlice(b"\r\n\r\nSG_ BasL2 : 3|2@0- (1,0) [0|0] \"x\" DFA_FUS\r\n")).expect("Faield");
         let (_, message_def) = message(def).expect("Failed to parse message definition");
     }
 
     #[test]
     fn signal_comment_test() {
-        let def1 = b"CM_ SG_ 193 KLU_R_X \"This is a signal comment test\";\n";
+        let def1 = CompleteByteSlice(b"CM_ SG_ 193 KLU_R_X \"This is a signal comment test\";\n");
         let id1 = SignalCommentId(193);
         let comment1 = Comment::Signal(
             id1,
@@ -99,7 +98,7 @@ mod tests {
 
     #[test]
     fn message_definition_comment_test() {
-        let def1 = b"CM_ BO_ 34544 XYZ \"Some Message comment\";\n";
+        let def1 = CompleteByteSlice(b"CM_ BO_ 34544 XYZ \"Some Message comment\";\n");
         let id1 = MessageId(34544);
         let comment1 = Comment::MessageDefinition(
             id1,
@@ -114,7 +113,7 @@ mod tests {
 
     #[test]
     fn value_description_for_signal_test() {
-        let def1 = b"VAL_ 837 UF_HZ_OI 255 \"NOP\" ;\n";
+        let def1 = CompleteByteSlice(b"VAL_ 837 UF_HZ_OI 255 \"NOP\" ;\n");
         let id = MessageId(837);
         let name = "UF_HZ_OI".to_string();
         let descriptions = vec![ValDescription {
@@ -130,7 +129,7 @@ mod tests {
 
     #[test]
     fn value_description_for_env_var_test() {
-        let def1 = b"VAL_ MY_ENV_VAR 255 \"NOP\" ;\n";
+        let def1 = CompleteByteSlice(b"VAL_ MY_ENV_VAR 255 \"NOP\" ;\n");
         let name = "MY_ENV_VAR".to_string();
         let descriptions = vec![ValDescription {
             a: 255.0,
@@ -144,7 +143,7 @@ mod tests {
 
     #[test]
     fn environment_variable_test() {
-        let def1 = b"EV_ IUV: 0 [-22|20] \"mm\" 3 7 DUMMY_NODE_VECTOR0 VECTOR_XXX;\n";
+        let def1 = CompleteByteSlice(b"EV_ IUV: 0 [-22|20] \"mm\" 3 7 DUMMY_NODE_VECTOR0 VECTOR_XXX;\n");
         let nodes1 = vec![AccessNode::AccessNodeVectorXXX];
         let env_var1 = EnvironmentVariable(
             "IUV".to_string(),
@@ -164,8 +163,8 @@ mod tests {
 
     #[test]
     fn network_node_attribute_value_test() {
-        let def = b"BA_ \"AttrName\" BU_ NodeName 12;\n";
-        let node = AttributeValuedForObjectType::NetworkNodeAttributeValue("NodeName".to_string(), AttributeValue::AttributeValueU64(12));
+        let def = CompleteByteSlice(b"BA_ \"AttrName\" BU_ NodeName 12;\n");
+        let node = AttributeValuedForObjectType::NetworkNodeAttributeValue("NodeName".to_string(), AttributeValue::AttributeValueF64(12.0));
         let attr_val_exp= AttributeValueForObject("AttrName".to_string(), node);
         let (_, attr_val) = attribute_value_for_object(def).unwrap();
         assert_eq!(attr_val_exp, attr_val);
@@ -173,8 +172,8 @@ mod tests {
 
     #[test]
     fn message_definition_attribute_value_test() {
-        let def = b"BA_ \"AttrName\" BO_ 298 13;\n";
-        let msg_def = AttributeValuedForObjectType::MessageDefinitionAttributeValue(MessageId(298), AttributeValue::AttributeValueU64(13));
+        let def = CompleteByteSlice(b"BA_ \"AttrName\" BO_ 298 13;\n");
+        let msg_def = AttributeValuedForObjectType::MessageDefinitionAttributeValue(MessageId(298), Some(AttributeValue::AttributeValueF64(13.0)));
         let attr_val_exp= AttributeValueForObject("AttrName".to_string(), msg_def);
         let (_, attr_val) = attribute_value_for_object(def).unwrap();
         assert_eq!(attr_val_exp, attr_val);
@@ -182,8 +181,8 @@ mod tests {
 
     #[test]
     fn signal_attribute_value_test() {
-        let def = b"BA_ \"AttrName\" SG_ 198 SGName 13;\n";
-        let msg_def = AttributeValuedForObjectType::SignalAttributeValue(MessageId(198), "SGName".to_string(), AttributeValue::AttributeValueU64(13));
+        let def = CompleteByteSlice(b"BA_ \"AttrName\" SG_ 198 SGName 13;\n");
+        let msg_def = AttributeValuedForObjectType::SignalAttributeValue(MessageId(198), "SGName".to_string(), AttributeValue::AttributeValueF64(13.0));
         let attr_val_exp= AttributeValueForObject("AttrName".to_string(), msg_def);
         let (_, attr_val) = attribute_value_for_object(def).unwrap();
         assert_eq!(attr_val_exp, attr_val);
@@ -191,7 +190,7 @@ mod tests {
 
     #[test]
     fn env_var_attribute_value_test() {
-        let def = b"BA_ \"AttrName\" EV_ EvName \"CharStr\";\n";
+        let def = CompleteByteSlice(b"BA_ \"AttrName\" EV_ EvName \"CharStr\";\n");
         let msg_def = AttributeValuedForObjectType::EnvVariableAttributeValue("EvName".to_string(), AttributeValue::AttributeValueCharString("CharStr".to_string()));
         let attr_val_exp= AttributeValueForObject("AttrName".to_string(), msg_def);
         let (_, attr_val) = attribute_value_for_object(def).unwrap();
@@ -200,7 +199,7 @@ mod tests {
 
     #[test]
     fn raw_attribute_value_test() {
-        let def = b"BA_ \"AttrName\" \"RAW\";\n";
+        let def = CompleteByteSlice(b"BA_ \"AttrName\" \"RAW\";\n");
         let msg_def = AttributeValuedForObjectType::RawAttributeValue(AttributeValue::AttributeValueCharString("RAW".to_string()));
         let attr_val_exp= AttributeValueForObject("AttrName".to_string(), msg_def);
         let (_, attr_val) = attribute_value_for_object(def).unwrap();
@@ -210,12 +209,12 @@ mod tests {
     #[test]
     fn new_symbols_test() {
         let def =
-            b"NS_ :
+            CompleteByteSlice(b"NS_ :
                 NS_DESC_
                 CM_
                 BA_DEF_
 
-            ";
+            ");
         let symbols_exp = vec!(Symbol("NS_DESC_".to_string()), Symbol("CM_".to_string()), Symbol("BA_DEF_".to_string()));
         let (_, symbols) = new_symbols(def).unwrap();
         assert_eq!(symbols_exp, symbols);
@@ -223,7 +222,7 @@ mod tests {
 
     #[test]
     fn network_node_test() {
-        let def = b"BU_: ZU XYZ ABC OIU\n";
+        let def = CompleteByteSlice(b"BU_: ZU XYZ ABC OIU\n");
         let nodes = vec!("ZU".to_string(), "XYZ".to_string(), "ABC".to_string(), "OIU".to_string());
         let (_, node) = node(def).unwrap();
         let node_exp = Node(nodes);
@@ -232,7 +231,7 @@ mod tests {
 
      #[test]
     fn envvar_data_test() {
-        let def = b"ENVVAR_DATA_ SomeEnvVarData: 399;\n";
+        let def = CompleteByteSlice(b"ENVVAR_DATA_ SomeEnvVarData: 399;\n");
         let (_, envvar_data) = environment_variable_data(def).unwrap();
         let envvar_data_exp = EnvironmentVariableData("SomeEnvVarData".to_string(), 399);
         assert_eq!(envvar_data_exp, envvar_data);
@@ -240,30 +239,37 @@ mod tests {
 
     #[test]
     fn attribute_default_test() {
-        let def = b"BA_DEF_DEF_ \"ZUV\" \"OAL\";\n";
+        let def = CompleteByteSlice(b"BA_DEF_DEF_ \"ZUV\" \"OAL\";\n");
         let (_, attr_default) = attribute_default(def).unwrap();
         let attr_default_exp = AttributeDefault("ZUV".to_string(), AttributeValue::AttributeValueCharString("OAL".to_string()));
         assert_eq!(attr_default_exp, attr_default);
     }
 
     #[test]
+    fn attribute_value_f64_test() {
+        let def = CompleteByteSlice(b"80.0");
+        let (_, val) = attribute_value(def).unwrap();
+        assert_eq!(AttributeValue::AttributeValueF64(80.0), val);
+    }
+
+    #[test]
     fn attribute_definition_test() {
-        let def_bo = b"BA_DEF_ BO_ \"BaDef1BO\" INT 0 1000000;\n";
+        let def_bo = CompleteByteSlice(b"BA_DEF_ BO_ \"BaDef1BO\" INT 0 1000000;\n");
         let (_, bo_def) = attribute_definition(def_bo).unwrap();
         let bo_def_exp = AttributeDefinition::Message("\"BaDef1BO\" INT 0 1000000".to_string());
         assert_eq!(bo_def_exp, bo_def);
 
-        let def_bu = b"BA_DEF_ BU_ \"BuDef1BO\" INT 0 1000000;\n";
+        let def_bu = CompleteByteSlice(b"BA_DEF_ BU_ \"BuDef1BO\" INT 0 1000000;\n");
         let (_, bu_def) = attribute_definition(def_bu).unwrap();
         let bu_def_exp = AttributeDefinition::Node("\"BuDef1BO\" INT 0 1000000".to_string());
         assert_eq!(bu_def_exp, bu_def);
 
-        let def_signal = b"BA_DEF_ SG_ \"SgDef1BO\" INT 0 1000000;\n";
+        let def_signal = CompleteByteSlice(b"BA_DEF_ SG_ \"SgDef1BO\" INT 0 1000000;\n");
         let (_, signal_def) = attribute_definition(def_signal).unwrap();
         let signal_def_exp = AttributeDefinition::Signal("\"SgDef1BO\" INT 0 1000000".to_string());
         assert_eq!(signal_def_exp, signal_def);
 
-        let def_env_var = b"BA_DEF_ EV_ \"EvDef1BO\" INT 0 1000000;\n";
+        let def_env_var = CompleteByteSlice(b"BA_DEF_ EV_ \"EvDef1BO\" INT 0 1000000;\n");
         let (_, env_var_def) = attribute_definition(def_env_var).unwrap();
         let env_var_def_exp = AttributeDefinition::EnvironmentVariable("\"EvDef1BO\" INT 0 1000000".to_string());
         assert_eq!(env_var_def_exp, env_var_def);
@@ -271,7 +277,7 @@ mod tests {
 
     #[test]
     fn version_test() {
-        let def = b"VERSION \"HNPBNNNYNNNNNNNNNNNNNNNNNNNNNNNNYNYYYYYYYY>4>%%%/4>'%**4YYY///\"\n";
+        let def = CompleteByteSlice(b"VERSION \"HNPBNNNYNNNNNNNNNNNNNNNNNNNNNNNNYNYYYYYYYY>4>%%%/4>'%**4YYY///\"\n");
         let version_exp = Version("HNPBNNNYNNNNNNNNNNNNNNNNNNNNNNNNYNYYYYYYYY>4>%%%/4>'%**4YYY///".to_string());
         let (_, version) = version(def).unwrap();
         assert_eq!(version_exp, version);
@@ -337,34 +343,25 @@ BA_DEF_DEF_ \"BusType\" \"AS\";
 BA_ \"Attr\" BO_ 4358435 283;
 BA_ \"Attr\" BO_ 56949545 344;
 ";
-
-       // let (remaining, dbc_def) = dbc_file(sample_dbc).unwrap();
-
-        match dbc_file(sample_dbc) {
-            Ok((remaining, dbc_content)) => {
-                println!("DBC Content{:#?}", dbc_content);
-                println!("Remaining {:#?}", str::from_utf8(remaining));
-            },
+        match DBC::from_slice(sample_dbc) {
+            Ok(dbc_content) => println!("DBC Content{:#?}", dbc_content),
             Err(e) => {
                 print_trace!();
                 match e {
-                    nom::Err::Incomplete(needed) => eprintln!("Error incomplete input, needed: {:?}", needed),
-                    nom::Err::Error(ctx) => {
+                    Error::NomError(nom::Err::Incomplete(needed)) => eprintln!("Error incomplete input, needed: {:?}", needed),
+                    Error::NomError(nom::Err::Error(ctx)) => {
                         match ctx {
-                            verbose_errors::Context::Code(i, kind) => eprintln!("Error Kind: {:?}, Code: {:?}", kind, str::from_utf8(i)),
+                            verbose_errors::Context::Code(i, kind) => eprintln!("Error Kind: {:?}, Code: {:?}", kind, str::from_utf8(i.as_bytes())),
                             verbose_errors::Context::List(l)=> eprintln!("Error List: {:?}", l),
                         }
                     }
-                    nom::Err::Failure(ctx) => eprintln!("Failure {:?}", ctx),
+                    Error::NomError(nom::Err::Failure(ctx)) => eprintln!("Failure {:?}", ctx),
+                    Error::Incomplete(dbc, remaining) => eprintln!("Not all data in buffer was read {:#?}, remaining unparsed: {}", dbc, String::from_utf8(remaining).unwrap())
                 }
             }
         }
-        //println!("Remaining {:?}\nResult {:?}", str::from_utf8(remaining).unwrap(), dbc_def);
     }
 }
-
-#[derive(Debug, PartialEq)]
-pub struct Dbc(String);
 
 #[derive(Debug, PartialEq)]
 pub struct Label(String);
@@ -501,7 +498,7 @@ pub enum SignalAttributeValue {
 pub enum AttributeValuedForObjectType {
     RawAttributeValue(AttributeValue),
     NetworkNodeAttributeValue(String, AttributeValue),
-    MessageDefinitionAttributeValue(MessageId, AttributeValue),
+    MessageDefinitionAttributeValue(MessageId, Option<AttributeValue>),
     SignalAttributeValue(MessageId, String, AttributeValue),
     EnvVariableAttributeValue(String, AttributeValue),
 }
@@ -547,14 +544,16 @@ pub enum Comment {
     MessageDefinition(MessageId, String, String, bool),
     Signal(SignalCommentId, String, String, bool),
     EnvVar(String),
+    // TODO figure out if PLAIN is correct
+    Plain(String),
 }
 
 #[derive(Debug, PartialEq)]
-pub struct Message { 
-    message_id: MessageId, 
+pub struct Message {
+    message_id: MessageId,
     message_name: String,
-    message_size: u64, 
-    transmitter: Transmitter, 
+    message_size: u64,
+    transmitter: Transmitter,
     signals: Vec<Signal>
 }
 
@@ -616,6 +615,8 @@ pub enum AttributeDefinition {
     Signal(String),
     // TODO add properties
     EnvironmentVariable(String),
+    // TODO figure out name
+    Plain(String),
 }
 
 #[derive(Debug, PartialEq)]
@@ -654,7 +655,7 @@ pub struct SignalExtendedValueTypeList {
 }
 
 #[derive(Debug, PartialEq)]
-pub struct DBCFile {
+pub struct DBC {
     version: Version,
     new_symbols: Vec<Symbol>,
     nodes: Vec<Node>,
@@ -691,6 +692,31 @@ pub struct DBCFile {
     signal_extended_value_type_list: Option<SignalExtendedValueTypeList>,
 }
 
+#[derive(Debug)]
+pub enum Error<'a> {
+    // Remaining String
+    Incomplete(DBC, Vec<u8>),
+    NomError(nom::Err<nom::types::CompleteByteSlice<'a>, u32>)
+}
+
+impl DBC {
+    pub fn from_slice(buffer: &[u8]) -> Result<DBC, Error> {
+        match dbc(CompleteByteSlice(buffer)) {
+            Ok((remaining, dbc)) => {
+                if !remaining.is_empty() {
+                    return Err(Error::Incomplete(dbc, remaining.as_bytes().to_vec()));
+                }
+                Ok(dbc)
+            },
+            Err(e) => Err(Error::NomError(e))
+        }
+    }
+
+    pub fn messages(&self) -> &Vec<Message> {
+        &self.messages
+    }
+}
+
 fn is_colon(chr: char) -> bool {
     chr == ':'
 }
@@ -720,39 +746,39 @@ fn is_newline(chr: char) -> bool {
 }
 
 /// Single space
-named!(ss<char>, char!(' '));
+named!(ss<CompleteByteSlice, char>, char!(' '));
 
 /// Colon
-named!(colon<char>, char!(':'));
+named!(colon<CompleteByteSlice, char>, char!(':'));
 
 /// Comma aka ','
-named!(comma<char>, char!(','));
+named!(comma<CompleteByteSlice, char>, char!(','));
 
 /// Comma aka ';'
-named!(semi_colon<char>, char!(';'));
+named!(semi_colon<CompleteByteSlice, char>, char!(';'));
 
 /// Quote aka '"'
-named!(quote<char>, char!('"'));
+named!(quote<CompleteByteSlice, char>, char!('"'));
 
-named!(pipe<char>, char!('|'));
+named!(pipe<CompleteByteSlice, char>, char!('|'));
 
-named!(at<char>, char!('@'));
+named!(at<CompleteByteSlice, char>, char!('@'));
 
 /// brace open aka '('
-named!(brc_open<char>, char!('('));
+named!(brc_open<CompleteByteSlice, char>, char!('('));
 
 /// brace close aka '('
-named!(brc_close<char>, char!(')'));
+named!(brc_close<CompleteByteSlice, char>, char!(')'));
 
 /// bracket open aka '['
-named!(brk_open<char>, char!('['));
+named!(brk_open<CompleteByteSlice, char>, char!('['));
 
 /// bracket close aka ']'
-named!(brk_close<char>, char!(']'));
+named!(brk_close<CompleteByteSlice, char>, char!(']'));
 
 /// A valid C_identifier. C_identifiers start with a  alphacharacter or an underscore
 /// and may further consist of alpha­numeric, characters and underscore
-named!(c_ident<&str>,
+named!(c_ident<CompleteByteSlice, String>,
     map_res!(
         recognize!(
             do_parse!(
@@ -761,49 +787,50 @@ named!(c_ident<&str>,
                 ()
             )
         ),
-        str::from_utf8
+        |x: CompleteByteSlice| String::from_utf8(x.as_bytes().to_vec())
     )
 );
 
-named!(c_ident_vec<Vec<&str>>, separated_nonempty_list!(comma, c_ident));
+named!(c_ident_vec<CompleteByteSlice, Vec<String>>, separated_nonempty_list!(comma, c_ident));
 
-named!(u64_s<u64>, map_res!(
+named!(u64_s<CompleteByteSlice, u64>, map_res!(
         digit,
-        |s| std::str::FromStr::from_str(str::from_utf8(s).unwrap())
+        |s: CompleteByteSlice| std::str::FromStr::from_str(str::from_utf8(s.as_bytes()).unwrap())
     )
  );
 
-named!(i64_digit<i64>,
+named!(i64_digit<CompleteByteSlice, i64>,
     flat_map!(recognize!(tuple!(opt!(alt_complete!(char!('+') | char!('-'))), digit)), parse_to!(i64))
 );
 
-named!(quoted<&str>,
+named!(quoted<CompleteByteSlice, String>,
     do_parse!(
             quote                                 >>
         s:  take_till_s!(|c |is_quote(c as char)) >>
             quote                                 >>
-        (str::from_utf8(s).unwrap())
+        (String::from_utf8_lossy(s.as_bytes()).to_string())
     )
 );
 
-named!(pub little_endian<ByteOrder>, map!(char!('1'), |_| ByteOrder::LittleEndian));
+named!(pub little_endian<CompleteByteSlice, ByteOrder>, map!(char!('1'), |_| ByteOrder::LittleEndian));
 
-named!(pub big_endian<ByteOrder>, map!(char!('0'), |_| ByteOrder::BigEndian));
+named!(pub big_endian<CompleteByteSlice, ByteOrder>, map!(char!('0'), |_| ByteOrder::BigEndian));
 
-named!(pub byte_order<ByteOrder>, alt_complete!(little_endian | big_endian));
+named!(pub byte_order<CompleteByteSlice, ByteOrder>, alt_complete!(little_endian | big_endian));
 
-named!(pub message_id<MessageId>, map!(u64_s, MessageId));
+named!(pub message_id<CompleteByteSlice, MessageId>, map!(u64_s, MessageId));
 
-named!(pub signal_comment_id<SignalCommentId>, map!(u64_s, SignalCommentId));
+named!(pub signal_comment_id<CompleteByteSlice, SignalCommentId>, map!(u64_s, SignalCommentId));
 
-named!(pub signed<ValueType>, map!(char!('-'), |_| ValueType::Signed));
+named!(pub signed<CompleteByteSlice, ValueType>, map!(char!('-'), |_| ValueType::Signed));
 
-named!(pub unsigned<ValueType>, map!(char!('+'), |_| ValueType::Unsigned));
+named!(pub unsigned<CompleteByteSlice, ValueType>, map!(char!('+'), |_| ValueType::Unsigned));
 
-named!(pub value_type<ValueType>, alt_complete!(signed | unsigned));
+named!(pub value_type<CompleteByteSlice, ValueType>, alt_complete!(signed | unsigned));
 
-named!(pub multiplexer<MultiplexIndicator>,
+named!(pub multiplexer<CompleteByteSlice, MultiplexIndicator>,
     do_parse!(
+           ss         >>
            char!('m') >>
         d: u64_s      >>
            ss         >>
@@ -811,40 +838,42 @@ named!(pub multiplexer<MultiplexIndicator>,
     )
 );
 
-named!(pub multiplexor<MultiplexIndicator>,
+named!(pub multiplexor<CompleteByteSlice, MultiplexIndicator>,
     do_parse!(
+        ss         >>
         char!('M') >>
         ss         >>
         (MultiplexIndicator::Multiplexor)
     )
 );
 
-named!(pub plain<MultiplexIndicator>,
+named!(pub plain<CompleteByteSlice, MultiplexIndicator>,
     do_parse!(
         ss >>
         (MultiplexIndicator::Plain)
     )
 );
 
-named!(pub version<Version>,
+named!(pub version<CompleteByteSlice, Version>,
     do_parse!(
-           tag!("VERSION") >>
-           ss              >>
-        v: quoted          >>
+           multispace0 >>
+           tag!("VERSION")         >>
+           ss                      >>
+        v: quoted                  >>
         eol >>
         (Version(v.to_string()))
     )
 );
 
-named!(pub multiplexer_indicator<MultiplexIndicator>,
+named!(pub multiplexer_indicator<CompleteByteSlice, MultiplexIndicator>,
     do_parse!(
         x: alt_complete!(multiplexer | multiplexor | plain) >>
         (x)
     )
 );
 
-named!(pub signal<Signal>,
-    do_parse!(                space                 >>
+named!(pub signal<CompleteByteSlice, Signal>,
+    do_parse!(                multispace0           >>
                               tag!("SG_")           >>
                               ss                    >>
        name:                  c_ident               >>
@@ -891,20 +920,20 @@ named!(pub signal<Signal>,
     )
 );
 
-named!(pub message<Message>,
+named!(pub message<CompleteByteSlice, Message>,
   do_parse!(
+                  multispace0                                                                 >>
                   tag!("BO_")                                                                 >>
                   ss                                                                          >>
     message_id:   message_id                                                                  >>
                   ss                                                                          >>
-    message_name: map!(take_till_s!(|c| is_colon(c as char)), |s| str::from_utf8(s).unwrap()) >>
+    message_name: map!(take_till_s!(|c| is_colon(c as char)), |s| String::from_utf8(s.as_bytes().to_vec()).unwrap()) >>
                   colon                                                                       >>
                   ss                                                                          >>
     message_size: u64_s                                                                       >>
                   ss                                                                          >>
     transmitter:  transmitter                                                                 >>
-                  eol                                                                         >>
-    signals:     many1!(signal)                                                               >>
+    signals:      many1!(signal)                                                              >>
     (Message {
         message_id,
         message_name: message_name.to_string(),
@@ -915,9 +944,11 @@ named!(pub message<Message>,
   )
 );
 
-named!(pub attribute_default<AttributeDefault>,
+named!(pub attribute_default<CompleteByteSlice, AttributeDefault>,
     do_parse!(
+                        multispace0 >>
                          tag!("BA_DEF_DEF_") >>
+                         ss                  >>
                          ss                  >>
         attribute_name:  quoted              >>
                          ss                  >>
@@ -928,7 +959,7 @@ named!(pub attribute_default<AttributeDefault>,
     )
 );
 
-named!(pub signal_comment<Comment>,
+named!(pub signal_comment<CompleteByteSlice, Comment>,
     do_parse!(
                  tag!("SG_")       >>
                  ss                >>
@@ -941,32 +972,40 @@ named!(pub signal_comment<Comment>,
     )
 );
 
-named!(pub message_definition_comment<Comment>,
+named!(pub message_definition_comment<CompleteByteSlice, Comment>,
     do_parse!(
                   tag!("BO_")                                                                   >>
                   ss                                                                            >>
         id:       message_id                                                                    >>
                   ss                                                                            >>
                   // TODO not only c ident ?
-        name:     map!(take_till_s!(|c| is_space_s(c as char)), |s| str::from_utf8(s).unwrap()) >>
+        name:     map!(take_till_s!(|c| is_space_s(c as char)), |s| String::from_utf8(s.as_bytes().to_vec()).unwrap()) >>
                   ss                                                                            >>
         comment: quoted                                                                         >>
         (Comment::MessageDefinition(id, name.to_string(), comment.to_string(), false))
     )
 );
 
-named!(pub comment<Comment>,
+named!(pub comment_plain<CompleteByteSlice, Comment>,
     do_parse!(
+        comment: quoted                                                                         >>
+        (Comment::Plain(comment))
+    )
+);
+
+named!(pub comment<CompleteByteSlice, Comment>,
+    do_parse!(
+           multispace0                           >>
            tag!("CM_")                                       >>
            ss                                                >>
-        c: alt!(signal_comment | message_definition_comment) >>
+        c: alt!(signal_comment | message_definition_comment | comment_plain) >>
            semi_colon                                        >>
-           eol >>
+           eol                                               >>
         (c)
     )
 );
 
-named!(pub value_description<ValDescription>,
+named!(pub value_description<CompleteByteSlice, ValDescription>,
     do_parse!(
         a: double >>
            ss     >>
@@ -975,7 +1014,7 @@ named!(pub value_description<ValDescription>,
     )
 );
 
-named!(pub value_description_for_signal<ValueDescription>,
+named!(pub value_description_for_signal<CompleteByteSlice, ValueDescription>,
     do_parse!(
               tag!("VAL_")                                                                     >>
               ss                                                                               >>
@@ -987,7 +1026,7 @@ named!(pub value_description_for_signal<ValueDescription>,
     )
 );
 
-named!(pub value_description_for_env_var<ValueDescription>,
+named!(pub value_description_for_env_var<CompleteByteSlice, ValueDescription>,
     do_parse!(
                       tag!("VAL_")                                                            >>
                       ss                                                                      >>
@@ -997,28 +1036,29 @@ named!(pub value_description_for_env_var<ValueDescription>,
     )
 );
 
-named!(pub value_descriptions<ValueDescription>,
+named!(pub value_descriptions<CompleteByteSlice, ValueDescription>,
     do_parse!(
+        multispace0 >>
         x: alt_complete!(value_description_for_signal | value_description_for_env_var) >>
         eol >>
         (x)
     )
 );
 
-named!(env_float<EnvType>, value!(EnvType::EnvTypeFloat, char!('0')));
-named!(env_int<EnvType>, value!(EnvType::EnvTypeu64, char!('1')));
-named!(env_data<EnvType>, value!(EnvType::EnvTypeData, char!('2')));
+named!(env_float<CompleteByteSlice, EnvType>, value!(EnvType::EnvTypeFloat, char!('0')));
+named!(env_int<CompleteByteSlice, EnvType>, value!(EnvType::EnvTypeu64, char!('1')));
+named!(env_data<CompleteByteSlice, EnvType>, value!(EnvType::EnvTypeData, char!('2')));
 
 /// 9 Environment Variable Definitions
-named!(pub env_var_type<EnvType>, alt_complete!(env_float | env_int | env_data));
+named!(pub env_var_type<CompleteByteSlice, EnvType>, alt_complete!(env_float | env_int | env_data));
 
-named!(dummy_node_vector_0<AccessType>, value!(AccessType::DUMMY_NODE_VECTOR0, char!('0')));
-named!(dummy_node_vector_1<AccessType>, value!(AccessType::DUMMY_NODE_VECTOR1, char!('1')));
-named!(dummy_node_vector_2<AccessType>, value!(AccessType::DUMMY_NODE_VECTOR2, char!('2')));
-named!(dummy_node_vector_3<AccessType>, value!(AccessType::DUMMY_NODE_VECTOR3, char!('3')));
+named!(dummy_node_vector_0<CompleteByteSlice, AccessType>, value!(AccessType::DUMMY_NODE_VECTOR0, char!('0')));
+named!(dummy_node_vector_1<CompleteByteSlice, AccessType>, value!(AccessType::DUMMY_NODE_VECTOR1, char!('1')));
+named!(dummy_node_vector_2<CompleteByteSlice, AccessType>, value!(AccessType::DUMMY_NODE_VECTOR2, char!('2')));
+named!(dummy_node_vector_3<CompleteByteSlice, AccessType>, value!(AccessType::DUMMY_NODE_VECTOR3, char!('3')));
 
 /// 9 Environment Variable Definitions
-named!(pub access_type<AccessType>,
+named!(pub access_type<CompleteByteSlice, AccessType>,
     do_parse!(
               tag!("DUMMY_NODE_VECTOR") >>
         node: alt_complete!(dummy_node_vector_0 | dummy_node_vector_1 | dummy_node_vector_2 | dummy_node_vector_3) >>
@@ -1026,15 +1066,16 @@ named!(pub access_type<AccessType>,
     )
 );
 
-named!(access_node_vector_xxx<AccessNode>,  value!(AccessNode::AccessNodeVectorXXX, tag!("VECTOR_XXX")));
-named!(access_node_name<AccessNode>,  map!(c_ident, |name| AccessNode::AccessNodeName(name.to_string())));
+named!(access_node_vector_xxx<CompleteByteSlice, AccessNode>,  value!(AccessNode::AccessNodeVectorXXX, tag!("VECTOR_XXX")));
+named!(access_node_name<CompleteByteSlice, AccessNode>,  map!(c_ident, |name| AccessNode::AccessNodeName(name.to_string())));
 
 /// 9 Environment Variable Definitions
-named!(pub access_node<AccessNode>, alt_complete!(access_node_vector_xxx | access_node_name));
+named!(pub access_node<CompleteByteSlice, AccessNode>, alt_complete!(access_node_vector_xxx | access_node_name));
 
 /// 9 Environment Variable Definitions
-named!(environment_variable<EnvironmentVariable>,
+named!(pub environment_variable<CompleteByteSlice, EnvironmentVariable>,
     do_parse!(
+                       multispace0                      >>
                        tag!("EV_")                                  >>
                        ss                                           >>
         name:          c_ident                                      >>
@@ -1057,52 +1098,53 @@ named!(environment_variable<EnvironmentVariable>,
         access_type:   access_type                                  >>
                        ss                                           >>
         access_nodes:  separated_nonempty_list!(comma, access_node) >>
-                       semi_colon >>
-                       eol >>
+                       semi_colon                                   >>
+                       eol                                          >>
        (EnvironmentVariable(name.to_string(), type_, min, max, unit.to_string(), initial_value, id, access_type, access_nodes))
     )
 );
 
-named!(pub environment_variable_data<EnvironmentVariableData>,
+named!(pub environment_variable_data<CompleteByteSlice, EnvironmentVariableData>,
     do_parse!(
-                      tag!("ENVVAR_DATA_") >>
-                      ss                   >>
-        env_var_name: c_ident              >>
-                      colon                >>
-                      ss                   >>
-        data_size:    u64_s                >>
-                      semi_colon           >>
-                      eol >>
+                      multispace0 >>
+                      tag!("ENVVAR_DATA_")    >>
+                      ss                      >>
+        env_var_name: c_ident                 >>
+                      colon                   >>
+                      ss                      >>
+        data_size:    u64_s                   >>
+                      semi_colon              >>
+                      eol                     >>
         (EnvironmentVariableData(env_var_name.to_string(), data_size))
     )
 );
 
-named!(pub attribute_value_uint64<AttributeValue>,
+named!(pub attribute_value_uint64<CompleteByteSlice, AttributeValue>,
     map!(u64_s, AttributeValue::AttributeValueU64)
 );
 
-named!(pub attribute_value_int64<AttributeValue>,
+named!(pub attribute_value_int64<CompleteByteSlice, AttributeValue>,
     map!(i64_digit, AttributeValue::AttributeValueI64)
 );
 
-named!(pub attribute_value_f64<AttributeValue>,
+named!(pub attribute_value_f64<CompleteByteSlice, AttributeValue>,
     map!(double, AttributeValue::AttributeValueF64)
 );
 
-named!(pub attribute_value_charstr<AttributeValue>,
+named!(pub attribute_value_charstr<CompleteByteSlice, AttributeValue>,
     map!(quoted, |x| AttributeValue::AttributeValueCharString(x.to_string()))
 );
 
-named!(pub attribute_value<AttributeValue>,
+named!(pub attribute_value<CompleteByteSlice, AttributeValue>,
     alt!(
-        attribute_value_uint64 |
-        attribute_value_int64  |
+        //attribute_value_uint64 |
+       // attribute_value_int64  |
         attribute_value_f64    |
         attribute_value_charstr
     )
 );
 
-named!(pub network_node_attribute_value<AttributeValuedForObjectType>,
+named!(pub network_node_attribute_value<CompleteByteSlice, AttributeValuedForObjectType>,
     do_parse!(
                    tag!("BU_")     >>
                    ss              >>
@@ -1113,18 +1155,18 @@ named!(pub network_node_attribute_value<AttributeValuedForObjectType>,
     )
 );
 
-named!(pub message_definition_attribute_value<AttributeValuedForObjectType>,
+named!(pub message_definition_attribute_value<CompleteByteSlice, AttributeValuedForObjectType>,
     do_parse!(
-                    tag!("BO_")     >>
-                    ss              >>
-        message_id: message_id      >>
-                    ss              >>
-        value:      attribute_value >>
+                    tag!("BO_")           >>
+                    ss                    >>
+        message_id: message_id            >>
+                    ss                    >>
+        value:      opt!(attribute_value) >>
         (AttributeValuedForObjectType::MessageDefinitionAttributeValue(message_id, value))
     )
 );
 
-named!(pub signal_attribute_value<AttributeValuedForObjectType>,
+named!(pub signal_attribute_value<CompleteByteSlice, AttributeValuedForObjectType>,
     do_parse!(
                      tag!("SG_")     >>
                      ss              >>
@@ -1137,7 +1179,7 @@ named!(pub signal_attribute_value<AttributeValuedForObjectType>,
     )
 );
 
-named!(pub env_variable_attribute_value<AttributeValuedForObjectType>,
+named!(pub env_variable_attribute_value<CompleteByteSlice, AttributeValuedForObjectType>,
     do_parse!(
                       tag!("EV_")     >>
                       ss              >>
@@ -1148,12 +1190,13 @@ named!(pub env_variable_attribute_value<AttributeValuedForObjectType>,
     )
 );
 
-named!(pub raw_attribute_value<AttributeValuedForObjectType>,
+named!(pub raw_attribute_value<CompleteByteSlice, AttributeValuedForObjectType>,
     map!(attribute_value, AttributeValuedForObjectType::RawAttributeValue)
 );
 
-named!(pub attribute_value_for_object<AttributeValueForObject>,
+named!(pub attribute_value_for_object<CompleteByteSlice, AttributeValueForObject>,
     do_parse!(
+               multispace0 >>
                tag!("BA_") >>
                ss          >>
         name:  quoted      >>
@@ -1166,67 +1209,78 @@ named!(pub attribute_value_for_object<AttributeValueForObject>,
                     raw_attribute_value
                 )           >>
                 semi_colon  >>
-                eol >>
+                eol         >>
         (AttributeValueForObject(name.to_string(), value))
     )
 );
 
 // TODO add properties
-named!(pub attribute_definition_node<AttributeDefinition>,
+named!(pub attribute_definition_node<CompleteByteSlice, AttributeDefinition>,
     do_parse!(
            tag!("BU_") >>
            ss          >>
-        x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| str::from_utf8(x).unwrap()) >>
+        x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| String::from_utf8(x.as_bytes().to_vec()).unwrap()) >>
         (AttributeDefinition::Node(x.to_string()))
     )
 );
 
 // TODO add properties
-named!(pub attribute_definition_signal<AttributeDefinition>,
+named!(pub attribute_definition_signal<CompleteByteSlice, AttributeDefinition>,
     do_parse!(
            tag!("SG_") >>
            ss          >>
-        x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| str::from_utf8(x).unwrap()) >>
+        x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| String::from_utf8(x.as_bytes().to_vec()).unwrap()) >>
         (AttributeDefinition::Signal(x.to_string()))
     )
 );
 
 // TODO add properties
-named!(pub attribute_definition_environment_variable<AttributeDefinition>,
+named!(pub attribute_definition_environment_variable<CompleteByteSlice, AttributeDefinition>,
     do_parse!(
            tag!("EV_") >>
            ss          >>
-        x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| str::from_utf8(x).unwrap()) >>
+        x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| String::from_utf8(x.as_bytes().to_vec()).unwrap()) >>
         (AttributeDefinition::EnvironmentVariable(x.to_string()))
     )
 );
 
 // TODO add properties
-named!(pub attribute_definition_message<AttributeDefinition>,
+named!(pub attribute_definition_message<CompleteByteSlice, AttributeDefinition>,
     do_parse!(
            tag!("BO_") >>
            ss          >>
-        x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| str::from_utf8(x).unwrap()) >>
+        x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| String::from_utf8(x.as_bytes().to_vec()).unwrap()) >>
         (AttributeDefinition::Message(x.to_string()))
     )
 );
 
-named!(pub attribute_definition<AttributeDefinition>,
+// TODO add properties
+named!(pub attribute_definition_plain<CompleteByteSlice, AttributeDefinition>,
     do_parse!(
-        tag!("BA_DEF_") >>
-        ss              >>
+           ss          >>
+        x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| String::from_utf8(x.as_bytes().to_vec()).unwrap()) >>
+        (AttributeDefinition::Plain(x.to_string()))
+    )
+);
+
+named!(pub attribute_definition<CompleteByteSlice, AttributeDefinition>,
+    do_parse!(
+        multispace0 >>
+        tag!("BA_DEF_")         >>
+        ss                      >>
         def: alt!(attribute_definition_node                 |
                   attribute_definition_signal               |
                   attribute_definition_environment_variable |
-                  attribute_definition_message
+                  attribute_definition_message              |
+                  attribute_definition_plain
                  ) >>
         semi_colon >>
-        eol >>
+        eol        >>
         (def)
     )
 );
 
-named!(pub symbol<Symbol>,
+named!(pub symbol<CompleteByteSlice, Symbol>,
     do_parse!(
                 space   >>
         symbol: c_ident >>
@@ -1235,10 +1289,11 @@ named!(pub symbol<Symbol>,
     )
 );
 
-named!(pub new_symbols<Vec<Symbol>>,
+named!(pub new_symbols<CompleteByteSlice, Vec<Symbol>>,
     do_parse!(
-                 tag!("NS_ :")                                 >>
-                 line_ending                                   >>
+                 multispace0    >>
+                 tag!("NS_ :")  >>
+                 eol            >>
         symbols: many0!(symbol) >>
         (symbols)
     )
@@ -1247,18 +1302,20 @@ named!(pub new_symbols<Vec<Symbol>>,
 ///
 /// Network node
 ///
-named!(pub node<Node>,
+named!(pub node<CompleteByteSlice, Node>,
     do_parse!(
-            tag!("BU_:") >>
-            ss           >>
+            multispace0 >>
+            tag!("BU_:")            >>
+            ss                      >>
         li: map!(separated_nonempty_list!(ss, c_ident), |li| li.iter().map(|s| s.to_string()).collect())>>
         eol >>
         (Node(li))
     )
 );
 
-named!(pub signal_type_ref<SignalTypeRef>,
+named!(pub signal_type_ref<CompleteByteSlice, SignalTypeRef>,
     do_parse!(
+                          multispace0 >>
                           tag!("SGTYPE_") >>
                           ss              >>
         message_id:       message_id      >>
@@ -1278,12 +1335,13 @@ named!(pub signal_type_ref<SignalTypeRef>,
     )
 );
 
-named!(pub value_table<ValueTable>,
+named!(pub value_table<CompleteByteSlice, ValueTable>,
     do_parse!(
-                            tag!("VAL_TABLE_") >>
-                            ss                 >>
-        value_table_name:   c_ident            >>
-                            ss                 >>
+                            multispace0 >>
+                            tag!("VAL_TABLE_")      >>
+                            ss                      >>
+        value_table_name:   c_ident                 >>
+                            ss                      >>
         value_descriptions: many_till!(preceded!(ss, value_description), preceded!(ss, semi_colon)) >>
         eol >>
         (ValueTable {
@@ -1293,11 +1351,11 @@ named!(pub value_table<ValueTable>,
     )
 );
 
-named!(pub signed_or_unsigned_integer<SignalExtendedValueType>, value!(SignalExtendedValueType::SignedOrUnsignedInteger, tag!("0")));
-named!(pub ieee_float_32bit<SignalExtendedValueType>, value!(SignalExtendedValueType::IEEEfloat32Bit, tag!("1")));
-named!(pub ieee_double_64bit<SignalExtendedValueType>, value!(SignalExtendedValueType::IEEEdouble64bit, tag!("2")));
+named!(pub signed_or_unsigned_integer<CompleteByteSlice, SignalExtendedValueType>, value!(SignalExtendedValueType::SignedOrUnsignedInteger, tag!("0")));
+named!(pub ieee_float_32bit<CompleteByteSlice, SignalExtendedValueType>, value!(SignalExtendedValueType::IEEEfloat32Bit, tag!("1")));
+named!(pub ieee_double_64bit<CompleteByteSlice, SignalExtendedValueType>, value!(SignalExtendedValueType::IEEEdouble64bit, tag!("2")));
 
-named!(pub signal_extended_value_type<SignalExtendedValueType>,
+named!(pub signal_extended_value_type<CompleteByteSlice, SignalExtendedValueType>,
     alt_complete!(
         signed_or_unsigned_integer |
         ieee_float_32bit           |
@@ -1305,16 +1363,18 @@ named!(pub signal_extended_value_type<SignalExtendedValueType>,
     )
 );
 
-named!(pub signal_extended_value_type_list<SignalExtendedValueTypeList>,
+named!(pub signal_extended_value_type_list<CompleteByteSlice, SignalExtendedValueTypeList>,
     do_parse!(
-        tag!("SIG_VALTYPE_")   >>
-        ss                     >>
-        message_id: message_id >>
-        ss                     >>
-        signal_name: c_ident   >>
-        ss                     >>
+        multispace0 >>
+        tag!("SIG_VALTYPE_")                                   >>
+        ss                                                     >>
+        message_id: message_id                                 >>
+        ss                                                     >>
+        signal_name: c_ident                                   >>
+        ss                                                     >>
         signal_extended_value_type: signal_extended_value_type >>
-        semi_colon             >>
+        semi_colon                                             >>
+        eol                                                    >>
         (SignalExtendedValueTypeList {
             message_id: message_id,
             signal_name: signal_name.to_string(),
@@ -1323,22 +1383,23 @@ named!(pub signal_extended_value_type_list<SignalExtendedValueTypeList>,
     )
 );
 
-named!(pub transmitter_vector_xxx<Transmitter>, value!(Transmitter::VectorXXX, tag!("Vector__XXX")));
+named!(pub transmitter_vector_xxx<CompleteByteSlice, Transmitter>, value!(Transmitter::VectorXXX, tag!("Vector__XXX")));
 
-named!(pub transmitter_node_name<Transmitter>, map!(c_ident, |x| Transmitter::NodeName(x.to_string())));
+named!(pub transmitter_node_name<CompleteByteSlice, Transmitter>, map!(c_ident, |x| Transmitter::NodeName(x.to_string())));
 
-named!(pub transmitter<Transmitter>, alt_complete!(transmitter_vector_xxx | transmitter_node_name));
+named!(pub transmitter<CompleteByteSlice, Transmitter>, alt_complete!(transmitter_vector_xxx | transmitter_node_name));
 
-named!(pub message_transmitter<MessageTransmitter>,
+named!(pub message_transmitter<CompleteByteSlice, MessageTransmitter>,
     do_parse!(
-                     tag!("BO_TX_BU_") >>
-                     ss                >>
-        message_id:  message_id        >>
-                     ss                >>
-                     colon             >>
-                     ss                >>
-        transmitter: transmitter       >>
-                     semi_colon        >>
+                    multispace0 >>
+                     tag!("BO_TX_BU_")      >>
+                     ss                     >>
+        message_id:  message_id             >>
+                     ss                     >>
+                     colon                  >>
+                     ss                     >>
+        transmitter: transmitter            >>
+                     semi_colon             >>
                      eol >>
         (MessageTransmitter {
             message_id: message_id,
@@ -1347,18 +1408,19 @@ named!(pub message_transmitter<MessageTransmitter>,
     )
 );
 
-named!(pub signal_groups<SignalGroups>,
+named!(pub signal_groups<CompleteByteSlice, SignalGroups>,
     do_parse!(
-        tag!("SIG_GROUP_") >>
-        message_id: message_id >>
+        multispace0                >>
+        tag!("SIG_GROUP_")         >>
+        message_id: message_id     >>
         signal_group_name: c_ident >>
-        repetitions: u64_s >>
-        ss >>
-        colon >>
-        ss >>
-        signal_names: c_ident_vec >>
-        semi_colon >>
-        eol >>
+        repetitions: u64_s         >>
+        ss                         >>
+        colon                      >>
+        ss                         >>
+        signal_names: c_ident_vec  >>
+        semi_colon                 >>
+        eol                        >>
         (SignalGroups{
             message_id: message_id,
             signal_group_name: signal_group_name.to_string(),
@@ -1370,53 +1432,26 @@ named!(pub signal_groups<SignalGroups>,
 
 declare_trace!();
 
-named!(pub simple_dbc<(Version, Vec<Symbol>)>,
+named!(pub dbc<CompleteByteSlice, DBC>,
     do_parse!(
-        version:                         tr!(version)                                                 >>
-        tr!(many0!(multispace)) >>
-        new_symbols:                     tr!(new_symbols)                                             >>
-        ((version, new_symbols))
-    )
-);
-
-
-named!(pub dbc_file<DBCFile>,
-    do_parse!(
-        version:                         tr!(version)                                                 >>
-        tr!(many0!(multispace)) >>
-        new_symbols:                     tr!(new_symbols)                                             >>
-        tr!(many0!(multispace)) >>
-        nodes:                           tr!(many0!(node))                       >>
-        tr!(many0!(multispace)) >>
-        value_tables:                    tr!(many0!(value_table))                >>
-        tr!(many0!(multispace)) >>
-        messages:                        tr!(many0!(message)) >>
-        tr!(many0!(multispace)) >>
-        message_transmitters:            tr!(many0!(message_transmitter))        >>
-        tr!(many0!(multispace)) >>
-        environment_variables:           tr!(many0!(environment_variable))       >>
-        tr!(many0!(multispace)) >>
-        environment_variable_data:       tr!(many0!(environment_variable_data))  >>
-        tr!(many0!(multispace)) >>
-        multiplexer_indicator:             tr!(many0!(multiplexer_indicator))                >>
-        tr!(many0!(multispace)) >>
-        comments:                        tr!(many0!(comment))                    >>
-        tr!(many0!(multispace)) >>
-        attribute_definitions:           tr!(many0!(attribute_definition))       >>
-        tr!(many0!(multispace)) >>
-        attribute_defaults:              tr!(many0!(attribute_default))                        >>
-        tr!(many0!(multispace)) >>
-        attribute_values:                tr!(many0!(attribute_value_for_object))               >>
-        tr!(many0!(multispace)) >>
-        value_descriptions:              tr!(many0!(value_descriptions))         >>
-        tr!(many0!(multispace)) >>
-        signal_type_refs:                tr!(many0!(signal_type_ref))            >>
-        tr!(many0!(multispace)) >>
-        signal_groups:                   tr!(opt!(signal_groups))                                     >>
-        tr!(many0!(multispace)) >>
-        signal_extended_value_type_list: tr!(opt!(signal_extended_value_type_list))                         >>
-        eof!() >>
-        (DBCFile {
+        version:                         version                               >>
+        new_symbols:                     new_symbols                           >>
+        nodes:                           many0!(node)                          >>
+        value_tables:                    many0!(value_table)                   >>
+        messages:                        many0!(message)                       >>
+        message_transmitters:            many0!(message_transmitter)           >>
+        environment_variables:           many0!(environment_variable)          >>
+        environment_variable_data:       many0!(environment_variable_data)     >>
+        multiplexer_indicator:           many0!(multiplexer_indicator)         >>
+        comments:                        many0!(comment)                       >>
+        attribute_definitions:           many0!(attribute_definition)          >>
+        attribute_defaults:              many0!(attribute_default)             >>
+        attribute_values:                many0!(attribute_value_for_object)    >>
+        value_descriptions:              many0!(value_descriptions)            >>
+        signal_type_refs:                many0!(signal_type_ref)               >>
+        signal_groups:                   opt!(signal_groups)                   >>
+        signal_extended_value_type_list: opt!(signal_extended_value_type_list) >>
+        (DBC {
             version: version,
             new_symbols: new_symbols,
             nodes: nodes,

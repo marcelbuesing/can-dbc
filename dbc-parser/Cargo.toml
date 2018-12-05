@@ -22,6 +22,5 @@ nom-trace = "0.1.0"
 version = "4.1"
 features = ["verbose-errors"]
 
-
 [dev-dependencies]
 clap = "2.32"

@@ -9,9 +9,8 @@ use nom::verbose_errors;
 use std::fs::File;
 use std::io;
 use std::io::prelude::*;
-use std::str;
-use nom_trace::*;
-use dbc_parser::NOM_TRACE;
+use std::cmp;
+use nom::types::CompleteByteSlice;
 
 fn main() -> io::Result<()> {
 
@@ -30,24 +29,19 @@ fn main() -> io::Result<()> {
     let mut buffer = Vec::new();
     f.read_to_end(&mut buffer)?;
 
-    match dbc_parser::simple_dbc(&buffer) {
-        Ok((remaining, dbc_content)) => {
-            println!("DBC Content{:#?}", dbc_content);
-            println!("Remaining {:#?}", str::from_utf8(remaining));
-        },
+    match dbc_parser::DBC::from_slice(&buffer) {
+        Ok(dbc_content) => println!("DBC Content{:#?}", dbc_content),
         Err(e) => {
-            print_trace!();
             match e {
-                nom::Err::Incomplete(needed) => {
-                    eprintln!("Error incomplete input, needed: {:?}", needed)
-                },
-                nom::Err::Error(ctx) => {
+                dbc_parser::Error::NomError(nom::Err::Incomplete(needed)) => eprintln!("Error incomplete input, needed: {:?}", needed),
+                dbc_parser::Error::NomError(nom::Err::Error(ctx)) => {
                     match ctx {
-                        verbose_errors::Context::Code(i, kind) => eprintln!("Error Kind: {:?}, Code: {:?}", kind, str::from_utf8(i)),
+                        verbose_errors::Context::Code(i, kind) => eprintln!("Error Kind: {:?}, Code: {:?}", kind, String::from_utf8(i.to_vec())),
                         verbose_errors::Context::List(l)=> eprintln!("Error List: {:?}", l),
                     }
                 }
-                nom::Err::Failure(ctx) => eprintln!("Failure {:?}", ctx),
+                dbc_parser::Error::NomError(nom::Err::Failure(ctx)) => eprintln!("Failure {:?}", ctx),
+                dbc_parser::Error::Incomplete(dbc, remaining) => eprintln!("Not all data in buffer was read {:#?}, remaining unparsed (length: {}): {}\n...(truncated)", dbc, remaining.len(), String::from_utf8_lossy(&remaining[0..cmp::min(100, remaining.len())]).to_string())
             }
         }
     }

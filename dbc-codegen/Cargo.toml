@@ -11,3 +11,4 @@ edition = "2018"
 [dependencies]
 codegen = "0.1.0"
 dbc-parser = { path = "../dbc-parser" }
+nom = "4.1"
