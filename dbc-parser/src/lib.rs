@@ -789,6 +789,8 @@ named!(c_ident<CompleteByteSlice, String>,
 
 named!(c_ident_vec<CompleteByteSlice, Vec<String>>, separated_nonempty_list!(comma, c_ident));
 
+named!(char_string<CompleteByteSlice, String>, map!(take_till_s!(|c| is_space_s(c as char)), |s| String::from_utf8(s.as_bytes().to_vec()).unwrap()));
+
 named!(u64_s<CompleteByteSlice, u64>, map_res!(
         digit,
         |s: CompleteByteSlice| std::str::FromStr::from_str(str::from_utf8(s.as_bytes()).unwrap())
@@ -857,7 +859,7 @@ named!(pub version<CompleteByteSlice, Version>,
            ss                      >>
         v: quoted                  >>
         eol >>
-        (Version(v.to_string()))
+        (Version(v))
     )
 );
 
@@ -900,7 +902,7 @@ named!(pub signal<CompleteByteSlice, Signal>,
        receivers:             c_ident_vec           >>
        eol                                          >>
         (Signal {
-            name: name.to_string(),
+            name: name,
             multiplexer_indicator: multiplexer_indicator,
             start_bit: start_bit,
             signal_size: signal_size,
@@ -910,8 +912,8 @@ named!(pub signal<CompleteByteSlice, Signal>,
             offset: offset,
             min: min,
             max: max,
-            unit:  unit.to_string(),
-            receivers: receivers.iter().map(|s| s.to_string()).collect(),
+            unit:  unit,
+            receivers: receivers,
         })
     )
 );
@@ -932,7 +934,7 @@ named!(pub message<CompleteByteSlice, Message>,
     signals:      many1!(signal)                                                              >>
     (Message {
         message_id,
-        message_name: message_name.to_string(),
+        message_name: message_name,
         message_size,
         transmitter,
         signals
@@ -951,7 +953,7 @@ named!(pub attribute_default<CompleteByteSlice, AttributeDefault>,
         attribute_value: attribute_value     >>
                          semi_colon          >>
                          eol                 >>
-        (AttributeDefault(attribute_name.to_string(), attribute_value))
+        (AttributeDefault(attribute_name, attribute_value))
     )
 );
 
@@ -964,7 +966,7 @@ named!(pub signal_comment<CompleteByteSlice, Comment>,
         name:    c_ident           >>
                  ss                >>
         comment: quoted            >>
-        (Comment::Signal(id, name.to_string(), comment.to_string(), false))
+        (Comment::Signal(id, name, comment, false))
     )
 );
 
@@ -975,10 +977,10 @@ named!(pub message_definition_comment<CompleteByteSlice, Comment>,
         id:       message_id                                                                    >>
                   ss                                                                            >>
                   // TODO not only c ident ?
-        name:     map!(take_till_s!(|c| is_space_s(c as char)), |s| String::from_utf8(s.as_bytes().to_vec()).unwrap()) >>
+        node_name:     char_string >>
                   ss                                                                            >>
         comment: quoted                                                                         >>
-        (Comment::MessageDefinition(id, name.to_string(), comment.to_string(), false))
+        (Comment::MessageDefinition(id, node_name, comment, false))
     )
 );
 
@@ -1006,7 +1008,7 @@ named!(pub value_description<CompleteByteSlice, ValDescription>,
         a: double >>
            ss     >>
         b: quoted >>
-        (ValDescription { a: a, b: b.to_string() })
+        (ValDescription { a: a, b: b })
     )
 );
 
@@ -1018,7 +1020,7 @@ named!(pub value_description_for_signal<CompleteByteSlice, ValueDescription>,
               ss                                                                               >>
         name: c_ident                                                                          >>
         descriptions:  many_till!(preceded!(ss, value_description), preceded!(ss, semi_colon)) >>
-        (ValueDescription::Signal(id, name.to_string(), descriptions.0))
+        (ValueDescription::Signal(id, name, descriptions.0))
     )
 );
 
@@ -1028,7 +1030,7 @@ named!(pub value_description_for_env_var<CompleteByteSlice, ValueDescription>,
                       ss                                                                      >>
         name:         c_ident                                                                 >>
         descriptions: many_till!(preceded!(ss, value_description), preceded!(ss, semi_colon)) >>
-        (ValueDescription::EnvironmentVariable(name.to_string(), descriptions.0))
+        (ValueDescription::EnvironmentVariable(name, descriptions.0))
     )
 );
 
@@ -1063,7 +1065,7 @@ named!(pub access_type<CompleteByteSlice, AccessType>,
 );
 
 named!(access_node_vector_xxx<CompleteByteSlice, AccessNode>,  value!(AccessNode::AccessNodeVectorXXX, tag!("VECTOR_XXX")));
-named!(access_node_name<CompleteByteSlice, AccessNode>,  map!(c_ident, |name| AccessNode::AccessNodeName(name.to_string())));
+named!(access_node_name<CompleteByteSlice, AccessNode>,  map!(c_ident, |name| AccessNode::AccessNodeName(name)));
 
 /// 9 Environment Variable Definitions
 named!(pub access_node<CompleteByteSlice, AccessNode>, alt_complete!(access_node_vector_xxx | access_node_name));
@@ -1096,7 +1098,7 @@ named!(pub environment_variable<CompleteByteSlice, EnvironmentVariable>,
         access_nodes:  separated_nonempty_list!(comma, access_node) >>
                        semi_colon                                   >>
                        eol                                          >>
-       (EnvironmentVariable(name.to_string(), type_, min, max, unit.to_string(), initial_value, id, access_type, access_nodes))
+       (EnvironmentVariable(name, type_, min, max, unit, initial_value, id, access_type, access_nodes))
     )
 );
 
@@ -1111,7 +1113,7 @@ named!(pub environment_variable_data<CompleteByteSlice, EnvironmentVariableData>
         data_size:    u64_s                   >>
                       semi_colon              >>
                       eol                     >>
-        (EnvironmentVariableData(env_var_name.to_string(), data_size))
+        (EnvironmentVariableData(env_var_name, data_size))
     )
 );
 
@@ -1128,7 +1130,7 @@ named!(pub attribute_value_f64<CompleteByteSlice, AttributeValue>,
 );
 
 named!(pub attribute_value_charstr<CompleteByteSlice, AttributeValue>,
-    map!(quoted, |x| AttributeValue::AttributeValueCharString(x.to_string()))
+    map!(quoted, |x| AttributeValue::AttributeValueCharString(x))
 );
 
 named!(pub attribute_value<CompleteByteSlice, AttributeValue>,
@@ -1147,7 +1149,7 @@ named!(pub network_node_attribute_value<CompleteByteSlice, AttributeValuedForObj
         node_name: c_ident         >>
                    ss              >>
         value:     attribute_value >>
-        (AttributeValuedForObjectType::NetworkNodeAttributeValue(node_name.to_string(), value))
+        (AttributeValuedForObjectType::NetworkNodeAttributeValue(node_name, value))
     )
 );
 
@@ -1171,7 +1173,7 @@ named!(pub signal_attribute_value<CompleteByteSlice, AttributeValuedForObjectTyp
         signal_name: c_ident         >>
                      ss              >>
         value:       attribute_value >>
-        (AttributeValuedForObjectType::SignalAttributeValue(message_id, signal_name.to_string(), value))
+        (AttributeValuedForObjectType::SignalAttributeValue(message_id, signal_name, value))
     )
 );
 
@@ -1182,7 +1184,7 @@ named!(pub env_variable_attribute_value<CompleteByteSlice, AttributeValuedForObj
         env_var_name: c_ident         >>
                       ss              >>
         value:        attribute_value >>
-        (AttributeValuedForObjectType::EnvVariableAttributeValue(env_var_name.to_string(), value))
+        (AttributeValuedForObjectType::EnvVariableAttributeValue(env_var_name, value))
     )
 );
 
@@ -1206,7 +1208,7 @@ named!(pub attribute_value_for_object<CompleteByteSlice, AttributeValueForObject
                 )           >>
                 semi_colon  >>
                 eol         >>
-        (AttributeValueForObject(name.to_string(), value))
+        (AttributeValueForObject(name, value))
     )
 );
 
@@ -1216,7 +1218,7 @@ named!(pub attribute_definition_node<CompleteByteSlice, AttributeDefinition>,
            tag!("BU_") >>
            ss          >>
         x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| String::from_utf8(x.as_bytes().to_vec()).unwrap()) >>
-        (AttributeDefinition::Node(x.to_string()))
+        (AttributeDefinition::Node(x))
     )
 );
 
@@ -1226,7 +1228,7 @@ named!(pub attribute_definition_signal<CompleteByteSlice, AttributeDefinition>,
            tag!("SG_") >>
            ss          >>
         x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| String::from_utf8(x.as_bytes().to_vec()).unwrap()) >>
-        (AttributeDefinition::Signal(x.to_string()))
+        (AttributeDefinition::Signal(x))
     )
 );
 
@@ -1236,7 +1238,7 @@ named!(pub attribute_definition_environment_variable<CompleteByteSlice, Attribut
            tag!("EV_") >>
            ss          >>
         x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| String::from_utf8(x.as_bytes().to_vec()).unwrap()) >>
-        (AttributeDefinition::EnvironmentVariable(x.to_string()))
+        (AttributeDefinition::EnvironmentVariable(x))
     )
 );
 
@@ -1246,7 +1248,7 @@ named!(pub attribute_definition_message<CompleteByteSlice, AttributeDefinition>,
            tag!("BO_") >>
            ss          >>
         x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| String::from_utf8(x.as_bytes().to_vec()).unwrap()) >>
-        (AttributeDefinition::Message(x.to_string()))
+        (AttributeDefinition::Message(x))
     )
 );
 
@@ -1255,7 +1257,7 @@ named!(pub attribute_definition_plain<CompleteByteSlice, AttributeDefinition>,
     do_parse!(
            ss          >>
         x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| String::from_utf8(x.as_bytes().to_vec()).unwrap()) >>
-        (AttributeDefinition::Plain(x.to_string()))
+        (AttributeDefinition::Plain(x))
     )
 );
 
@@ -1281,7 +1283,7 @@ named!(pub symbol<CompleteByteSlice, Symbol>,
                 space   >>
         symbol: c_ident >>
         eol >>
-        (Symbol(symbol.to_string()))
+        (Symbol(symbol))
     )
 );
 
@@ -1303,7 +1305,7 @@ named!(pub node<CompleteByteSlice, Node>,
             multispace0 >>
             tag!("BU_:")            >>
             ss                      >>
-        li: map!(separated_nonempty_list!(ss, c_ident), |li| li.iter().map(|s| s.to_string()).collect())>>
+        li: separated_nonempty_list!(ss, c_ident) >>
         eol >>
         (Node(li))
     )
@@ -1325,8 +1327,8 @@ named!(pub signal_type_ref<CompleteByteSlice, SignalTypeRef>,
                           eol >>
         (SignalTypeRef {
             message_id: message_id,
-            signal_name: signal_name.to_string(),
-            signal_type_name: signal_type_name.to_string(),
+            signal_name: signal_name,
+            signal_type_name: signal_type_name,
         })
     )
 );
@@ -1341,7 +1343,7 @@ named!(pub value_table<CompleteByteSlice, ValueTable>,
         value_descriptions: many_till!(preceded!(ss, value_description), preceded!(ss, semi_colon)) >>
         eol >>
         (ValueTable {
-            value_table_name: value_table_name.to_string(),
+            value_table_name: value_table_name,
             value_descriptions: value_descriptions.0
         })
     )
@@ -1373,7 +1375,7 @@ named!(pub signal_extended_value_type_list<CompleteByteSlice, SignalExtendedValu
         eol                                                    >>
         (SignalExtendedValueTypeList {
             message_id: message_id,
-            signal_name: signal_name.to_string(),
+            signal_name: signal_name,
             signal_extended_value_type: signal_extended_value_type,
         })
     )
@@ -1381,7 +1383,7 @@ named!(pub signal_extended_value_type_list<CompleteByteSlice, SignalExtendedValu
 
 named!(pub transmitter_vector_xxx<CompleteByteSlice, Transmitter>, value!(Transmitter::VectorXXX, tag!("Vector__XXX")));
 
-named!(pub transmitter_node_name<CompleteByteSlice, Transmitter>, map!(c_ident, |x| Transmitter::NodeName(x.to_string())));
+named!(pub transmitter_node_name<CompleteByteSlice, Transmitter>, map!(c_ident, |x| Transmitter::NodeName(x)));
 
 named!(pub transmitter<CompleteByteSlice, Transmitter>, alt_complete!(transmitter_vector_xxx | transmitter_node_name));
 
@@ -1419,9 +1421,9 @@ named!(pub signal_groups<CompleteByteSlice, SignalGroups>,
         eol                        >>
         (SignalGroups{
             message_id: message_id,
-            signal_group_name: signal_group_name.to_string(),
+            signal_group_name: signal_group_name,
             repetitions: repetitions,
-            signal_names: signal_names.iter().map(|x| x.to_string()).collect(),
+            signal_names: signal_names,
         })
     )
 );
