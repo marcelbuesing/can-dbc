@@ -2,31 +2,8 @@ extern crate codegen;
 extern crate dbc_parser;
 extern crate nom;
 
-
 use codegen::Scope;
 use dbc_parser::Message;
-
-#[cfg(test)]
-mod tests {
-    use crate::message_reader;
-    use std::fs::File;
-    use std::io::prelude::*;
-
-    #[test]
-    fn it_works() {
-
-        let mut f = File::open("/tmp/test.dbc").expect("Failed to open file");
-        let mut buffer = Vec::new();
-        f.read_to_end(&mut buffer).expect("Failed to read file");
-        let dbc = dbc_parser::DBC::from_slice(&buffer).unwrap();
-
-        for message in dbc.messages() {
-            let code = message_reader(message);
-            println!("{}", code.to_string());
-        }
-        assert_eq!(2 + 2, 4);
-    }
-}
 
 pub fn message_reader(message: &Message) -> Scope {
     let mut scope = Scope::new();
