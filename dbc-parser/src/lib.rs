@@ -958,8 +958,7 @@ named!(pub attribute_default<CompleteByteSlice, AttributeDefault>,
     do_parse!(
                         multispace0 >>
                          tag!("BA_DEF_DEF_") >>
-                         ss                  >>
-                         ss                  >>
+                         space1              >>
         attribute_name:  quoted              >>
                          ss                  >>
         attribute_value: attribute_value     >>
