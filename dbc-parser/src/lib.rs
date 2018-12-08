@@ -317,6 +317,7 @@ NS_ :
     BU_EV_REL_
     BU_BO_REL_
     SG_MUL_VAL_
+BS_:
 BU_: PC
 BO_ 2000 WebData_2000: 4 Vector__XXX
     SG_ Signal_8 : 24|8@1+ (1,0) [0|255] \"\" Vector__XXX
@@ -346,7 +347,6 @@ BA_ \"Attr\" BO_ 56949545 344;
         match DBC::from_slice(sample_dbc) {
             Ok(dbc_content) => println!("DBC Content{:#?}", dbc_content),
             Err(e) => {
-                print_trace!();
                 match e {
                     Error::NomError(nom::Err::Incomplete(needed)) => eprintln!("Error incomplete input, needed: {:?}", needed),
                     Error::NomError(nom::Err::Error(ctx)) => {
@@ -358,6 +358,7 @@ BA_ \"Attr\" BO_ 56949545 344;
                     Error::NomError(nom::Err::Failure(ctx)) => eprintln!("Failure {:?}", ctx),
                     Error::Incomplete(dbc, remaining) => eprintln!("Not all data in buffer was read {:#?}, remaining unparsed: {}", dbc, String::from_utf8(remaining).unwrap())
                 }
+                panic!("Failed to read DBC");
             }
         }
     }
@@ -365,6 +366,10 @@ BA_ \"Attr\" BO_ 56949545 344;
 
 #[derive(Debug, PartialEq)]
 pub struct Label(String);
+
+/// Baudrate in kbit/s
+#[derive(Debug, PartialEq)]
+pub struct Baudrate(u64);
 
 #[derive(Debug, PartialEq)]
 pub struct Signal {
@@ -582,10 +587,7 @@ pub struct EnvironmentVariable(
         i64,
         AccessType,
         Vec<AccessNode>,
-    );
-
-#[derive(Debug, PartialEq)]
-pub struct BitTimingSection();
+);
 
 #[derive(Debug, PartialEq)]
 pub struct EnvironmentVariableData(String, u64);
@@ -658,6 +660,7 @@ pub struct SignalExtendedValueTypeList {
 pub struct DBC {
     version: Version,
     new_symbols: Vec<Symbol>,
+    bit_timing: Option<Vec<Baudrate>>,
     nodes: Vec<Node>,
     value_tables: Vec<ValueTable>,
     messages: Vec<Message>,
@@ -860,6 +863,15 @@ named!(pub version<CompleteByteSlice, Version>,
         v: quoted                  >>
         eol >>
         (Version(v))
+    )
+);
+
+named!(pub bit_timing<CompleteByteSlice, Vec<Baudrate>>,
+    do_parse!(
+                   multispace0                                                                  >>
+                   tag!("BS_:")                                                                 >>
+        baudrates: opt!(preceded!(ss,  separated_nonempty_list!(comma, map!(u64_s, Baudrate)))) >>
+        (baudrates.unwrap_or(Vec::new()))
     )
 );
 
@@ -1434,6 +1446,7 @@ named!(pub dbc<CompleteByteSlice, DBC>,
     do_parse!(
         version:                         version                               >>
         new_symbols:                     new_symbols                           >>
+        bit_timing:                      opt!(bit_timing)                      >>
         nodes:                           many0!(node)                          >>
         value_tables:                    many0!(value_table)                   >>
         messages:                        many0!(message)                       >>
@@ -1452,6 +1465,7 @@ named!(pub dbc<CompleteByteSlice, DBC>,
         (DBC {
             version: version,
             new_symbols: new_symbols,
+            bit_timing: bit_timing,
             nodes: nodes,
             value_tables: value_tables,
             messages: messages,

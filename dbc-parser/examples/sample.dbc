@@ -30,6 +30,8 @@ NS_ :
     BU_BO_REL_
     SG_MUL_VAL_
 
+BS_:
+
 BU_: PC X
 
 BO_ 2000 WebData_2000: 4 Vector__XXX
