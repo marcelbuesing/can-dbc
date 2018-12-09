@@ -85,29 +85,50 @@ mod tests {
     #[test]
     fn signal_comment_test() {
         let def1 = CompleteByteSlice(b"CM_ SG_ 193 KLU_R_X \"This is a signal comment test\";\n");
-        let id1 = SignalCommentId(193);
-        let comment1 = Comment::Signal(
-            id1,
-            "KLU_R_X".to_string(),
-            "This is a signal comment test".to_string(),
-            false,
-        );
+        let message_id = MessageId(193);
+        let comment1 = Comment::Signal {
+            message_id,
+            signal_name: "KLU_R_X".to_string(),
+            comment: "This is a signal comment test".to_string(),
+        };
         let (_, comment1_def) = comment(def1).expect("Failed to parse signal comment definition");
         assert_eq!(comment1, comment1_def);
     }
 
     #[test]
     fn message_definition_comment_test() {
-        let def1 = CompleteByteSlice(b"CM_ BO_ 34544 XYZ \"Some Message comment\";\n");
-        let id1 = MessageId(34544);
-        let comment1 = Comment::MessageDefinition(
-            id1,
-            "XYZ".to_string(),
-            "Some Message comment".to_string(),
-            false,
-        );
+        let def1 = CompleteByteSlice(b"CM_ BO_ 34544 \"Some Message comment\";\n");
+        let message_id = MessageId(34544);
+        let comment1 = Comment::Message {
+            message_id,
+            comment: "Some Message comment".to_string(),
+        };
         let (_, comment1_def) =
             comment(def1).expect("Failed to parse message definition comment definition");
+        assert_eq!(comment1, comment1_def);
+    }
+
+    #[test]
+    fn node_comment_test() {
+        let def1 = CompleteByteSlice(b"CM_ BU_ network_node \"Some network node comment\";\n");
+        let comment1 = Comment::Node {
+            node_name: "network_node".to_string(),
+            comment: "Some network node comment".to_string(),
+        };
+        let (_, comment1_def) =
+            comment(def1).expect("Failed to parse node comment definition");
+        assert_eq!(comment1, comment1_def);
+    }
+
+    #[test]
+    fn env_var_comment_test() {
+        let def1 = CompleteByteSlice(b"CM_ EV_ ENVXYZ \"Some env var name comment\";\n");
+        let comment1 = Comment::EnvVar {
+            env_var_name: "ENVXYZ".to_string(),
+            comment: "Some env var name comment".to_string(),
+        };
+        let (_, comment1_def) =
+            comment(def1).expect("Failed to parse env var comment definition");
         assert_eq!(comment1, comment1_def);
     }
 
@@ -414,9 +435,6 @@ impl Signal {
 }
 
 #[derive(Debug, PartialEq)]
-pub struct SignalCommentId(u64);
-
-#[derive(Debug, PartialEq)]
 pub struct MessageId(u64);
 
 #[derive(Debug, PartialEq)]
@@ -545,12 +563,11 @@ pub struct ValueTable {
 
 #[derive(Debug, PartialEq)]
 pub enum Comment {
-    NetworkNode(String),
-    MessageDefinition(MessageId, String, String, bool),
-    Signal(SignalCommentId, String, String, bool),
-    EnvVar(String),
-    // TODO figure out if PLAIN is correct
-    Plain(String),
+    Node { node_name: String, comment: String },
+    Message { message_id: MessageId, comment: String },
+    Signal { message_id: MessageId, signal_name: String, comment: String },
+    EnvVar { env_var_name: String, comment: String },
+    Plain { comment: String },
 }
 
 #[derive(Debug, PartialEq)]
@@ -728,10 +745,6 @@ fn is_semi_colon(chr: char) -> bool {
     chr == ';'
 }
 
-fn is_space_s(chr: char) -> bool {
-    chr == ' '
-}
-
 fn is_c_string_char(chr: char) -> bool {
     chr.is_digit(10) || chr.is_alphabetic() || chr == '_'
 }
@@ -792,8 +805,6 @@ named!(c_ident<CompleteByteSlice, String>,
 
 named!(c_ident_vec<CompleteByteSlice, Vec<String>>, separated_nonempty_list!(comma, c_ident));
 
-named!(char_string<CompleteByteSlice, String>, map!(take_till_s!(|c| is_space_s(c as char)), |s| String::from_utf8(s.as_bytes().to_vec()).unwrap()));
-
 named!(u64_s<CompleteByteSlice, u64>, map_res!(
         digit,
         |s: CompleteByteSlice| std::str::FromStr::from_str(str::from_utf8(s.as_bytes()).unwrap())
@@ -804,7 +815,7 @@ named!(i64_digit<CompleteByteSlice, i64>,
     flat_map!(recognize!(tuple!(opt!(alt_complete!(char!('+') | char!('-'))), digit)), parse_to!(i64))
 );
 
-named!(quoted<CompleteByteSlice, String>,
+named!(char_string<CompleteByteSlice, String>,
     do_parse!(
             quote                                 >>
         s:  take_till_s!(|c |is_quote(c as char)) >>
@@ -820,8 +831,6 @@ named!(pub big_endian<CompleteByteSlice, ByteOrder>, map!(char!('0'), |_| ByteOr
 named!(pub byte_order<CompleteByteSlice, ByteOrder>, alt_complete!(little_endian | big_endian));
 
 named!(pub message_id<CompleteByteSlice, MessageId>, map!(u64_s, MessageId));
-
-named!(pub signal_comment_id<CompleteByteSlice, SignalCommentId>, map!(u64_s, SignalCommentId));
 
 named!(pub signed<CompleteByteSlice, ValueType>, map!(char!('-'), |_| ValueType::Signed));
 
@@ -860,7 +869,7 @@ named!(pub version<CompleteByteSlice, Version>,
            multispace0 >>
            tag!("VERSION")         >>
            ss                      >>
-        v: quoted                  >>
+        v: char_string             >>
         eol >>
         (Version(v))
     )
@@ -909,7 +918,7 @@ named!(pub signal<CompleteByteSlice, Signal>,
        max:                   double                >>
                               brk_close             >>
                               ss                    >>
-       unit:                  quoted                >>
+       unit:                  char_string                >>
                               ss                    >>
        receivers:             c_ident_vec           >>
        eol                                          >>
@@ -959,7 +968,7 @@ named!(pub attribute_default<CompleteByteSlice, AttributeDefault>,
                         multispace0 >>
                          tag!("BA_DEF_DEF_") >>
                          space1              >>
-        attribute_name:  quoted              >>
+        attribute_name:  char_string         >>
                          ss                  >>
         attribute_value: attribute_value     >>
                          semi_colon          >>
@@ -968,48 +977,72 @@ named!(pub attribute_default<CompleteByteSlice, AttributeDefault>,
     )
 );
 
-named!(pub signal_comment<CompleteByteSlice, Comment>,
+named!(pub node_comment<CompleteByteSlice, Comment>,
     do_parse!(
-                 tag!("SG_")       >>
-                 ss                >>
-        id:      signal_comment_id >>
-                 ss                >>
-        name:    c_ident           >>
-                 ss                >>
-        comment: quoted            >>
-        (Comment::Signal(id, name, comment, false))
+                   tag!("BU_") >>
+                   ss          >>
+        node_name: c_ident     >>
+                   ss          >>
+        comment:   char_string >>
+        (Comment::Node { node_name, comment })
     )
 );
 
-named!(pub message_definition_comment<CompleteByteSlice, Comment>,
+named!(pub message_comment<CompleteByteSlice, Comment>,
     do_parse!(
-                  tag!("BO_")                                                                   >>
-                  ss                                                                            >>
-        id:       message_id                                                                    >>
-                  ss                                                                            >>
-                  // TODO not only c ident ?
-        node_name:     char_string >>
-                  ss                                                                            >>
-        comment: quoted                                                                         >>
-        (Comment::MessageDefinition(id, node_name, comment, false))
+                    tag!("BO_") >>
+                    ss          >>
+        message_id: message_id  >>
+                    ss          >>
+        comment:    char_string >>
+        (Comment::Message { message_id, comment })
+    )
+);
+
+named!(pub signal_comment<CompleteByteSlice, Comment>,
+    do_parse!(
+                     tag!("SG_") >>
+                     ss          >>
+        message_id:  message_id  >>
+                     ss          >>
+        signal_name: c_ident     >>
+                     ss          >>
+        comment:     char_string >>
+        (Comment::Signal { message_id, signal_name, comment })
+    )
+);
+
+named!(pub env_var_comment<CompleteByteSlice, Comment>,
+    do_parse!(
+                      tag!("EV_") >>
+                      ss          >>
+        env_var_name: c_ident     >>
+                      ss          >>
+        comment:      char_string >>
+        (Comment::EnvVar { env_var_name, comment })
     )
 );
 
 named!(pub comment_plain<CompleteByteSlice, Comment>,
     do_parse!(
-        comment: quoted                                                                         >>
-        (Comment::Plain(comment))
+        comment: char_string >>
+        (Comment::Plain { comment })
     )
 );
 
 named!(pub comment<CompleteByteSlice, Comment>,
     do_parse!(
-           multispace0                           >>
-           tag!("CM_")                                       >>
-           ss                                                >>
-        c: alt!(signal_comment | message_definition_comment | comment_plain) >>
-           semi_colon                                        >>
-           eol                                               >>
+           multispace0                        >>
+           tag!("CM_")                        >>
+           ss                                 >>
+        c: alt!( node_comment
+               | message_comment
+               | env_var_comment
+               | signal_comment
+               | comment_plain
+               )                              >>
+           semi_colon                         >>
+           eol                                >>
         (c)
     )
 );
@@ -1018,7 +1051,7 @@ named!(pub value_description<CompleteByteSlice, ValDescription>,
     do_parse!(
         a: double >>
            ss     >>
-        b: quoted >>
+        b: char_string >>
         (ValDescription { a: a, b: b })
     )
 );
@@ -1098,7 +1131,7 @@ named!(pub environment_variable<CompleteByteSlice, EnvironmentVariable>,
         max:           i64_digit                                    >>
                        brk_close                                    >>
                        ss                                           >>
-        unit:          quoted                                       >>
+        unit:          char_string                                       >>
                        ss                                           >>
         initial_value: double                                       >>
                        ss                                           >>
@@ -1141,7 +1174,7 @@ named!(pub attribute_value_f64<CompleteByteSlice, AttributeValue>,
 );
 
 named!(pub attribute_value_charstr<CompleteByteSlice, AttributeValue>,
-    map!(quoted, |x| AttributeValue::AttributeValueCharString(x))
+    map!(char_string, |x| AttributeValue::AttributeValueCharString(x))
 );
 
 named!(pub attribute_value<CompleteByteSlice, AttributeValue>,
@@ -1208,7 +1241,7 @@ named!(pub attribute_value_for_object<CompleteByteSlice, AttributeValueForObject
                multispace0 >>
                tag!("BA_") >>
                ss          >>
-        name:  quoted      >>
+        name:  char_string      >>
                ss          >>
         value: alt!(
                     network_node_attribute_value       |
