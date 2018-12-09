@@ -1,6 +1,6 @@
 # dbc-rs
-[![Build Status](https://travis-ci.org/marcelbuesing/dbc-parser.svg?branch=dev)](https://travis-ci.org/marcelbuesing/dbc-parser)
-[![codecov](https://codecov.io/gh/marcelbuesing/dbc-rs/branch/dev/graph/badge.svg)](https://codecov.io/gh/marcelbuesing/dbc-rs)
+[![Build Status](https://travis-ci.org/marcelbuesing/can-dbc.svg?branch=dev)](https://travis-ci.org/marcelbuesing/can-dbc)
+[![codecov](https://codecov.io/gh/marcelbuesing/can-dbc/branch/dev/graph/badge.svg)](https://codecov.io/gh/marcelbuesing/dbc-rs)
 
 A CAN-dbc format parser written with Rust's nom parser.
 

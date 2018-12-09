@@ -1,6 +1,6 @@
 [workspace]
 
 members = [
-    "dbc-parser",
-    "dbc-codegen",
+    "can-dbc",
+    "can-dbc-codegen",
 ]

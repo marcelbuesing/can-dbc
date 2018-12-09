@@ -1,9 +1,9 @@
 extern crate codegen;
-extern crate dbc_parser;
+extern crate can_dbc;
 extern crate nom;
 
 use codegen::Scope;
-use dbc_parser::Message;
+use can_dbc::Message;
 
 pub fn message_reader(message: &Message) -> Scope {
     let mut scope = Scope::new();

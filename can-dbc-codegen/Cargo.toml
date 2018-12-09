@@ -1,14 +1,14 @@
 [package]
-name = "dbc-codegen"
+name = "can-dbc-codegen"
 version = "0.1.0"
 license = "MIT"
-homepage = "https://github.com/marcelbuesing/dbc-parser"
-repository = "https://github.com/marcelbuesing/dbc-parser.git"
+homepage = "https://github.com/marcelbuesing/can-dbc"
+repository = "https://github.com/marcelbuesing/can-dbc.git"
 authors = ["marcelbuesing <buesing.marcel@googlemail.com>"]
 keywords = ["dbc", "can", "automotive", "car", "vehicle", "ecu"]
 edition = "2018"
 
 [dependencies]
 codegen = "0.1.0"
-dbc-parser = { path = "../dbc-parser" }
+can-dbc = { path = "../can-dbc" }
 nom = "4.1"
