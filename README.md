@@ -1,4 +1,5 @@
 # can-dbc
+[![LICENSE](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Build Status](https://travis-ci.org/marcelbuesing/can-dbc.svg?branch=dev)](https://travis-ci.org/marcelbuesing/can-dbc)
 [![codecov](https://codecov.io/gh/marcelbuesing/dbc-parser/branch/dev/graph/badge.svg)](https://codecov.io/gh/marcelbuesing/dbc-parser)
 
