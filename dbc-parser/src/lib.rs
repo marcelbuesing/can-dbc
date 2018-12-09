@@ -259,6 +259,30 @@ mod tests {
     }
 
     #[test]
+    fn signal_type_test() {
+        let def = CompleteByteSlice(
+            b"SGTYPE_ signal_type_name: 1024@1+ (5,2) [1|3] \"unit\" 2.0 val_table;\n"
+            );
+
+        let exp = SignalType {
+            signal_type_name: "signal_type_name".to_string(),
+            signal_size: 1024,
+            byte_order: ByteOrder::LittleEndian,
+            value_type: ValueType::Unsigned,
+            factor: 5.0,
+            offset: 2.0,
+            min: 1.0,
+            max: 3.0,
+            unit: "unit".to_string(),
+            default_value: 2.0,
+            value_table: "val_table".to_string(),
+        };
+
+        let (_, signal_type) = signal_type(def).unwrap();
+        assert_eq!(exp, signal_type);
+    }
+
+    #[test]
     fn attribute_default_test() {
         let def = CompleteByteSlice(b"BA_DEF_DEF_  \"ZUV\" \"OAL\";\n");
         let (_, attr_default) = attribute_default(def).unwrap();
@@ -498,7 +522,19 @@ pub struct LabelDescription {
 }
 
 #[derive(Debug, PartialEq)]
-pub struct SignalType();
+pub struct SignalType {
+    signal_type_name: String,
+    signal_size: u64,
+    byte_order: ByteOrder,
+    value_type: ValueType,
+    factor: f64,
+    offset: f64,
+    min: f64,
+    max: f64,
+    unit: String,
+    default_value: f64,
+    value_table: String,
+}
 
 #[derive(Debug, PartialEq)]
 pub enum AccessType {
@@ -740,10 +776,6 @@ impl DBC {
     }
 }
 
-fn is_colon(chr: char) -> bool {
-    chr == ':'
-}
-
 fn is_semi_colon(chr: char) -> bool {
     chr == ';'
 }
@@ -921,7 +953,7 @@ named!(pub signal<CompleteByteSlice, Signal>,
        max:                   double                >>
                               brk_close             >>
                               ss                    >>
-       unit:                  char_string                >>
+       unit:                  char_string           >>
                               ss                    >>
        receivers:             c_ident_vec           >>
        eol                                          >>
@@ -1161,6 +1193,54 @@ named!(pub environment_variable_data<CompleteByteSlice, EnvironmentVariableData>
                       semi_colon           >>
                       eol                  >>
         (EnvironmentVariableData(env_var_name, data_size))
+    )
+);
+
+named!(pub signal_type<CompleteByteSlice, SignalType>,
+    do_parse!(
+        multispace0                   >>
+        tag!("SGTYPE_")               >>
+                          ss          >>
+        signal_type_name: c_ident     >>
+                          colon       >>
+                          ss          >>
+        signal_size:      u64_s       >>
+                          at          >>
+        byte_order:       byte_order  >>
+        value_type:       value_type  >>
+                          ss          >>
+                          brc_open    >>
+        factor:           double      >>
+                          comma       >>
+        offset:           double      >>
+                          brc_close   >>
+                          ss          >>
+                          brk_open    >>
+        min:              double      >>
+                          pipe        >>
+        max:              double      >>
+                          brk_close   >>
+                          ss          >>
+        unit:             char_string >>
+                          ss          >>
+        default_value:    double      >>
+                          ss          >>
+        value_table:      c_ident     >>
+                          semi_colon  >>
+                          eol         >>
+        (SignalType {
+            signal_type_name,
+            signal_size,
+            byte_order,
+            value_type,
+            factor,
+            offset,
+            min,
+            max,
+            unit,
+            default_value,
+            value_table,
+        })
     )
 );
 
@@ -1489,7 +1569,7 @@ named!(pub dbc<CompleteByteSlice, DBC>,
         message_transmitters:            many0!(message_transmitter)           >>
         environment_variables:           many0!(environment_variable)          >>
         environment_variable_data:       many0!(environment_variable_data)     >>
-        //signal_types:                    many0!(signal_type)                   >>
+        signal_types:                    many0!(signal_type)                   >>
         comments:                        many0!(comment)                       >>
         attribute_definitions:           many0!(attribute_definition)          >>
         attribute_defaults:              many0!(attribute_default)             >>
@@ -1508,7 +1588,7 @@ named!(pub dbc<CompleteByteSlice, DBC>,
             message_transmitters: message_transmitters,
             environment_variables: environment_variables,
             environment_variable_data: environment_variable_data,
-            signal_types: Vec::new(),
+            signal_types: signal_types,
             comments: comments,
             attribute_definitions: attribute_definitions,
             attribute_defaults: attribute_defaults,

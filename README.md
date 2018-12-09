@@ -15,7 +15,7 @@ A CAN-dbc format parser written with Rust's nom parser.
 - [x] message_transmitters
 - [x] environment_variables
 - [x] environment_variables_data
-- [ ] signal_types
+- [x] signal_types
 - [x] comments
 - [x] attribute_definitions
 - [ ] sigtype_attr_list
