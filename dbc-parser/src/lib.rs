@@ -1335,6 +1335,7 @@ named!(pub new_symbols<CompleteByteSlice, Vec<Symbol>>,
     do_parse!(
                  multispace0    >>
                  tag!("NS_ :")  >>
+                 space0         >>
                  eol            >>
         symbols: many0!(symbol) >>
         (symbols)
