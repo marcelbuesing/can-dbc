@@ -1,4 +1,8 @@
 //!
+//! A CAN database (dbc) format parser written with Rust's nom parser combinator library.
+//! CAN databases are used to exchange details about a CAN network.
+//! E.g. what messages are being send over the CAN bus and what data do they contain.
+//!
 //! ```rust
 //! use can_dbc::DBC;
 //! use codegen::Scope;

@@ -23,7 +23,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "can-dbc"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "clap 2.32.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "codegen 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -35,7 +35,7 @@ dependencies = [
 name = "can-dbc-codegen"
 version = "0.1.0"
 dependencies = [
- "can-dbc 0.1.0",
+ "can-dbc 1.0.0",
  "codegen 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "nom 4.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]

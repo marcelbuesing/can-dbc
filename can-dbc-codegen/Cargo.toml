@@ -5,7 +5,7 @@ license = "MIT"
 homepage = "https://github.com/marcelbuesing/can-dbc"
 repository = "https://github.com/marcelbuesing/can-dbc.git"
 authors = ["marcelbuesing <buesing.marcel@googlemail.com>"]
-keywords = ["dbc", "can", "automotive", "car", "vehicle", "ecu"]
+keywords = ["dbc", "can", "automotive", "ecu"]
 edition = "2018"
 
 [dependencies]
