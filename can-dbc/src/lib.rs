@@ -1,7 +1,40 @@
+//!
+//! ```rust
+//! use can_dbc::DBC;
+//! use codegen::Scope;
+//!
+//! use std::fs::File;
+//! use std::io;
+//! use std::io::prelude::*;
+//!
+//! fn main() -> io::Result<()> {
+//!     let mut f = File::open("./examples/sample.dbc")?;
+//!     let mut buffer = Vec::new();
+//!     f.read_to_end(&mut buffer)?;
+//!
+//!     let dbc = can_dbc::DBC::from_slice(&buffer).expect("Failed to parse dbc file");
+//!
+//!     let mut scope = Scope::new();
+//!     for message in dbc.messages() {
+//!         for signal in message.signals() {
+//!
+//!             let mut scope = Scope::new();
+//!             let message_struct = scope.new_struct(message.message_name());
+//!             for signal in message.signals() {
+//!                 message_struct.field(signal.name().to_lowercase().as_str(), "f64");
+//!             }
+//!         }
+//!     }
+//!
+//!     println!("{}", scope.to_string());
+//!     Ok(())
+//! }
+//! ```
+
+use derive_getters::Getters;
 use nom::*;
 use nom::types::CompleteByteSlice;
 use std::str;
-use nom_trace::*;
 
 #[cfg(test)]
 mod tests {
@@ -135,14 +168,18 @@ mod tests {
     #[test]
     fn value_description_for_signal_test() {
         let def1 = CompleteByteSlice(b"VAL_ 837 UF_HZ_OI 255 \"NOP\" ;\n");
-        let id = MessageId(837);
-        let name = "UF_HZ_OI".to_string();
-        let descriptions = vec![ValDescription {
+        let message_id = MessageId(837);
+        let signal_name = "UF_HZ_OI".to_string();
+        let val_descriptions = vec![ValDescription {
             a: 255.0,
             b: "NOP".to_string(),
         }];
         let value_description_for_signal1 =
-            ValueDescription::Signal(id, name, descriptions);
+            ValueDescription::Signal {
+                message_id,
+                signal_name,
+                value_descriptions: val_descriptions
+            };
         let (_, value_signal_def) =
             value_descriptions(def1).expect("Failed to parse value desc for signal");
         assert_eq!(value_description_for_signal1, value_signal_def);
@@ -151,12 +188,15 @@ mod tests {
     #[test]
     fn value_description_for_env_var_test() {
         let def1 = CompleteByteSlice(b"VAL_ MY_ENV_VAR 255 \"NOP\" ;\n");
-        let name = "MY_ENV_VAR".to_string();
-        let descriptions = vec![ValDescription {
+        let env_var_name = "MY_ENV_VAR".to_string();
+        let val_descriptions = vec![ValDescription {
             a: 255.0,
             b: "NOP".to_string(),
         }];
-        let value_env_var1 = ValueDescription::EnvironmentVariable(name, descriptions);
+        let value_env_var1 = ValueDescription::EnvironmentVariable {
+            env_var_name,
+            value_descriptions: val_descriptions
+        };
         let (_, value_env_var) =
             value_descriptions(def1).expect("Failed to parse value desc for env var");
         assert_eq!(value_env_var1, value_env_var);
@@ -165,18 +205,17 @@ mod tests {
     #[test]
     fn environment_variable_test() {
         let def1 = CompleteByteSlice(b"EV_ IUV: 0 [-22|20] \"mm\" 3 7 DUMMY_NODE_VECTOR0 VECTOR_XXX;\n");
-        let nodes1 = vec![AccessNode::AccessNodeVectorXXX];
-        let env_var1 = EnvironmentVariable(
-            "IUV".to_string(),
-            EnvType::EnvTypeFloat,
-            -22,
-            20,
-            "mm".to_string(),
-            3.0,
-            7,
-            AccessType::DummyNodeVector0,
-            nodes1,
-        );
+        let env_var1 = EnvironmentVariable {
+            env_var_name: "IUV".to_string(),
+            env_var_type: EnvType::EnvTypeFloat,
+            min: -22,
+            max: 20,
+            unit: "mm".to_string(),
+            initial_value: 3.0,
+            ev_id: 7,
+            access_type: AccessType::DummyNodeVector0,
+            access_nodes: vec![AccessNode::AccessNodeVectorXXX],
+        };
         let (_, env_var) =
             environment_variable(def1).expect("Failed to parse environment variable");
         assert_eq!(env_var1, env_var);
@@ -185,8 +224,11 @@ mod tests {
     #[test]
     fn network_node_attribute_value_test() {
         let def = CompleteByteSlice(b"BA_ \"AttrName\" BU_ NodeName 12;\n");
-        let node = AttributeValuedForObjectType::NetworkNodeAttributeValue("NodeName".to_string(), AttributeValue::AttributeValueF64(12.0));
-        let attr_val_exp= AttributeValueForObject("AttrName".to_string(), node);
+        let attribute_value = AttributeValuedForObjectType::NetworkNodeAttributeValue("NodeName".to_string(), AttributeValue::AttributeValueF64(12.0));
+        let attr_val_exp= AttributeValueForObject {
+            attribute_name: "AttrName".to_string(),
+            attribute_value
+        };
         let (_, attr_val) = attribute_value_for_object(def).unwrap();
         assert_eq!(attr_val_exp, attr_val);
     }
@@ -194,8 +236,11 @@ mod tests {
     #[test]
     fn message_definition_attribute_value_test() {
         let def = CompleteByteSlice(b"BA_ \"AttrName\" BO_ 298 13;\n");
-        let msg_def = AttributeValuedForObjectType::MessageDefinitionAttributeValue(MessageId(298), Some(AttributeValue::AttributeValueF64(13.0)));
-        let attr_val_exp= AttributeValueForObject("AttrName".to_string(), msg_def);
+        let attribute_value = AttributeValuedForObjectType::MessageDefinitionAttributeValue(MessageId(298), Some(AttributeValue::AttributeValueF64(13.0)));
+        let attr_val_exp= AttributeValueForObject {
+            attribute_name: "AttrName".to_string(),
+            attribute_value
+        };
         let (_, attr_val) = attribute_value_for_object(def).unwrap();
         assert_eq!(attr_val_exp, attr_val);
     }
@@ -203,8 +248,11 @@ mod tests {
     #[test]
     fn signal_attribute_value_test() {
         let def = CompleteByteSlice(b"BA_ \"AttrName\" SG_ 198 SGName 13;\n");
-        let msg_def = AttributeValuedForObjectType::SignalAttributeValue(MessageId(198), "SGName".to_string(), AttributeValue::AttributeValueF64(13.0));
-        let attr_val_exp= AttributeValueForObject("AttrName".to_string(), msg_def);
+        let attribute_value = AttributeValuedForObjectType::SignalAttributeValue(MessageId(198), "SGName".to_string(), AttributeValue::AttributeValueF64(13.0));
+        let attr_val_exp= AttributeValueForObject {
+            attribute_name: "AttrName".to_string(),
+            attribute_value
+        };
         let (_, attr_val) = attribute_value_for_object(def).unwrap();
         assert_eq!(attr_val_exp, attr_val);
     }
@@ -212,8 +260,11 @@ mod tests {
     #[test]
     fn env_var_attribute_value_test() {
         let def = CompleteByteSlice(b"BA_ \"AttrName\" EV_ EvName \"CharStr\";\n");
-        let msg_def = AttributeValuedForObjectType::EnvVariableAttributeValue("EvName".to_string(), AttributeValue::AttributeValueCharString("CharStr".to_string()));
-        let attr_val_exp= AttributeValueForObject("AttrName".to_string(), msg_def);
+        let attribute_value = AttributeValuedForObjectType::EnvVariableAttributeValue("EvName".to_string(), AttributeValue::AttributeValueCharString("CharStr".to_string()));
+        let attr_val_exp= AttributeValueForObject {
+            attribute_name: "AttrName".to_string(),
+            attribute_value
+        };
         let (_, attr_val) = attribute_value_for_object(def).unwrap();
         assert_eq!(attr_val_exp, attr_val);
     }
@@ -221,8 +272,11 @@ mod tests {
     #[test]
     fn raw_attribute_value_test() {
         let def = CompleteByteSlice(b"BA_ \"AttrName\" \"RAW\";\n");
-        let msg_def = AttributeValuedForObjectType::RawAttributeValue(AttributeValue::AttributeValueCharString("RAW".to_string()));
-        let attr_val_exp= AttributeValueForObject("AttrName".to_string(), msg_def);
+        let attribute_value = AttributeValuedForObjectType::RawAttributeValue(AttributeValue::AttributeValueCharString("RAW".to_string()));
+        let attr_val_exp= AttributeValueForObject {
+            attribute_name: "AttrName".to_string(),
+            attribute_value
+        };
         let (_, attr_val) = attribute_value_for_object(def).unwrap();
         assert_eq!(attr_val_exp, attr_val);
     }
@@ -254,7 +308,10 @@ mod tests {
     fn envvar_data_test() {
         let def = CompleteByteSlice(b"ENVVAR_DATA_ SomeEnvVarData: 399;\n");
         let (_, envvar_data) = environment_variable_data(def).unwrap();
-        let envvar_data_exp = EnvironmentVariableData("SomeEnvVarData".to_string(), 399);
+        let envvar_data_exp = EnvironmentVariableData {
+            env_var_name: "SomeEnvVarData".to_string(),
+            data_size: 399
+        };
         assert_eq!(envvar_data_exp, envvar_data);
     }
 
@@ -286,7 +343,10 @@ mod tests {
     fn attribute_default_test() {
         let def = CompleteByteSlice(b"BA_DEF_DEF_  \"ZUV\" \"OAL\";\n");
         let (_, attr_default) = attribute_default(def).unwrap();
-        let attr_default_exp = AttributeDefault("ZUV".to_string(), AttributeValue::AttributeValueCharString("OAL".to_string()));
+        let attr_default_exp = AttributeDefault {
+            attribute_name: "ZUV".to_string(),
+            attribute_value: AttributeValue::AttributeValueCharString("OAL".to_string())
+        };
         assert_eq!(attr_default_exp, attr_default);
     }
 
@@ -330,7 +390,7 @@ mod tests {
 
     #[test]
     fn dbc_definition_test() {
-        let sample_dbc = 
+        let sample_dbc =
         b"
 VERSION \"0.1\"
 NS_ :
@@ -409,14 +469,14 @@ BA_ \"Attr\" BO_ 56949545 344;
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Label(String);
 
 /// Baudrate in kbit/s
-#[derive(Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Baudrate(u64);
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Getters)]
 pub struct Signal {
     name: String,
     multiplexer_indicator: MultiplexIndicator,
@@ -432,36 +492,10 @@ pub struct Signal {
     receivers: Vec<String>,
 }
 
-impl Signal {
-    pub fn name(&self) -> &str {
-        &self.name
-    } 
-
-    pub fn multiplexer_indicator(&self) -> &MultiplexIndicator {
-        &self.multiplexer_indicator
-    }
-
-    pub fn byte_order(&self) -> &ByteOrder {
-        &self.byte_order
-    }
-
-    pub fn value_type(&self) -> &ValueType {
-        &self.value_type
-    }
-
-    pub fn unit(&self) -> &str {
-        &self.unit
-    }
-
-    pub fn receivers(&self) -> &Vec<String> {
-        &self.receivers
-    }
-}
-
-#[derive(Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub struct MessageId(u64);
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Transmitter {
     /// node transmitting the message
     NodeName(String),
@@ -469,19 +503,19 @@ pub enum Transmitter {
     VectorXXX
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Getters)]
 pub struct MessageTransmitter {
     message_id: MessageId,
     transmitter: Transmitter,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Version(String);
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Symbol(String);
 
-#[derive(Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub enum MultiplexIndicator {
     /// Multiplexor switch
     Multiplexor,
@@ -491,37 +525,26 @@ pub enum MultiplexIndicator {
     Plain,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub enum ByteOrder {
     LittleEndian,
     BigEndian,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub enum ValueType {
     Signed,
     Unsigned,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub enum EnvType {
     EnvTypeFloat,
     EnvTypeu64,
     EnvTypeData,
 }
 
-#[derive(Debug, PartialEq)]
-pub struct ECUDef(String);
-
-#[derive(Debug, PartialEq)]
-pub struct LabelDescription {
-    id: u64,
-    signal_name: String,
-    labels: Vec<Label>,
-    extended: bool,
-}
-
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Getters)]
 pub struct SignalType {
     signal_type_name: String,
     signal_size: u64,
@@ -536,7 +559,7 @@ pub struct SignalType {
     value_table: String,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub enum AccessType {
     DummyNodeVector0,
     DummyNodeVector1,
@@ -544,19 +567,19 @@ pub enum AccessType {
     DummyNodeVector3,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum AccessNode {
     AccessNodeVectorXXX,
     AccessNodeName(String),
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum SignalAttributeValue {
     Text(String),
     Int(i64),
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum AttributeValuedForObjectType {
     RawAttributeValue(AttributeValue),
     NetworkNodeAttributeValue(String, AttributeValue),
@@ -565,7 +588,7 @@ pub enum AttributeValuedForObjectType {
     EnvVariableAttributeValue(String, AttributeValue),
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum AttributeValueType {
     AttributeValueTypeInt(i64, i64),
     AttributeValueTypeHex(i64, i64),
@@ -574,19 +597,19 @@ pub enum AttributeValueType {
     AttributeValueTypeEnum(Vec<String>),
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Getters)]
 pub struct ValDescription {
     a: f64,
     b: String,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Getters)]
 pub struct AttrDefault {
     name: String,
     value: AttributeValue,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum AttributeValue {
     AttributeValueU64(u64),
     AttributeValueI64(i64),
@@ -594,13 +617,13 @@ pub enum AttributeValue {
     AttributeValueCharString(String),
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Getters)]
 pub struct ValueTable {
     value_table_name: String,
     value_descriptions: Vec<ValDescription>
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Comment {
     Node { node_name: String, comment: String },
     Message { message_id: MessageId, comment: String },
@@ -609,7 +632,7 @@ pub enum Comment {
     Plain { comment: String },
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Getters)]
 pub struct Message {
     message_id: MessageId,
     message_name: String,
@@ -618,52 +641,41 @@ pub struct Message {
     signals: Vec<Signal>
 }
 
-impl Message {
-    pub fn message_name(&self) -> &str {
-        &self.message_name
-    }
-
-    pub fn transmitter(&self) -> &Transmitter {
-        &self.transmitter
-    }
-
-    pub fn signals(&self) -> &Vec<Signal> {
-        &self.signals
-    }
+#[derive(Clone, Debug, PartialEq, Getters)]
+pub struct EnvironmentVariable {
+    env_var_name: String,
+    env_var_type: EnvType,
+    min: i64,
+    max: i64,
+    unit: String,
+    initial_value: f64,
+    ev_id: i64,
+    access_type: AccessType,
+    access_nodes: Vec<AccessNode>,
 }
 
-#[derive(Debug, PartialEq)]
-pub struct EnvironmentVariable(
-        String,
-        EnvType,
-        i64,
-        i64,
-        String,
-        f64,
-        i64,
-        AccessType,
-        Vec<AccessNode>,
-);
+#[derive(Clone, Debug, PartialEq, Getters)]
+pub struct EnvironmentVariableData {
+    env_var_name: String,
+    data_size: u64,
+}
 
-#[derive(Debug, PartialEq)]
-pub struct EnvironmentVariableData(String, u64);
-
-///
-/// Network node
-///
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Node(Vec<String>);
 
-///
-/// BA_DEF_DEF
-///
-#[derive(Debug, PartialEq)]
-pub struct AttributeDefault(String, AttributeValue);
+#[derive(Clone,Debug, PartialEq, Getters)]
+pub struct AttributeDefault {
+    attribute_name: String,
+    attribute_value: AttributeValue,
+}
 
-#[derive(Debug, PartialEq)]
-pub struct AttributeValueForObject(String, AttributeValuedForObjectType);
+#[derive(Clone,Debug, PartialEq, Getters)]
+pub struct AttributeValueForObject {
+    attribute_name: String,
+    attribute_value: AttributeValuedForObjectType,
+}
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum AttributeDefinition {
     // TODO add properties
     Message(String),
@@ -671,26 +683,32 @@ pub enum AttributeDefinition {
     Node(String),
     // TODO add properties
     Signal(String),
-    // TODO add properties
     EnvironmentVariable(String),
     // TODO figure out name
     Plain(String),
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum ValueDescription {
-    Signal(MessageId, String, Vec<ValDescription>),
-    EnvironmentVariable(String, Vec<ValDescription>),
+    Signal {
+        message_id: MessageId,
+        signal_name: String,
+        value_descriptions: Vec<ValDescription>
+    },
+    EnvironmentVariable {
+        env_var_name: String,
+        value_descriptions: Vec<ValDescription>
+    },
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct SignalTypeRef {
     message_id: MessageId,
     signal_name: String,
     signal_type_name: String,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct SignalGroups {
     message_id: MessageId,
     signal_group_name: String,
@@ -698,21 +716,21 @@ pub struct SignalGroups {
     signal_names: Vec<String>,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub enum SignalExtendedValueType {
     SignedOrUnsignedInteger,
     IEEEfloat32Bit,
     IEEEdouble64bit,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq,Getters)]
 pub struct SignalExtendedValueTypeList {
     message_id: MessageId,
     signal_name: String,
     signal_extended_value_type: SignalExtendedValueType
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Getters)]
 pub struct DBC {
     version: Version,
     new_symbols: Vec<Symbol>,
@@ -751,13 +769,6 @@ pub struct DBC {
     signal_extended_value_type_list: Option<SignalExtendedValueTypeList>,
 }
 
-#[derive(Debug)]
-pub enum Error<'a> {
-    // Remaining String
-    Incomplete(DBC, Vec<u8>),
-    NomError(nom::Err<nom::types::CompleteByteSlice<'a>, u32>)
-}
-
 impl DBC {
     pub fn from_slice(buffer: &[u8]) -> Result<DBC, Error> {
         match dbc(CompleteByteSlice(buffer)) {
@@ -770,10 +781,13 @@ impl DBC {
             Err(e) => Err(Error::NomError(e))
         }
     }
+}
 
-    pub fn messages(&self) -> &Vec<Message> {
-        &self.messages
-    }
+#[derive(Debug)]
+pub enum Error<'a> {
+    // Remaining String
+    Incomplete(DBC, Vec<u8>),
+    NomError(nom::Err<nom::types::CompleteByteSlice<'a>, u32>)
 }
 
 fn is_semi_colon(chr: char) -> bool {
@@ -1008,7 +1022,7 @@ named!(pub attribute_default<CompleteByteSlice, AttributeDefault>,
         attribute_value: attribute_value     >>
                          semi_colon          >>
                          eol                 >>
-        (AttributeDefault(attribute_name, attribute_value))
+        (AttributeDefault { attribute_name, attribute_value })
     )
 );
 
@@ -1093,13 +1107,17 @@ named!(pub value_description<CompleteByteSlice, ValDescription>,
 
 named!(pub value_description_for_signal<CompleteByteSlice, ValueDescription>,
     do_parse!(
-              tag!("VAL_")                                                                     >>
-              ss                                                                               >>
-        id:   message_id                                                                       >>
-              ss                                                                               >>
-        name: c_ident                                                                          >>
-        descriptions:  many_till!(preceded!(ss, value_description), preceded!(ss, semi_colon)) >>
-        (ValueDescription::Signal(id, name, descriptions.0))
+                     tag!("VAL_")  >>
+                     ss            >>
+        message_id:  message_id    >>
+                     ss            >>
+        signal_name: c_ident       >>
+        value_descriptions:  many_till!(preceded!(ss, value_description), preceded!(ss, semi_colon)) >>
+        (ValueDescription::Signal {
+            message_id,
+            signal_name,
+            value_descriptions: value_descriptions.0
+        })
     )
 );
 
@@ -1107,9 +1125,12 @@ named!(pub value_description_for_env_var<CompleteByteSlice, ValueDescription>,
     do_parse!(
                       tag!("VAL_")                                                            >>
                       ss                                                                      >>
-        name:         c_ident                                                                 >>
-        descriptions: many_till!(preceded!(ss, value_description), preceded!(ss, semi_colon)) >>
-        (ValueDescription::EnvironmentVariable(name, descriptions.0))
+        env_var_name:         c_ident                                                                 >>
+        value_descriptions: many_till!(preceded!(ss, value_description), preceded!(ss, semi_colon)) >>
+        (ValueDescription::EnvironmentVariable {
+            env_var_name,
+            value_descriptions: value_descriptions.0
+        })
     )
 );
 
@@ -1155,10 +1176,10 @@ named!(pub environment_variable<CompleteByteSlice, EnvironmentVariable>,
                        multispace0                                  >>
                        tag!("EV_")                                  >>
                        ss                                           >>
-        name:          c_ident                                      >>
+        env_var_name:  c_ident                                      >>
                        colon                                        >>
                        ss                                           >>
-        type_:         env_var_type                                 >>
+        env_var_type:  env_var_type                                 >>
                        ss                                           >>
                        brk_open                                     >>
         min:           i64_digit                                    >>
@@ -1170,14 +1191,24 @@ named!(pub environment_variable<CompleteByteSlice, EnvironmentVariable>,
                        ss                                           >>
         initial_value: double                                       >>
                        ss                                           >>
-        id:            i64_digit                                    >>
+        ev_id:         i64_digit                                    >>
                        ss                                           >>
         access_type:   access_type                                  >>
                        ss                                           >>
         access_nodes:  separated_nonempty_list!(comma, access_node) >>
                        semi_colon                                   >>
                        eol                                          >>
-       (EnvironmentVariable(name, type_, min, max, unit, initial_value, id, access_type, access_nodes))
+       (EnvironmentVariable {
+           env_var_name,
+           env_var_type,
+           min,
+           max,
+           unit,
+           initial_value,
+           ev_id,
+           access_type,
+           access_nodes
+        })
     )
 );
 
@@ -1192,7 +1223,7 @@ named!(pub environment_variable_data<CompleteByteSlice, EnvironmentVariableData>
         data_size:    u64_s                >>
                       semi_colon           >>
                       eol                  >>
-        (EnvironmentVariableData(env_var_name, data_size))
+        (EnvironmentVariableData { env_var_name, data_size })
     )
 );
 
@@ -1321,21 +1352,22 @@ named!(pub raw_attribute_value<CompleteByteSlice, AttributeValuedForObjectType>,
 
 named!(pub attribute_value_for_object<CompleteByteSlice, AttributeValueForObject>,
     do_parse!(
-               multispace0 >>
-               tag!("BA_") >>
+                         multispace0 >>
+                         tag!("BA_") >>
+                         ss          >>
+        attribute_name:  char_string >>
                ss          >>
-        name:  char_string >>
-               ss          >>
-        value: alt!(
-                    network_node_attribute_value       |
-                    message_definition_attribute_value |
-                    signal_attribute_value             |
-                    env_variable_attribute_value       |
-                    raw_attribute_value
-                )           >>
-                semi_colon  >>
-                eol         >>
-        (AttributeValueForObject(name, value))
+        attribute_value: alt!(
+                              network_node_attribute_value       |
+                              message_definition_attribute_value |
+                              signal_attribute_value             |
+                              env_variable_attribute_value       |
+                              raw_attribute_value
+
+                          )           >>
+                          semi_colon  >>
+                          eol         >>
+        (AttributeValueForObject{ attribute_name, attribute_value })
     )
 );
 
@@ -1555,8 +1587,6 @@ named!(pub signal_groups<CompleteByteSlice, SignalGroups>,
         })
     )
 );
-
-declare_trace!();
 
 named!(pub dbc<CompleteByteSlice, DBC>,
     do_parse!(

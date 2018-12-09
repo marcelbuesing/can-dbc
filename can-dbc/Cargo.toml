@@ -16,7 +16,7 @@ travis-ci = { repository = "marcelbuesing/can-dbc", branch = "dev" }
 coveralls = { repository = "https://github.com/marcelbuesing/can-dbc.git", branch = "dev", service = "github" }
 
 [dependencies]
-nom-trace = "0.1.0"
+derive-getters = "0.0.7"
 
 [dependencies.nom]
 version = "4.1"
@@ -24,3 +24,4 @@ features = ["verbose-errors"]
 
 [dev-dependencies]
 clap = "2.32"
+codegen = "0.1.0"

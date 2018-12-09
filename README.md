@@ -10,7 +10,7 @@ A CAN-dbc format parser written with Rust's [nom](https://github.com/Geal/nom) p
 Read dbc file and generate Rust structs based on the messages/signals defined in the dbc.
 
 ```rust
-use can_dbc;
+use can_dbc::DBC;
 use codegen::Scope;
 
 use std::fs::File;
@@ -25,8 +25,6 @@ fn main() -> io::Result<()> {
     let dbc = can_dbc::DBC::from_slice(&buffer).expect("Failed to parse dbc file");
 
     let mut scope = Scope::new();
-    let message_struct = scope.new_struct(message.message_name());
-
     for message in dbc.messages() {
         for signal in message.signals() {
 
@@ -39,6 +37,7 @@ fn main() -> io::Result<()> {
     }
 
     println!("{}", scope.to_string());
+    Ok(())
 }
 ```
 
