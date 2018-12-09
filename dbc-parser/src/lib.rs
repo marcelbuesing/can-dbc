@@ -498,6 +498,9 @@ pub struct LabelDescription {
 }
 
 #[derive(Debug, PartialEq)]
+pub struct SignalType();
+
+#[derive(Debug, PartialEq)]
 pub enum AccessType {
     DummyNodeVector0,
     DummyNodeVector1,
@@ -684,7 +687,7 @@ pub struct DBC {
     message_transmitters: Vec<MessageTransmitter>,
     environment_variables: Vec<EnvironmentVariable>,
     environment_variable_data: Vec<EnvironmentVariableData>,
-    multiplexer_indicator: Vec<MultiplexIndicator>,
+    signal_types: Vec<SignalType>,
     ///
     /// Object comments.
     ///
@@ -965,7 +968,7 @@ named!(pub message<CompleteByteSlice, Message>,
 
 named!(pub attribute_default<CompleteByteSlice, AttributeDefault>,
     do_parse!(
-                        multispace0 >>
+                        multispace0          >>
                          tag!("BA_DEF_DEF_") >>
                          space1              >>
         attribute_name:  char_string         >>
@@ -1049,8 +1052,8 @@ named!(pub comment<CompleteByteSlice, Comment>,
 
 named!(pub value_description<CompleteByteSlice, ValDescription>,
     do_parse!(
-        a: double >>
-           ss     >>
+        a: double      >>
+           ss          >>
         b: char_string >>
         (ValDescription { a: a, b: b })
     )
@@ -1117,7 +1120,7 @@ named!(pub access_node<CompleteByteSlice, AccessNode>, alt_complete!(access_node
 /// 9 Environment Variable Definitions
 named!(pub environment_variable<CompleteByteSlice, EnvironmentVariable>,
     do_parse!(
-                       multispace0                      >>
+                       multispace0                                  >>
                        tag!("EV_")                                  >>
                        ss                                           >>
         name:          c_ident                                      >>
@@ -1131,7 +1134,7 @@ named!(pub environment_variable<CompleteByteSlice, EnvironmentVariable>,
         max:           i64_digit                                    >>
                        brk_close                                    >>
                        ss                                           >>
-        unit:          char_string                                       >>
+        unit:          char_string                                  >>
                        ss                                           >>
         initial_value: double                                       >>
                        ss                                           >>
@@ -1148,15 +1151,15 @@ named!(pub environment_variable<CompleteByteSlice, EnvironmentVariable>,
 
 named!(pub environment_variable_data<CompleteByteSlice, EnvironmentVariableData>,
     do_parse!(
-                      multispace0 >>
-                      tag!("ENVVAR_DATA_")    >>
-                      ss                      >>
-        env_var_name: c_ident                 >>
-                      colon                   >>
-                      ss                      >>
-        data_size:    u64_s                   >>
-                      semi_colon              >>
-                      eol                     >>
+                      multispace0          >>
+                      tag!("ENVVAR_DATA_") >>
+                      ss                   >>
+        env_var_name: c_ident              >>
+                      colon                >>
+                      ss                   >>
+        data_size:    u64_s                >>
+                      semi_colon           >>
+                      eol                  >>
         (EnvironmentVariableData(env_var_name, data_size))
     )
 );
@@ -1241,7 +1244,7 @@ named!(pub attribute_value_for_object<CompleteByteSlice, AttributeValueForObject
                multispace0 >>
                tag!("BA_") >>
                ss          >>
-        name:  char_string      >>
+        name:  char_string >>
                ss          >>
         value: alt!(
                     network_node_attribute_value       |
@@ -1307,9 +1310,9 @@ named!(pub attribute_definition_plain<CompleteByteSlice, AttributeDefinition>,
 
 named!(pub attribute_definition<CompleteByteSlice, AttributeDefinition>,
     do_parse!(
-        multispace0 >>
-        tag!("BA_DEF_")         >>
-        ss                      >>
+        multispace0     >>
+        tag!("BA_DEF_") >>
+        ss              >>
         def: alt!(attribute_definition_node                 |
                   attribute_definition_signal               |
                   attribute_definition_environment_variable |
@@ -1326,7 +1329,7 @@ named!(pub symbol<CompleteByteSlice, Symbol>,
     do_parse!(
                 space   >>
         symbol: c_ident >>
-        eol >>
+                eol >>
         (Symbol(symbol))
     )
 );
@@ -1347,18 +1350,18 @@ named!(pub new_symbols<CompleteByteSlice, Vec<Symbol>>,
 ///
 named!(pub node<CompleteByteSlice, Node>,
     do_parse!(
-            multispace0 >>
-            tag!("BU_:")            >>
-            ss                      >>
+            multispace0                           >>
+            tag!("BU_:")                          >>
+            ss                                    >>
         li: separated_nonempty_list!(ss, c_ident) >>
-        eol >>
+        eol                                       >>
         (Node(li))
     )
 );
 
 named!(pub signal_type_ref<CompleteByteSlice, SignalTypeRef>,
     do_parse!(
-                          multispace0 >>
+                          multispace0     >>
                           tag!("SGTYPE_") >>
                           ss              >>
         message_id:       message_id      >>
@@ -1369,7 +1372,7 @@ named!(pub signal_type_ref<CompleteByteSlice, SignalTypeRef>,
                           ss              >>
         signal_type_name: c_ident         >>
                           semi_colon      >>
-                          eol >>
+                          eol             >>
         (SignalTypeRef {
             message_id: message_id,
             signal_name: signal_name,
@@ -1486,7 +1489,7 @@ named!(pub dbc<CompleteByteSlice, DBC>,
         message_transmitters:            many0!(message_transmitter)           >>
         environment_variables:           many0!(environment_variable)          >>
         environment_variable_data:       many0!(environment_variable_data)     >>
-        multiplexer_indicator:           many0!(multiplexer_indicator)         >>
+        //signal_types:                    many0!(signal_type)                   >>
         comments:                        many0!(comment)                       >>
         attribute_definitions:           many0!(attribute_definition)          >>
         attribute_defaults:              many0!(attribute_default)             >>
@@ -1505,7 +1508,7 @@ named!(pub dbc<CompleteByteSlice, DBC>,
             message_transmitters: message_transmitters,
             environment_variables: environment_variables,
             environment_variable_data: environment_variable_data,
-            multiplexer_indicator: multiplexer_indicator,
+            signal_types: Vec::new(),
             comments: comments,
             attribute_definitions: attribute_definitions,
             attribute_defaults: attribute_defaults,

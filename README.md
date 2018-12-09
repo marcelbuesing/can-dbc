@@ -6,39 +6,28 @@ A CAN-dbc format parser written with Rust's nom parser.
 
 # Implemented DBC parts
 
-- [x] BA_ (NetworkNode Attribute)
-- [x] BA_ (MessageDefinition Attribute)
-- [x] BA_ (Signal Attribute)
-- [x] BA_ (Env Var Attribute)
-- [x] BA_ (Raw Attribute)
-- [x] BA_DEF_ BU_
-- [x] BA_DEF_ BO_
-- [x] BA_DEF_DEF_
-- [ ] BA_DEF_SGTYPE_
-- [ ] BA_SGTYPE_
-- [x] BU_
-- [x] BO_
-- [ ] CAT_
-- [ ] CAT_DEF_
-- [x] CM_ SG_
-- [x] CM_ BO_
-- [x] ENVVAR_DATA_
-- [x] EV_
-- [ ] EV_DATA_
-- [ ] FILTER
-- [x] NS_
-- [ ] NS_DESC_
-- [ ] SGTYPE_
-- [ ] SGTYPE_VAL_
-- [ ] SIG_GROUP_
-- [ ] SIG_TYPE_REF_
-- [ ] SIG_VALTYPE_
-- [ ] SIGTYPE_VALTYPE_
-- [x] VAL_ (ENV_VAR)
-- [x] VAL_ (SIGNAL)
-- [ ] VAL_TABLE_
-- [x] VERSION
-
+- [x] version
+- [x] new_symbols
+- [x] bit_timing *(deprecated but mandatory)*
+- [x] nodes
+- [x] value_tables
+- [x] messages
+- [x] message_transmitters
+- [x] environment_variables
+- [x] environment_variables_data
+- [ ] signal_types
+- [x] comments
+- [x] attribute_definitions
+- [ ] sigtype_attr_list
+- [x] attribute_defaults
+- [x] attribute_values
+- [x] value_descriptions
+- [ ] category_definitions *(deprecated)*
+- [ ] categories *(deprecated)*
+- [ ] filter *(deprecated)*
+- [x] signal_type_refs
+- [x] signal_groups
+- [x] signal_extended_value_type_list
 # Example
 The file parser simply parses a dbc input file.
 `cargo test && ./target/debug/examples/file_parser -i examples/sample.dbc`
