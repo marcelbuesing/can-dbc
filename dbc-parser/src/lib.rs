@@ -941,18 +941,18 @@ named!(pub signal<CompleteByteSlice, Signal>,
 
 named!(pub message<CompleteByteSlice, Message>,
   do_parse!(
-                  multispace0                                                                 >>
-                  tag!("BO_")                                                                 >>
-                  ss                                                                          >>
-    message_id:   message_id                                                                  >>
-                  ss                                                                          >>
-    message_name: map!(take_till_s!(|c| is_colon(c as char)), |s| String::from_utf8(s.as_bytes().to_vec()).unwrap()) >>
-                  colon                                                                       >>
-                  ss                                                                          >>
-    message_size: u64_s                                                                       >>
-                  ss                                                                          >>
-    transmitter:  transmitter                                                                 >>
-    signals:      many1!(signal)                                                              >>
+                  multispace0    >>
+                  tag!("BO_")    >>
+                  ss             >>
+    message_id:   message_id     >>
+                  ss             >>
+    message_name: c_ident        >>
+                  colon          >>
+                  ss             >>
+    message_size: u64_s          >>
+                  ss             >>
+    transmitter:  transmitter    >>
+    signals:      many1!(signal) >>
     (Message {
         message_id,
         message_name: message_name,
