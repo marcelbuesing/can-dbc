@@ -378,7 +378,7 @@ pub enum ValueDescription {
     },
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Getters)]
 pub struct SignalTypeRef {
     message_id: MessageId,
     signal_name: String,
@@ -386,7 +386,7 @@ pub struct SignalTypeRef {
 }
 
 /// Signal groups define a group of signals within a message
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Getters)]
 pub struct SignalGroups {
     message_id: MessageId,
     signal_group_name: String,
@@ -401,7 +401,7 @@ pub enum SignalExtendedValueType {
     IEEEdouble64bit,
 }
 
-#[derive(Clone, Debug, PartialEq,Getters)]
+#[derive(Clone, Debug, PartialEq, Getters)]
 pub struct SignalExtendedValueTypeList {
     message_id: MessageId,
     signal_name: String,
