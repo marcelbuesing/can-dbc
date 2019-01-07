@@ -437,7 +437,7 @@ named!(c_ident<CompleteByteSlice, String>,
     )
 );
 
-named!(c_ident_vec<CompleteByteSlice, Vec<String>>, separated_nonempty_list!(comma, c_ident));
+named!(c_ident_vec<CompleteByteSlice, Vec<String>>, separated_list!(comma, c_ident));
 
 named!(u64_s<CompleteByteSlice, u64>, map_res!(
         digit,
@@ -513,7 +513,7 @@ named!(pub bit_timing<CompleteByteSlice, Vec<Baudrate>>,
     do_parse!(
                    multispace0                                                                  >>
                    tag!("BS_:")                                                                 >>
-        baudrates: opt!(preceded!(ss,  separated_nonempty_list!(comma, map!(u64_s, Baudrate)))) >>
+        baudrates: opt!(preceded!(ss,  separated_list!(comma, map!(u64_s, Baudrate)))) >>
         (baudrates.unwrap_or(Vec::new()))
     )
 );
@@ -780,7 +780,7 @@ named!(pub environment_variable<CompleteByteSlice, EnvironmentVariable>,
                        ss                                           >>
         access_type:   access_type                                  >>
                        ss                                           >>
-        access_nodes:  separated_nonempty_list!(comma, access_node) >>
+        access_nodes:  separated_list!(comma, access_node) >>
                        semi_colon                                   >>
                        eol                                          >>
        (EnvironmentVariable {
@@ -1050,7 +1050,7 @@ named!(pub node<CompleteByteSlice, Node>,
             multispace0                           >>
             tag!("BU_:")                          >>
             ss                                    >>
-        li: separated_nonempty_list!(ss, c_ident) >>
+        li: separated_list!(ss, c_ident) >>
         eol                                       >>
         (Node(li))
     )
@@ -1164,7 +1164,7 @@ named!(pub signal_groups<CompleteByteSlice, SignalGroups>,
         ss                                                   >>
         colon                                                >>
         ss                                                   >>
-        signal_names: separated_nonempty_list!(ss, c_ident)  >>
+        signal_names: separated_list!(ss, c_ident)  >>
         semi_colon                                           >>
         eol                                                  >>
         (SignalGroups{
