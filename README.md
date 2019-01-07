@@ -2,7 +2,7 @@
 [![LICENSE](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![VERSION](https://img.shields.io/crates/v/can-dbc.svg)](https://crates.io/crates/can-dbc)
 [![Build Status](https://travis-ci.org/marcelbuesing/can-dbc.svg?branch=dev)](https://travis-ci.org/marcelbuesing/can-dbc)
-[![codecov](https://codecov.io/gh/marcelbuesing/dbc-parser/branch/dev/graph/badge.svg)](https://codecov.io/gh/marcelbuesing/dbc-parser)
+[![codecov](https://codecov.io/gh/marcelbuesing/can-dbc/branch/dev/graph/badge.svg)](https://codecov.io/gh/marcelbuesing/can-dbc)
 [![docs](https://docs.rs/can-dbc/badge.svg)](https://docs.rs/can-dbc)
 
 A CAN-dbc format parser written with Rust's [nom](https://github.com/Geal/nom) parser combinator library.
