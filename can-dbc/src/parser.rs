@@ -309,6 +309,23 @@ mod tests {
     }
 
     #[test]
+    fn signal_groups_test() {
+        let def = CompleteByteSlice(
+            b"SIG_GROUP_ 23 X_3290 1 : A_b XY_Z;\n"
+        );
+
+        let exp = SignalGroups {
+            message_id: MessageId(23),
+            signal_group_name: "X_3290".to_string(),
+            repetitions: 1,
+            signal_names: vec!("A_b".to_string(), "XY_Z".to_string()),
+        };
+
+        let (_, signal_groups) = signal_groups(def).unwrap();
+        assert_eq!(exp, signal_groups);
+    }
+
+    #[test]
     fn attribute_default_test() {
         let def = CompleteByteSlice(b"BA_DEF_DEF_  \"ZUV\" \"OAL\";\n");
         let (_, attr_default) = attribute_default(def).unwrap();
@@ -1136,17 +1153,20 @@ named!(pub message_transmitter<CompleteByteSlice, MessageTransmitter>,
 
 named!(pub signal_groups<CompleteByteSlice, SignalGroups>,
     do_parse!(
-        multispace0                >>
-        tag!("SIG_GROUP_")         >>
-        message_id: message_id     >>
-        signal_group_name: c_ident >>
-        repetitions: u64_s         >>
-        ss                         >>
-        colon                      >>
-        ss                         >>
-        signal_names: c_ident_vec  >>
-        semi_colon                 >>
-        eol                        >>
+        multispace0                                          >>
+        tag!("SIG_GROUP_")                                   >>
+        ss                                                   >>
+        message_id: message_id                               >>
+        ss                                                   >>
+        signal_group_name: c_ident                           >>
+        ss                                                   >>
+        repetitions: u64_s                                   >>
+        ss                                                   >>
+        colon                                                >>
+        ss                                                   >>
+        signal_names: separated_nonempty_list!(ss, c_ident)  >>
+        semi_colon                                           >>
+        eol                                                  >>
         (SignalGroups{
             message_id: message_id,
             signal_group_name: signal_group_name,
