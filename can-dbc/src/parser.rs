@@ -708,7 +708,7 @@ named!(pub value_description_for_signal<CompleteByteSlice, ValueDescription>,
         message_id:  message_id    >>
                      ss            >>
         signal_name: c_ident       >>
-        value_descriptions:  many_till!(preceded!(ss, value_description), semi_colon) >>
+        value_descriptions:  many_till!(preceded!(ss, value_description), preceded!(opt!(ss), semi_colon)) >>
         (ValueDescription::Signal {
             message_id,
             signal_name,
@@ -719,10 +719,10 @@ named!(pub value_description_for_signal<CompleteByteSlice, ValueDescription>,
 
 named!(pub value_description_for_env_var<CompleteByteSlice, ValueDescription>,
     do_parse!(
-                      tag!("VAL_")                                                            >>
-                      ss                                                                      >>
-        env_var_name: c_ident                                                                 >>
-        value_descriptions: many_till!(preceded!(ss, value_description), semi_colon) >>
+                      tag!("VAL_")                                                                        >>
+                      ss                                                                                  >>
+        env_var_name: c_ident                                                                             >>
+        value_descriptions: many_till!(preceded!(ss, value_description), preceded!(opt!(ss), semi_colon)) >>
         (ValueDescription::EnvironmentVariable {
             env_var_name,
             value_descriptions: value_descriptions.0
