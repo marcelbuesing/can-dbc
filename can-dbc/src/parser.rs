@@ -586,7 +586,7 @@ named!(pub message<CompleteByteSlice, Message>,
     message_size: u64_s          >>
                   ss             >>
     transmitter:  transmitter    >>
-    signals:      many1!(signal) >>
+    signals:      many0!(signal) >>
     (Message {
         message_id,
         message_name: message_name,
