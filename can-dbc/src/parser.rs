@@ -136,7 +136,7 @@ mod tests {
 
     #[test]
     fn value_description_for_signal_test() {
-        let def1 = CompleteByteSlice(b"VAL_ 837 UF_HZ_OI 255 \"NOP\" ;\n");
+        let def1 = CompleteByteSlice(b"VAL_ 837 UF_HZ_OI 255 \"NOP\";\n");
         let message_id = MessageId(837);
         let signal_name = "UF_HZ_OI".to_string();
         let val_descriptions = vec![ValDescription {
@@ -156,7 +156,7 @@ mod tests {
 
     #[test]
     fn value_description_for_env_var_test() {
-        let def1 = CompleteByteSlice(b"VAL_ MY_ENV_VAR 255 \"NOP\" ;\n");
+        let def1 = CompleteByteSlice(b"VAL_ MY_ENV_VAR 255 \"NOP\";\n");
         let env_var_name = "MY_ENV_VAR".to_string();
         let val_descriptions = vec![ValDescription {
             a: 255.0,
@@ -680,7 +680,7 @@ named!(pub value_description_for_signal<CompleteByteSlice, ValueDescription>,
         message_id:  message_id    >>
                      ss            >>
         signal_name: c_ident       >>
-        value_descriptions:  many_till!(preceded!(ss, value_description), preceded!(ss, semi_colon)) >>
+        value_descriptions:  many_till!(preceded!(ss, value_description), semi_colon) >>
         (ValueDescription::Signal {
             message_id,
             signal_name,
@@ -693,8 +693,8 @@ named!(pub value_description_for_env_var<CompleteByteSlice, ValueDescription>,
     do_parse!(
                       tag!("VAL_")                                                            >>
                       ss                                                                      >>
-        env_var_name:         c_ident                                                                 >>
-        value_descriptions: many_till!(preceded!(ss, value_description), preceded!(ss, semi_colon)) >>
+        env_var_name: c_ident                                                                 >>
+        value_descriptions: many_till!(preceded!(ss, value_description), semi_colon) >>
         (ValueDescription::EnvironmentVariable {
             env_var_name,
             value_descriptions: value_descriptions.0
