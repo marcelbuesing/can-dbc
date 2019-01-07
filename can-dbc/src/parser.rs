@@ -373,6 +373,17 @@ mod tests {
         let (_, version) = version(def).unwrap();
         assert_eq!(version_exp, version);
     }
+
+    #[test]
+    fn message_transmitters_test() {
+        let def = CompleteByteSlice(b"BO_TX_BU_ 12345 : XZY,ABC;\n");
+        let exp = MessageTransmitter {
+            message_id: MessageId(12345),
+            transmitter: vec!(Transmitter::NodeName("XZY".to_string()), Transmitter::NodeName("ABC".to_string()))
+        };
+        let (_, transmitter) = message_transmitter(def).unwrap();
+        assert_eq!(exp, transmitter);
+    }
 }
 
 fn is_semi_colon(chr: char) -> bool {
@@ -1132,6 +1143,8 @@ named!(pub transmitter_node_name<CompleteByteSlice, Transmitter>, map!(c_ident, 
 
 named!(pub transmitter<CompleteByteSlice, Transmitter>, alt_complete!(transmitter_vector_xxx | transmitter_node_name));
 
+named!(pub message_transmitters<CompleteByteSlice, Vec<Transmitter>>, separated_list!(comma, transmitter));
+
 named!(pub message_transmitter<CompleteByteSlice, MessageTransmitter>,
     do_parse!(
                     multispace0 >>
@@ -1141,7 +1154,7 @@ named!(pub message_transmitter<CompleteByteSlice, MessageTransmitter>,
                      ss                     >>
                      colon                  >>
                      ss                     >>
-        transmitter: transmitter            >>
+        transmitter: message_transmitters   >>
                      semi_colon             >>
                      eol >>
         (MessageTransmitter {
