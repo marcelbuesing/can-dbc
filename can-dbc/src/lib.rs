@@ -442,7 +442,7 @@ pub struct DBC {
     //filter: Vec<Filter>,
     signal_type_refs: Vec<SignalTypeRef>,
     /// Signal groups define a group of signals within a message
-    signal_groups: Option<SignalGroups>,
+    signal_groups: Vec<SignalGroups>,
     signal_extended_value_type_list: Option<SignalExtendedValueTypeList>,
 }
 

@@ -1207,7 +1207,7 @@ named!(pub dbc<CompleteByteSlice, DBC>,
         attribute_values:                many0!(attribute_value_for_object)    >>
         value_descriptions:              many0!(value_descriptions)            >>
         signal_type_refs:                many0!(signal_type_ref)               >>
-        signal_groups:                   opt!(signal_groups)                   >>
+        signal_groups:                   many0!(signal_groups)                 >>
         signal_extended_value_type_list: opt!(signal_extended_value_type_list) >>
         (DBC {
             version: version,
