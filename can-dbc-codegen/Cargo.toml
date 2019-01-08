@@ -9,6 +9,15 @@ keywords = ["dbc", "can", "automotive", "ecu"]
 edition = "2018"
 
 [dependencies]
-codegen = "0.1.0"
+byteorder = "1.2"
+# codegen = "0.1.0"
+heck = "0.3"
+clap = "2.32"
 can-dbc = { path = "../can-dbc" }
-nom = "4.1"
+
+[dependencies.codegen]
+path = "./codegen"
+
+[dependencies.nom]
+version = "4.1"
+features = ["verbose-errors"]

@@ -162,7 +162,7 @@ pub struct Signal {
 /// CAN id in header of CAN frame.
 /// Must be unique in DBC file.
 #[derive(Copy, Clone, Debug, PartialEq)]
-pub struct MessageId(u64);
+pub struct MessageId(pub u64);
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Transmitter {
