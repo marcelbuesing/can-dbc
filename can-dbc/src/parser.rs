@@ -42,6 +42,14 @@ mod tests {
     }
 
     #[test]
+    fn char_string_test() {
+        let def = CompleteByteSlice(b"\"ab\x00\x7f\"");
+        let (_, char_string) = char_string(def).unwrap();
+        let exp = "ab\x00\x7f";
+        assert_eq!(exp, char_string);
+    }
+
+    #[test]
     fn signal_test() {
         let signal_line = CompleteByteSlice(b"SG_ NAME : 3|2@1- (1,0) [0|0] \"x\" UFA\r\n");
         let _signal = signal(signal_line).unwrap();
@@ -463,7 +471,7 @@ named!(i64_digit<CompleteByteSlice, i64>,
 named!(char_string<CompleteByteSlice, String>,
     do_parse!(
             quote                                 >>
-        s:  take_till_s!(|c |is_quote(c as char)) >>
+        s:  take_till_s!(|c| is_quote(c as char)) >>
             quote                                 >>
         (String::from_utf8_lossy(s.as_bytes()).to_string())
     )
