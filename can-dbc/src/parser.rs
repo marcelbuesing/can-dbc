@@ -410,8 +410,11 @@ fn is_quote(chr: char) -> bool {
     chr == '"'
 }
 
-/// Single space
-named!(ss<CompleteByteSlice, char>, char!(' '));
+/// Multi space
+named!(multispace1<CompleteByteSlice, Vec<char>>, many1!(char!(' ')));
+
+/// Abreviation for multispace1
+named!(ms<CompleteByteSlice, Vec<char>>, many1!(char!(' ')));
 
 /// Colon
 named!(colon<CompleteByteSlice, char>, char!(':'));
@@ -493,26 +496,26 @@ named!(pub value_type<CompleteByteSlice, ValueType>, alt_complete!(signed | unsi
 
 named!(pub multiplexer<CompleteByteSlice, MultiplexIndicator>,
     do_parse!(
-           ss         >>
+           ms         >>
            char!('m') >>
         d: u64_s      >>
-           ss         >>
+           ms         >>
         (MultiplexIndicator::MultiplexedSignal(d))
     )
 );
 
 named!(pub multiplexor<CompleteByteSlice, MultiplexIndicator>,
     do_parse!(
-        ss         >>
+        ms         >>
         char!('M') >>
-        ss         >>
+        ms         >>
         (MultiplexIndicator::Multiplexor)
     )
 );
 
 named!(pub plain<CompleteByteSlice, MultiplexIndicator>,
     do_parse!(
-        ss >>
+        ms >>
         (MultiplexIndicator::Plain)
     )
 );
@@ -521,7 +524,7 @@ named!(pub version<CompleteByteSlice, Version>,
     do_parse!(
            multispace0 >>
            tag!("VERSION")         >>
-           ss                      >>
+           ms                      >>
         v: char_string             >>
         eol >>
         (Version(v))
@@ -532,7 +535,7 @@ named!(pub bit_timing<CompleteByteSlice, Vec<Baudrate>>,
     do_parse!(
                    multispace0                                                                  >>
                    tag!("BS_:")                                                                 >>
-        baudrates: opt!(preceded!(ss,  separated_list!(comma, map!(u64_s, Baudrate)))) >>
+        baudrates: opt!(preceded!(ms,  separated_list!(comma, map!(u64_s, Baudrate)))) >>
         (baudrates.unwrap_or(Vec::new()))
     )
 );
@@ -547,32 +550,32 @@ named!(pub multiplexer_indicator<CompleteByteSlice, MultiplexIndicator>,
 named!(pub signal<CompleteByteSlice, Signal>,
     do_parse!(                multispace0           >>
                               tag!("SG_")           >>
-                              ss                    >>
+                              ms                    >>
        name:                  c_ident               >>
        multiplexer_indicator: multiplexer_indicator >>
                               colon                 >>
-                              ss                    >>
+                              ms                    >>
        start_bit:             u64_s                 >>
                               pipe                  >>
        signal_size:           u64_s                 >>
                               at                    >>
        byte_order:            byte_order            >>
        value_type:            value_type            >>
-                              ss                    >>
+                              ms                    >>
                               brc_open              >>
        factor:                double                >>
                               comma                 >>
        offset:                double                >>
                               brc_close             >>
-                              ss                    >>
+                              ms                    >>
                               brk_open              >>
        min:                   double                >>
                               pipe                  >>
        max:                   double                >>
                               brk_close             >>
-                              ss                    >>
+                              ms                    >>
        unit:                  char_string           >>
-                              ss                    >>
+                              ms                    >>
        receivers:             c_ident_vec           >>
        eol                                          >>
         (Signal {
@@ -596,14 +599,14 @@ named!(pub message<CompleteByteSlice, Message>,
   do_parse!(
                   multispace0    >>
                   tag!("BO_")    >>
-                  ss             >>
+                  ms             >>
     message_id:   message_id     >>
-                  ss             >>
+                  ms             >>
     message_name: c_ident        >>
                   colon          >>
-                  ss             >>
+                  ms             >>
     message_size: u64_s          >>
-                  ss             >>
+                  ms             >>
     transmitter:  transmitter    >>
     signals:      many0!(signal) >>
     (Message {
@@ -622,7 +625,7 @@ named!(pub attribute_default<CompleteByteSlice, AttributeDefault>,
                          tag!("BA_DEF_DEF_") >>
                          space1              >>
         attribute_name:  char_string         >>
-                         ss                  >>
+                         ms                  >>
         attribute_value: attribute_value     >>
                          semi_colon          >>
                          eol                 >>
@@ -633,9 +636,9 @@ named!(pub attribute_default<CompleteByteSlice, AttributeDefault>,
 named!(pub node_comment<CompleteByteSlice, Comment>,
     do_parse!(
                    tag!("BU_") >>
-                   ss          >>
+                   ms          >>
         node_name: c_ident     >>
-                   ss          >>
+                   ms          >>
         comment:   char_string >>
         (Comment::Node { node_name, comment })
     )
@@ -644,9 +647,9 @@ named!(pub node_comment<CompleteByteSlice, Comment>,
 named!(pub message_comment<CompleteByteSlice, Comment>,
     do_parse!(
                     tag!("BO_") >>
-                    ss          >>
+                    ms          >>
         message_id: message_id  >>
-                    ss          >>
+                    ms          >>
         comment:    char_string >>
         (Comment::Message { message_id, comment })
     )
@@ -655,11 +658,11 @@ named!(pub message_comment<CompleteByteSlice, Comment>,
 named!(pub signal_comment<CompleteByteSlice, Comment>,
     do_parse!(
                      tag!("SG_") >>
-                     ss          >>
+                     ms          >>
         message_id:  message_id  >>
-                     ss          >>
+                     ms          >>
         signal_name: c_ident     >>
-                     ss          >>
+                     ms          >>
         comment:     char_string >>
         (Comment::Signal { message_id, signal_name, comment })
     )
@@ -668,9 +671,9 @@ named!(pub signal_comment<CompleteByteSlice, Comment>,
 named!(pub env_var_comment<CompleteByteSlice, Comment>,
     do_parse!(
                       tag!("EV_") >>
-                      ss          >>
+                      ms          >>
         env_var_name: c_ident     >>
-                      ss          >>
+                      ms          >>
         comment:      char_string >>
         (Comment::EnvVar { env_var_name, comment })
     )
@@ -687,7 +690,7 @@ named!(pub comment<CompleteByteSlice, Comment>,
     do_parse!(
            multispace0                        >>
            tag!("CM_")                        >>
-           ss                                 >>
+           ms                                 >>
         c: alt!( node_comment
                | message_comment
                | env_var_comment
@@ -703,7 +706,7 @@ named!(pub comment<CompleteByteSlice, Comment>,
 named!(pub value_description<CompleteByteSlice, ValDescription>,
     do_parse!(
         a: double      >>
-           ss          >>
+           ms          >>
         b: char_string >>
         (ValDescription { a: a, b: b })
     )
@@ -712,11 +715,11 @@ named!(pub value_description<CompleteByteSlice, ValDescription>,
 named!(pub value_description_for_signal<CompleteByteSlice, ValueDescription>,
     do_parse!(
                      tag!("VAL_")  >>
-                     ss            >>
+                     ms            >>
         message_id:  message_id    >>
-                     ss            >>
+                     ms            >>
         signal_name: c_ident       >>
-        value_descriptions:  many_till!(preceded!(ss, value_description), preceded!(opt!(ss), semi_colon)) >>
+        value_descriptions:  many_till!(preceded!(ms, value_description), preceded!(opt!(ms), semi_colon)) >>
         (ValueDescription::Signal {
             message_id,
             signal_name,
@@ -728,9 +731,9 @@ named!(pub value_description_for_signal<CompleteByteSlice, ValueDescription>,
 named!(pub value_description_for_env_var<CompleteByteSlice, ValueDescription>,
     do_parse!(
                       tag!("VAL_")                                                                        >>
-                      ss                                                                                  >>
+                      ms                                                                                  >>
         env_var_name: c_ident                                                                             >>
-        value_descriptions: many_till!(preceded!(ss, value_description), preceded!(opt!(ss), semi_colon)) >>
+        value_descriptions: many_till!(preceded!(ms, value_description), preceded!(opt!(ms), semi_colon)) >>
         (ValueDescription::EnvironmentVariable {
             env_var_name,
             value_descriptions: value_descriptions.0
@@ -779,26 +782,26 @@ named!(pub environment_variable<CompleteByteSlice, EnvironmentVariable>,
     do_parse!(
                        multispace0                                  >>
                        tag!("EV_")                                  >>
-                       ss                                           >>
+                       ms                                           >>
         env_var_name:  c_ident                                      >>
                        colon                                        >>
-                       ss                                           >>
+                       ms                                           >>
         env_var_type:  env_var_type                                 >>
-                       ss                                           >>
+                       ms                                           >>
                        brk_open                                     >>
         min:           i64_digit                                    >>
                        pipe                                         >>
         max:           i64_digit                                    >>
                        brk_close                                    >>
-                       ss                                           >>
+                       ms                                           >>
         unit:          char_string                                  >>
-                       ss                                           >>
+                       ms                                           >>
         initial_value: double                                       >>
-                       ss                                           >>
+                       ms                                           >>
         ev_id:         i64_digit                                    >>
-                       ss                                           >>
+                       ms                                           >>
         access_type:   access_type                                  >>
-                       ss                                           >>
+                       ms                                           >>
         access_nodes:  separated_list!(comma, access_node) >>
                        semi_colon                                   >>
                        eol                                          >>
@@ -820,10 +823,10 @@ named!(pub environment_variable_data<CompleteByteSlice, EnvironmentVariableData>
     do_parse!(
                       multispace0          >>
                       tag!("ENVVAR_DATA_") >>
-                      ss                   >>
+                      ms                   >>
         env_var_name: c_ident              >>
                       colon                >>
-                      ss                   >>
+                      ms                   >>
         data_size:    u64_s                >>
                       semi_colon           >>
                       eol                  >>
@@ -835,31 +838,31 @@ named!(pub signal_type<CompleteByteSlice, SignalType>,
     do_parse!(
         multispace0                   >>
         tag!("SGTYPE_")               >>
-                          ss          >>
+                          ms          >>
         signal_type_name: c_ident     >>
                           colon       >>
-                          ss          >>
+                          ms          >>
         signal_size:      u64_s       >>
                           at          >>
         byte_order:       byte_order  >>
         value_type:       value_type  >>
-                          ss          >>
+                          ms          >>
                           brc_open    >>
         factor:           double      >>
                           comma       >>
         offset:           double      >>
                           brc_close   >>
-                          ss          >>
+                          ms          >>
                           brk_open    >>
         min:              double      >>
                           pipe        >>
         max:              double      >>
                           brk_close   >>
-                          ss          >>
+                          ms          >>
         unit:             char_string >>
-                          ss          >>
+                          ms          >>
         default_value:    double      >>
-                          ss          >>
+                          ms          >>
         value_table:      c_ident     >>
                           semi_colon  >>
                           eol         >>
@@ -907,9 +910,9 @@ named!(pub attribute_value<CompleteByteSlice, AttributeValue>,
 named!(pub network_node_attribute_value<CompleteByteSlice, AttributeValuedForObjectType>,
     do_parse!(
                    tag!("BU_")     >>
-                   ss              >>
+                   ms              >>
         node_name: c_ident         >>
-                   ss              >>
+                   ms              >>
         value:     attribute_value >>
         (AttributeValuedForObjectType::NetworkNodeAttributeValue(node_name, value))
     )
@@ -918,9 +921,9 @@ named!(pub network_node_attribute_value<CompleteByteSlice, AttributeValuedForObj
 named!(pub message_definition_attribute_value<CompleteByteSlice, AttributeValuedForObjectType>,
     do_parse!(
                     tag!("BO_")           >>
-                    ss                    >>
+                    ms                    >>
         message_id: message_id            >>
-                    ss                    >>
+                    ms                    >>
         value:      opt!(attribute_value) >>
         (AttributeValuedForObjectType::MessageDefinitionAttributeValue(message_id, value))
     )
@@ -929,11 +932,11 @@ named!(pub message_definition_attribute_value<CompleteByteSlice, AttributeValued
 named!(pub signal_attribute_value<CompleteByteSlice, AttributeValuedForObjectType>,
     do_parse!(
                      tag!("SG_")     >>
-                     ss              >>
+                     ms              >>
         message_id:  message_id      >>
-                     ss              >>
+                     ms              >>
         signal_name: c_ident         >>
-                     ss              >>
+                     ms              >>
         value:       attribute_value >>
         (AttributeValuedForObjectType::SignalAttributeValue(message_id, signal_name, value))
     )
@@ -942,9 +945,9 @@ named!(pub signal_attribute_value<CompleteByteSlice, AttributeValuedForObjectTyp
 named!(pub env_variable_attribute_value<CompleteByteSlice, AttributeValuedForObjectType>,
     do_parse!(
                       tag!("EV_")     >>
-                      ss              >>
+                      ms              >>
         env_var_name: c_ident         >>
-                      ss              >>
+                      ms              >>
         value:        attribute_value >>
         (AttributeValuedForObjectType::EnvVariableAttributeValue(env_var_name, value))
     )
@@ -958,9 +961,9 @@ named!(pub attribute_value_for_object<CompleteByteSlice, AttributeValueForObject
     do_parse!(
                          multispace0 >>
                          tag!("BA_") >>
-                         ss          >>
+                         ms          >>
         attribute_name:  char_string >>
-               ss          >>
+               ms          >>
         attribute_value: alt!(
                               network_node_attribute_value       |
                               message_definition_attribute_value |
@@ -979,7 +982,7 @@ named!(pub attribute_value_for_object<CompleteByteSlice, AttributeValueForObject
 named!(pub attribute_definition_node<CompleteByteSlice, AttributeDefinition>,
     do_parse!(
            tag!("BU_") >>
-           ss          >>
+           ms          >>
         x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| String::from_utf8(x.as_bytes().to_vec()).unwrap()) >>
         (AttributeDefinition::Node(x))
     )
@@ -989,7 +992,7 @@ named!(pub attribute_definition_node<CompleteByteSlice, AttributeDefinition>,
 named!(pub attribute_definition_signal<CompleteByteSlice, AttributeDefinition>,
     do_parse!(
            tag!("SG_") >>
-           ss          >>
+           ms          >>
         x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| String::from_utf8(x.as_bytes().to_vec()).unwrap()) >>
         (AttributeDefinition::Signal(x))
     )
@@ -999,7 +1002,7 @@ named!(pub attribute_definition_signal<CompleteByteSlice, AttributeDefinition>,
 named!(pub attribute_definition_environment_variable<CompleteByteSlice, AttributeDefinition>,
     do_parse!(
            tag!("EV_") >>
-           ss          >>
+           ms          >>
         x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| String::from_utf8(x.as_bytes().to_vec()).unwrap()) >>
         (AttributeDefinition::EnvironmentVariable(x))
     )
@@ -1009,7 +1012,7 @@ named!(pub attribute_definition_environment_variable<CompleteByteSlice, Attribut
 named!(pub attribute_definition_message<CompleteByteSlice, AttributeDefinition>,
     do_parse!(
            tag!("BO_") >>
-           ss          >>
+           ms          >>
         x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| String::from_utf8(x.as_bytes().to_vec()).unwrap()) >>
         (AttributeDefinition::Message(x))
     )
@@ -1018,7 +1021,7 @@ named!(pub attribute_definition_message<CompleteByteSlice, AttributeDefinition>,
 // TODO add properties
 named!(pub attribute_definition_plain<CompleteByteSlice, AttributeDefinition>,
     do_parse!(
-           ss          >>
+           ms          >>
         x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| String::from_utf8(x.as_bytes().to_vec()).unwrap()) >>
         (AttributeDefinition::Plain(x))
     )
@@ -1028,7 +1031,7 @@ named!(pub attribute_definition<CompleteByteSlice, AttributeDefinition>,
     do_parse!(
         multispace0     >>
         tag!("BA_DEF_") >>
-        ss              >>
+        ms              >>
         def: alt!(attribute_definition_node                 |
                   attribute_definition_signal               |
                   attribute_definition_environment_variable |
@@ -1068,8 +1071,8 @@ named!(pub node<CompleteByteSlice, Node>,
     do_parse!(
             multispace0                           >>
             tag!("BU_:")                          >>
-            ss                                    >>
-        li: separated_list!(ss, c_ident) >>
+            ms                                    >>
+        li: separated_list!(ms, c_ident) >>
         eol                                       >>
         (Node(li))
     )
@@ -1079,13 +1082,13 @@ named!(pub signal_type_ref<CompleteByteSlice, SignalTypeRef>,
     do_parse!(
                           multispace0     >>
                           tag!("SGTYPE_") >>
-                          ss              >>
+                          ms              >>
         message_id:       message_id      >>
-                          ss              >>
+                          ms              >>
         signal_name:      c_ident         >>
-                          ss              >>
+                          ms              >>
                           colon           >>
-                          ss              >>
+                          ms              >>
         signal_type_name: c_ident         >>
                           semi_colon      >>
                           eol             >>
@@ -1101,10 +1104,10 @@ named!(pub value_table<CompleteByteSlice, ValueTable>,
     do_parse!(
                             multispace0 >>
                             tag!("VAL_TABLE_")      >>
-                            ss                      >>
+                            ms                      >>
         value_table_name:   c_ident                 >>
-                            ss                      >>
-        value_descriptions: many_till!(preceded!(ss, value_description), preceded!(ss, semi_colon)) >>
+                            ms                      >>
+        value_descriptions: many_till!(preceded!(ms, value_description), preceded!(ms, semi_colon)) >>
         eol >>
         (ValueTable {
             value_table_name: value_table_name,
@@ -1129,11 +1132,11 @@ named!(pub signal_extended_value_type_list<CompleteByteSlice, SignalExtendedValu
     do_parse!(
         multispace0 >>
         tag!("SIG_VALTYPE_")                                   >>
-        ss                                                     >>
+        ms                                                     >>
         message_id: message_id                                 >>
-        ss                                                     >>
+        ms                                                     >>
         signal_name: c_ident                                   >>
-        ss                                                     >>
+        ms                                                     >>
         signal_extended_value_type: signal_extended_value_type >>
         semi_colon                                             >>
         eol                                                    >>
@@ -1157,11 +1160,11 @@ named!(pub message_transmitter<CompleteByteSlice, MessageTransmitter>,
     do_parse!(
                     multispace0 >>
                      tag!("BO_TX_BU_")      >>
-                     ss                     >>
+                     ms                     >>
         message_id:  message_id             >>
-                     ss                     >>
+                     ms                     >>
                      colon                  >>
-                     ss                     >>
+                     ms                     >>
         transmitter: message_transmitters   >>
                      semi_colon             >>
                      eol >>
@@ -1176,16 +1179,16 @@ named!(pub signal_groups<CompleteByteSlice, SignalGroups>,
     do_parse!(
         multispace0                                          >>
         tag!("SIG_GROUP_")                                   >>
-        ss                                                   >>
+        ms                                                   >>
         message_id: message_id                               >>
-        ss                                                   >>
+        ms                                                   >>
         signal_group_name: c_ident                           >>
-        ss                                                   >>
+        ms                                                   >>
         repetitions: u64_s                                   >>
-        ss                                                   >>
+        ms                                                   >>
         colon                                                >>
-        ss                                                   >>
-        signal_names: separated_list!(ss, c_ident)  >>
+        ms                                                   >>
+        signal_names: separated_list!(ms, c_ident)           >>
         semi_colon                                           >>
         eol                                                  >>
         (SignalGroups{

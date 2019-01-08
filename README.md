@@ -83,5 +83,9 @@ can-dbc = "1.0"
 - [x] signal_groups
 - [x] signal_extended_value_type_list
 
+# Deviating from standard
+- multispace between parsers instead of single space allowing e.g. (two spaces) `SIG_GROUP  13`.
+- `VAL_` suffix may be ` ;` or `;`
+
 # Alternatives
 - [canparse](https://github.com/jmagnuson/canparse)
