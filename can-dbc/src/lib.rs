@@ -458,4 +458,58 @@ impl DBC {
             Err(e) => Err(Error::NomError(e))
         }
     }
+
+    /// Lookup a message comment
+    pub fn message_comment(&self, message_id: &MessageId) -> Option<&str> {
+        self.comments
+        .iter()
+        .filter_map(|x| {
+            match x {
+                Comment::Message { message_id: ref x_message_id, ref comment } => {
+                    if x_message_id == message_id {
+                        Some(comment.as_str())
+                    } else {
+                        None
+                    }
+                },
+                _ => None
+            }
+        }).next()
+    }
+
+    /// Lookup a signal comment
+    pub fn signal_comment(&self, message_id: &MessageId, signal_name: &str) -> Option<&str> {
+        self.comments
+        .iter()
+        .filter_map(|x| {
+            match x {
+                Comment::Signal { message_id: ref x_message_id, signal_name: ref x_signal_name, comment } => {
+                    if x_message_id == message_id && x_signal_name == signal_name {
+                        Some(comment.as_str())
+                    } else {
+                        None
+                    }
+                },
+                _ => None
+            }
+        }).next()
+    }
+
+    /// Lookup value descriptions for signal
+    pub fn value_descriptions_for_signal(&self, message_id: &MessageId, signal_name: &str) -> Option<&[ValDescription]> {
+        self.value_descriptions
+            .iter()
+            .filter_map(|x| {
+                match x {
+                    ValueDescription::Signal { message_id: ref x_message_id, signal_name: ref x_signal_name, ref value_descriptions} => {
+                        if x_message_id == message_id && x_signal_name == signal_name {
+                            Some(value_descriptions.as_slice())
+                        } else {
+                            None
+                        }
+                    },
+                    _ => None
+                }
+            }).next()
+    }
 }

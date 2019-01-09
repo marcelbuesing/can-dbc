@@ -23,7 +23,7 @@ fn main() {
     f.read_to_end(&mut buffer).expect("Failed to read file");
     match can_dbc::DBC::from_slice(&buffer) {
         Ok(dbc_content) => {
-            let code = can_reader(dbc_content.messages(), dbc_content.value_descriptions()).expect("Failed to generate rust code");
+            let code = can_reader(&dbc_content).expect("Failed to generate rust code");
             println!("{}", code.to_string());
         },
         Err(e) => {

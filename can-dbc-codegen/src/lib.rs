@@ -3,10 +3,10 @@
 
 extern crate test;
 
-use codegen::{Const, Enum, Function, Struct, Scope, Impl, Variant};
-use can_dbc::{ByteOrder, Message, MessageId, Signal, ValueDescription};
+use codegen::{Const, Enum, Function, Struct, Scope, Impl};
+use can_dbc::{DBC, ByteOrder, Message, MessageId, Signal, ValueDescription};
 use std::fmt::Write;
-use heck::{CamelCase, SnakeCase, ShoutySnakeCase};
+use heck::{CamelCase, ShoutySnakeCase};
 
 
 #[cfg(test)]
@@ -78,35 +78,18 @@ pub fn signal_enum_impl(val_desc: &ValueDescription) -> Option<Impl> {
     None
 }
 
-/// Try to find a value description given a message id and signal name
-/// TODO super inefficient this should be likely handled using a HashMap lookup
-fn enum_type_for_signal<'a>(message_id: &MessageId, signal_name: &str, value_descriptions: &'a[ValueDescription]) -> Option<codegen::Type> {
-    value_descriptions
-        .iter()
-        .filter_map(|x| {
-            match x {
-                ValueDescription::Signal { message_id: x_message_id, signal_name: x_signal_name, value_descriptions: _} => {
-                    if x_message_id == message_id && x_signal_name == signal_name {
-                        Some(codegen::Type::new(&to_enum_name(message_id, signal_name)))
-                    } else {
-                        None
-                    }
-                },
-                _ => None
-            }
-        }).next()
-}
-
-pub fn signal_fn(signal: &Signal, message_id: &MessageId, value_descriptions: &[ValueDescription]) -> Result<Function> {
+pub fn signal_fn(dbc: &DBC, signal: &Signal, message_id: &MessageId) -> Result<Function> {
     let mut signal_fn = codegen::Function::new(&signal.name().to_lowercase());
     signal_fn.vis("pub");
     signal_fn.arg_ref_self();
 
     // Attempt to find a matching enum return type, default to `f64` otherwise
-    let ret_enum_type = enum_type_for_signal(message_id, signal.name(), value_descriptions);
+    let ret_enum_type = dbc.value_descriptions_for_signal(message_id, signal.name()).map(|_| codegen::Type::new(&to_enum_name(message_id, signal.name())));
     signal_fn.ret(ret_enum_type.clone().unwrap_or_else(|| codegen::Type::new("f64")));
 
-    signal_fn.doc(&format!("Read {} signal from can frame - data field\nsignal start_bit: {}\nsignal factor: {}\nsignal offset: {}", signal.name(), signal.start_bit(), signal.factor(), signal.offset()));
+    let default_signal_comment = format!("Read {} signal from can frame", signal.name());
+    let signal_comment = dbc.signal_comment(message_id, signal.name()).unwrap_or(&default_signal_comment);
+    signal_fn.doc(signal_comment);
 
     let read_byte_order = match signal.byte_order() {
         ByteOrder::LittleEndian => "let frame_payload: u64 = LE::read_u64(self.frame_payload);",
@@ -146,15 +129,18 @@ fn message_const(message: &Message) -> Const {
     c
 }
 
-fn message_struct(message: &Message) -> Struct {
+fn message_struct(dbc: &DBC, message: &Message) -> Struct {
     let mut message_struct = Struct::new(&message.message_name().to_camel_case());
+    if let Some(message_comment) = dbc.message_comment(message.message_id()) {
+        message_struct.doc(message_comment);
+    }
     message_struct.vis("pub");
     message_struct.generic("'a");
     message_struct.field("frame_payload", "&'a[u8]");
     message_struct
 }
 
-fn message_impl(message: &Message, value_descriptions: &[ValueDescription]) -> Result<Impl> {
+fn message_impl(dbc: &DBC, message: &Message) -> Result<Impl> {
 
     let mut msg_impl = Impl::new(codegen::Type::new(&message.message_name().to_camel_case()));
     msg_impl.generic("'a");
@@ -167,22 +153,23 @@ fn message_impl(message: &Message, value_descriptions: &[ValueDescription]) -> R
     new_fn.ret(codegen::Type::new(&message.message_name().to_camel_case()));
 
     for signal in message.signals() {
-        msg_impl.push_fn(signal_fn(signal, message.message_id(), value_descriptions)?);
+        msg_impl.push_fn(signal_fn(dbc, signal, message.message_id())?);
     }
 
     Ok(msg_impl)
 }
 
-pub fn can_reader(messages: &[Message], value_descriptions: &[ValueDescription]) -> Result<Scope> {
+pub fn can_reader(dbc: &DBC) -> Result<Scope> {
+
     let mut scope = Scope::new();
     scope.raw("#[allow(dead_code, unused_imports)]\n");
     scope.import("byteorder", "{ByteOrder, LE, BE}");
 
-    for message in messages {
+    for message in dbc.messages() {
         scope.push_const(message_const(message));
     }
 
-    for value_description in value_descriptions {
+    for value_description in dbc.value_descriptions() {
         if let Some(signal_enum) = signal_enum(value_description) {
             scope.push_enum(signal_enum);
         }
@@ -192,9 +179,9 @@ pub fn can_reader(messages: &[Message], value_descriptions: &[ValueDescription])
         }
     }
 
-    for message in messages {
-        scope.push_struct(message_struct(message));
-        scope.push_impl(message_impl(message, value_descriptions)?);
+    for message in dbc.messages() {
+        scope.push_struct(message_struct(&dbc, message));
+        scope.push_impl(message_impl(&dbc, message)?);
     }
 
     Ok(scope)
