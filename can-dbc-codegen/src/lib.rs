@@ -44,6 +44,7 @@ pub fn signal_enum(val_desc: &ValueDescription) -> Option<Enum> {
         let mut sig_enum = Enum::new(&to_enum_name(message_id, signal_name));
         sig_enum.vis("pub");
         sig_enum.repr("u64");
+        sig_enum.derive("Debug");
         for desc in value_descriptions {
             sig_enum.new_variant(&desc.b().to_camel_case());
         }
@@ -134,6 +135,7 @@ fn message_struct(dbc: &DBC, message: &Message) -> Struct {
     if let Some(message_comment) = dbc.message_comment(message.message_id()) {
         message_struct.doc(message_comment);
     }
+    message_struct.derive("Debug");
     message_struct.vis("pub");
     message_struct.generic("'a");
     message_struct.field("frame_payload", "&'a[u8]");
