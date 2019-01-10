@@ -105,7 +105,14 @@ pub fn signal_fn(dbc: &DBC, signal: &Signal, message_id: &MessageId) -> Result<F
        write!(&mut calc, "{}::from((", to_enum_name(message_id, signal.name()))?; // TODO to_valid_upper_case called multiple times
     }
 
-    write!(&mut calc, "((frame_payload >> {}) & {:#X}) as f64", signal.start_bit(), bit_msk_const)?;
+    // No shift required if start_bit == 0
+    let shift = if *signal.start_bit() != 0 {
+        format!("(frame_payload >> {})", signal.start_bit())
+    } else {
+        format!("frame_payload")
+    };
+
+    write!(&mut calc, "({} & {:#X}) as f64", shift, bit_msk_const)?;
 
     if *signal.factor() != 1.0 {
         write!(&mut calc, " * {:.6}", signal.factor())?;
