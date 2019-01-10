@@ -42,6 +42,7 @@ pub fn signal_enum(val_desc: &ValueDescription) -> Option<Enum> {
     if let ValueDescription::Signal{ ref message_id, ref signal_name, ref value_descriptions } = val_desc {
 
         let mut sig_enum = Enum::new(&to_enum_name(message_id, signal_name));
+        sig_enum.allow("dead_code");
         sig_enum.vis("pub");
         sig_enum.repr("u64");
         sig_enum.derive("Debug");
@@ -64,8 +65,9 @@ pub fn signal_enum_impl(val_desc: &ValueDescription) -> Option<Impl> {
         let mut enum_impl = Impl::new(codegen::Type::new(&enum_name));
         enum_impl.impl_trait("From<u64>");
 
-        let new_fn = enum_impl.new_fn("from");
-        new_fn.arg("val", codegen::Type::new("u64"));
+        let from_fn = enum_impl.new_fn("from");
+        from_fn.allow("dead_code");
+        from_fn.arg("val", codegen::Type::new("u64"));
 
         let mut matching = String::new();
         write!(&mut matching, "match val {{\n").unwrap();
@@ -75,8 +77,8 @@ pub fn signal_enum_impl(val_desc: &ValueDescription) -> Option<Impl> {
         write!(&mut matching, "    value => {}::XValue(value),\n", enum_name).unwrap();
         write!(&mut matching, "}}").unwrap();
 
-        new_fn.line(matching);
-        new_fn.ret(codegen::Type::new("Self"));
+        from_fn.line(matching);
+        from_fn.ret(codegen::Type::new("Self"));
 
         return Some(enum_impl);
     }
@@ -85,6 +87,7 @@ pub fn signal_enum_impl(val_desc: &ValueDescription) -> Option<Impl> {
 
 pub fn signal_fn(dbc: &DBC, signal: &Signal, message_id: &MessageId) -> Result<Function> {
     let mut signal_fn = codegen::Function::new(&signal.name().to_lowercase());
+    signal_fn.allow("dead_code");
     signal_fn.vis("pub");
     signal_fn.arg_ref_self();
 
@@ -123,7 +126,7 @@ pub fn signal_fn(dbc: &DBC, signal: &Signal, message_id: &MessageId) -> Result<F
     }
 
     if *signal.offset() != 0.0 {
-        write!(&mut calc, " + {} as f64", signal.offset())?;
+        write!(&mut calc, " + {}f64", signal.offset())?;
     }
 
     if ret_enum_type.is_some() {
@@ -137,6 +140,7 @@ pub fn signal_fn(dbc: &DBC, signal: &Signal, message_id: &MessageId) -> Result<F
 fn message_const(message: &Message) -> Const {
     let const_name = format!("MESSAGE_ID_{}", message.message_name().to_shouty_snake_case());
     let mut c = Const::new(&const_name, codegen::Type::new("u32"), message.message_id().0.to_string());
+    c.allow("dead_code");
     c.vis("pub");
     c
 }
@@ -146,6 +150,7 @@ fn message_struct(dbc: &DBC, message: &Message) -> Struct {
     if let Some(message_comment) = dbc.message_comment(message.message_id()) {
         message_struct.doc(message_comment);
     }
+    message_struct.allow("dead_code");
     message_struct.derive("Debug");
     message_struct.vis("pub");
     message_struct.generic("'a");
@@ -159,6 +164,7 @@ fn message_impl(dbc: &DBC, message: &Message) -> Result<Impl> {
     msg_impl.generic("'a");
     msg_impl.target_generic("'a");
     let new_fn = msg_impl.new_fn("new");
+    new_fn.allow("dead_code");
     new_fn.vis("pub");
     new_fn.arg("frame_payload", codegen::Type::new("&[u8]"));
 
@@ -175,7 +181,6 @@ fn message_impl(dbc: &DBC, message: &Message) -> Result<Impl> {
 pub fn can_reader(dbc: &DBC) -> Result<Scope> {
 
     let mut scope = Scope::new();
-    scope.raw("#[allow(dead_code, unused_imports)]\n");
     scope.import("byteorder", "{ByteOrder, LE, BE}");
 
     for message in dbc.messages() {
