@@ -15,8 +15,10 @@ heck = "0.3"
 clap = "2.32"
 can-dbc = { path = "../can-dbc" }
 
+# TODO replace this with upstream version once changes have been merged and released
 [dependencies.codegen]
-path = "./codegen"
+git = "https://github.com/marcelbuesing/codegen.git"
+rev = "d6ffa62757254c847c2fe5dac1471e7175e6e220"
 
 [dependencies.nom]
 version = "4.1"
