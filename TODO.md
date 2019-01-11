@@ -1,0 +1,6 @@
+- [ ] Handle escaped quotes in `char_string` parser e.g. `"abc\"cdef\""`
+- [ ] Check whether the STRING is valid in `BA_DEF_  "SAE_J1939_75_SpecVersion" STRING;` / `BA_DEF_ SG_  "GenSigEVName" STRING;`
+- [ ] Better error messages for failed parsers
+- [ ] Handle incomplete parsing by partially generating file to the point where the parser failed
+- [ ] Handle missing and multi trailing space in DBC file
+- [ ] Handle possible spaces before commas
