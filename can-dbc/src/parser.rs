@@ -623,7 +623,7 @@ named!(pub attribute_default<CompleteByteSlice, AttributeDefault>,
     do_parse!(
                         multispace0          >>
                          tag!("BA_DEF_DEF_") >>
-                         space1              >>
+                         ms                  >>
         attribute_name:  char_string         >>
                          ms                  >>
         attribute_value: attribute_value     >>
@@ -1021,7 +1021,6 @@ named!(pub attribute_definition_message<CompleteByteSlice, AttributeDefinition>,
 // TODO add properties
 named!(pub attribute_definition_plain<CompleteByteSlice, AttributeDefinition>,
     do_parse!(
-           ms          >>
         x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| String::from_utf8(x.as_bytes().to_vec()).unwrap()) >>
         (AttributeDefinition::Plain(x))
     )
