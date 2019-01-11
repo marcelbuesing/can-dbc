@@ -1,5 +1,5 @@
 [package]
-name = "can-dbc-codegen"
+name = "dbcc"
 version = "0.1.0"
 license = "MIT"
 homepage = "https://github.com/marcelbuesing/can-dbc"
@@ -8,9 +8,13 @@ authors = ["marcelbuesing <buesing.marcel@googlemail.com>"]
 keywords = ["dbc", "can", "automotive", "ecu"]
 edition = "2018"
 
+[[bin]]
+bench = false
+path = "src/main.rs"
+name = "dbcc"
+
 [dependencies]
 byteorder = "1.2"
-# codegen = "0.1.0"
 heck = "0.3"
 clap = "2.32"
 can-dbc = { path = "../can-dbc" }

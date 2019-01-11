@@ -1,5 +1,5 @@
 use clap::{Arg, App};
-use can_dbc_codegen::can_reader;
+use dbcc::can_reader;
 use std::fs::File;
 use std::io::prelude::*;
 use std::cmp;
@@ -9,7 +9,8 @@ use nom::verbose_errors;
 
 fn main() {
 
-    let matches = App::new("can-dbc-codegen")
+    let matches = App::new("dbcc")
+                          .about("DBC to rust code compiler")
                           .arg(Arg::with_name("INPUT")
                                .help("Sets the dbc input path file to use")
                                .required(true)

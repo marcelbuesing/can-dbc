@@ -1,4 +1,4 @@
-# can-dbc-codegen
+# dbcc
 
 # Install
 ```
@@ -7,7 +7,7 @@ cargo install can-dbc-codegen
 
 # Run
 ```
-can-dbc-codegen j1939_utf8.dbc > j1939_utf8.rs
+dbcc j1939_utf8.dbc > j1939_utf8.rs
 ```
 
 # Include
