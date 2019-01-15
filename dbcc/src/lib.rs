@@ -112,9 +112,11 @@ pub fn signal_fn(dbc: &DBC, signal: &Signal, message_id: &MessageId) -> Result<F
        write!(&mut calc, "{}::from((", to_enum_name(message_id, signal.name()))?; // TODO to_valid_upper_case called multiple times
     }
 
+    let signal_shift = shift_amount(*signal.byte_order(), *signal.start_bit(), *signal.signal_size());
+
     // No shift required if start_bit == 0
-    let shift = if *signal.start_bit() != 0 {
-        format!("(frame_payload >> {})", signal.start_bit())
+    let shift = if signal_shift != 0 {
+        format!("(frame_payload >> {})", signal_shift)
     } else {
         format!("frame_payload")
     };
@@ -135,6 +137,13 @@ pub fn signal_fn(dbc: &DBC, signal: &Signal, message_id: &MessageId) -> Result<F
 
     signal_fn.line(calc);
     Ok(signal_fn)
+}
+
+fn shift_amount(byte_order: ByteOrder, start_bit: u64, signal_size: u64) -> u64 {
+    match byte_order {
+        ByteOrder::LittleEndian => start_bit,
+        ByteOrder::BigEndian => 64 - signal_size - ((start_bit / 8) * 8 + (7 - (start_bit % 8))),
+    }
 }
 
 fn message_const(message: &Message) -> Const {
