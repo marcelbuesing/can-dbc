@@ -15,7 +15,7 @@ path = "src/main.rs"
 name = "dbcc"
 
 [dependencies]
-can-dbc = "1.0"
+can-dbc = { version = "1.0.1",  path = "../can-dbc" }
 clap = "2.32"
 heck = "0.3"
 log = "0.4"
