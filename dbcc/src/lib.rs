@@ -5,8 +5,10 @@ extern crate test;
 
 use codegen::{Const, Enum, Function, Struct, Scope, Impl};
 use can_dbc::{DBC, ByteOrder, Message, MessageId, Signal, ValueDescription};
-use std::fmt::Write;
 use heck::{CamelCase, ShoutySnakeCase};
+use log::{warn, info};
+
+use std::fmt::Write;
 
 
 #[cfg(test)]
@@ -32,7 +34,45 @@ mod tests {
     }
 }
 
+/// Character that is prefixed before type names that are
+/// are not starting with an alphabetic char.
+const PREFIX_CHAR: char = 'X';
+
+/// Character that is used to replace invalid characters
+/// in type names.
+const REPLACEMENT_CHAR: char = 'X';
+
 type Result<T> = std::result::Result<T, std::fmt::Error>;
+
+
+pub trait TypeName: ToOwned {
+    fn to_type_name(&self) -> Self::Owned;
+}
+
+impl TypeName for str {
+    fn to_type_name(&self) -> String {
+        let mut out = String::with_capacity(self.len() + 1);
+        let mut chars = self.chars();
+        if let Some(first) = chars.next() {
+            if !first.is_alphabetic() && first != '_' {
+                warn!("string: {} is prefixed with `{}`", self, PREFIX_CHAR);
+                out.push(PREFIX_CHAR);
+            }
+            out.push(first);
+        }
+
+        while let Some(chr) = chars.next() {
+            if chr.is_digit(10) || chr.is_alphabetic() || chr == '_' {
+                out.push(chr);
+            } else {
+                warn!("`{}` character in string: {} is replaced by `{}`", chr, self, REPLACEMENT_CHAR);
+                out.push(REPLACEMENT_CHAR);
+            }
+        }
+
+        out
+    }
+}
 
 fn to_enum_name(message_id: &MessageId, signal_name: &str) -> String {
      format!("{}{}", &signal_name.to_camel_case(), message_id.0)
@@ -51,7 +91,7 @@ pub fn signal_enum(val_desc: &ValueDescription) -> Option<Enum> {
         sig_enum.derive("PartialEq");
         sig_enum.derive("Eq");
         for desc in value_descriptions {
-            sig_enum.new_variant(&desc.b().to_camel_case());
+            sig_enum.new_variant(&desc.b().to_camel_case().to_type_name());
         }
         sig_enum.new_variant("XValue(u64)");
         return Some(sig_enum);
@@ -72,7 +112,7 @@ pub fn signal_enum_impl(val_desc: &ValueDescription) -> Option<Impl> {
         let mut matching = String::new();
         write!(&mut matching, "match val {{\n").unwrap();
         for value_description in value_descriptions {
-            write!(&mut matching, "    {} => {}::{},\n", value_description.a(), enum_name, value_description.b().to_camel_case()).unwrap();
+            write!(&mut matching, "    {} => {}::{},\n", value_description.a(), enum_name, value_description.b().to_camel_case().to_type_name()).unwrap();
         }
         write!(&mut matching, "    value => {}::XValue(value),\n", enum_name).unwrap();
         write!(&mut matching, "}}").unwrap();

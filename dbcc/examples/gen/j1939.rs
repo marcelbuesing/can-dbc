@@ -35802,7 +35802,7 @@ impl<'a> Iso15765Funct<'a> {
     #[allow(dead_code)]
     pub fn firstframedatalength(&self) -> f64 {
         let  frame_payload: u64 = BE::read_u64(self.frame_payload);
-        ((frame_payload >> 3) & 0xFFF) as f64
+        ((frame_payload >> 48) & 0xFFF) as f64
     }
 
     /// Read SingleFrameDataLength signal from can frame
@@ -35865,7 +35865,7 @@ impl<'a> Iso15765Phys<'a> {
     #[allow(dead_code)]
     pub fn firstframedatalength(&self) -> f64 {
         let  frame_payload: u64 = BE::read_u64(self.frame_payload);
-        ((frame_payload >> 3) & 0xFFF) as f64
+        ((frame_payload >> 48) & 0xFFF) as f64
     }
 
     /// Read SingleFrameDataLength signal from can frame

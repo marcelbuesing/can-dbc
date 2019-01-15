@@ -1,11 +1,12 @@
 use clap::{Arg, App};
 use dbcc::can_reader;
+use nom;
+use nom::verbose_errors;
+use pretty_env_logger;
+
 use std::fs::File;
 use std::io::prelude::*;
 use std::cmp;
-
-use nom;
-use nom::verbose_errors;
 
 fn main() {
 
@@ -16,6 +17,8 @@ fn main() {
                                .required(true)
                                .index(1))
                           .get_matches();
+
+    pretty_env_logger::init();
 
     let input_path = matches.value_of("INPUT").expect("INPUT missing");
 

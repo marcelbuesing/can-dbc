@@ -14,10 +14,11 @@ path = "src/main.rs"
 name = "dbcc"
 
 [dependencies]
-byteorder = "1.2"
-heck = "0.3"
-clap = "2.32"
 can-dbc = { path = "../can-dbc" }
+clap = "2.32"
+heck = "0.3"
+log = "0.4"
+pretty_env_logger = "0.3"
 
 # TODO replace this with upstream version once changes have been merged and released
 [dependencies.codegen]
@@ -27,3 +28,6 @@ rev = "d6ffa62757254c847c2fe5dac1471e7175e6e220"
 [dependencies.nom]
 version = "4.1"
 features = ["verbose-errors"]
+
+[dev-dependencies]
+byteorder = "1.2"
