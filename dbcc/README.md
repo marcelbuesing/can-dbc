@@ -9,18 +9,18 @@ dbcc can translate `data base CAN` files into Rust code.
 
 ## Install
 ```
-cargo install can-dbc-codegen
+cargo install dbcc
 ```
 
 ## Run
 ```
-dbcc j1939_utf8.dbc > j1939_utf8.rs
+dbcc j1939.dbc > j1939.rs
 ```
 
 For warnings during the generation run with:
 
 ```
-RUST_LOG=info j1939_utf8.dbc > j1939_utf8.rs
+RUST_LOG=info j1939.dbc > j1939.rs
 ```
 
 ## Include
