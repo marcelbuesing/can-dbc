@@ -36,7 +36,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "can-dbc"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "clap 2.32.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "codegen 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -91,10 +91,10 @@ dependencies = [
 
 [[package]]
 name = "dbcc"
-version = "0.1.0"
+version = "1.0.1"
 dependencies = [
  "byteorder 1.2.7 (registry+https://github.com/rust-lang/crates.io-index)",
- "can-dbc 1.0.0",
+ "can-dbc 1.0.1",
  "clap 2.32.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "codegen 0.1.0 (git+https://github.com/marcelbuesing/codegen.git?rev=d6ffa62757254c847c2fe5dac1471e7175e6e220)",
  "heck 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
