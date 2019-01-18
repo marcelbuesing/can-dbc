@@ -1,4 +1,8 @@
 # Change Log
+## [1.1.0](https://github.com/marcelbuesing/can-dbc/tree/1.1.0) (2019-01-18)
+- Add optional feature `with-serde` and derive Serialize for structs and enums.
+
+# Change Log
 ## [1.0.1](https://github.com/marcelbuesing/can-dbc/tree/1.0.1) (2019-01-15)
 
 ### dbcc
