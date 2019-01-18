@@ -17,6 +17,8 @@ coveralls = { repository = "marcelbuesing/can-dbc", branch = "dev", service = "g
 
 [dependencies]
 derive-getters = "0.0.7"
+serde = { version = "1.0", optional = true }
+serde_derive = { version = "1.0", optional = true }
 
 [dependencies.nom]
 version = "4.1"
@@ -25,3 +27,6 @@ features = ["verbose-errors"]
 [dev-dependencies]
 clap = "2.32"
 codegen = "0.1.0"
+
+[features]
+with-serde = ["serde", "serde_derive"]
