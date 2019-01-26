@@ -4,6 +4,7 @@
 [![Build Status](https://travis-ci.org/marcelbuesing/can-dbc.svg?branch=dev)](https://travis-ci.org/marcelbuesing/can-dbc)
 [![codecov](https://codecov.io/gh/marcelbuesing/can-dbc/branch/dev/graph/badge.svg)](https://codecov.io/gh/marcelbuesing/can-dbc)
 [![docs](https://docs.rs/can-dbc/badge.svg)](https://docs.rs/can-dbc)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmarcelbuesing%2Fcan-dbc.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmarcelbuesing%2Fcan-dbc?ref=badge_shield)
 
 A CAN-dbc format parser written with Rust's [nom](https://github.com/Geal/nom) parser combinator library.
 
@@ -89,3 +90,7 @@ can-dbc = "1.0"
 
 # Alternatives
 - [canparse](https://github.com/jmagnuson/canparse)
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmarcelbuesing%2Fcan-dbc.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmarcelbuesing%2Fcan-dbc?ref=badge_large)
