@@ -2,6 +2,8 @@
 #![feature(test)]
 
 extern crate test;
+#[macro_use]
+extern crate structopt;
 
 use codegen::{Const, Enum, Function, Struct, Scope, Impl};
 use can_dbc::{DBC, ByteOrder, Message, MessageId, Signal, ValueDescription};
@@ -9,7 +11,7 @@ use heck::{CamelCase, ShoutySnakeCase};
 use log::{warn, info};
 
 use std::fmt::Write;
-
+use std::path::PathBuf;
 
 #[cfg(test)]
 mod tests {
@@ -44,6 +46,15 @@ const REPLACEMENT_CHAR: char = 'X';
 
 type Result<T> = std::result::Result<T, std::fmt::Error>;
 
+#[derive(StructOpt, Debug)]
+#[structopt(name = "dbcc", about = "DBC to rust code compiler")]
+pub struct Opt {
+    #[structopt(short = "i", long = "input", parse(from_os_str), help = "DBC file")]
+    pub input: PathBuf,
+
+    #[structopt(long = "with-tokio", help = "Generate Tokio streams.")]
+    pub with_tokio: bool,
+}
 
 pub trait TypeName: ToOwned {
     fn to_type_name(&self) -> Self::Owned;
@@ -140,8 +151,8 @@ pub fn signal_fn(dbc: &DBC, signal: &Signal, message_id: &MessageId) -> Result<F
     signal_fn.doc(signal_comment);
 
     let read_byte_order = match signal.byte_order() {
-        ByteOrder::LittleEndian => "let frame_payload: u64 = LE::read_u64(self.frame_payload);",
-        ByteOrder::BigEndian => "let  frame_payload: u64 = BE::read_u64(self.frame_payload);",
+        ByteOrder::LittleEndian => "let frame_payload: u64 = LE::read_u64(&self.frame_payload);",
+        ByteOrder::BigEndian => "let  frame_payload: u64 = BE::read_u64(&self.frame_payload);",
     };
     signal_fn.line(read_byte_order);
 
@@ -202,23 +213,25 @@ fn message_struct(dbc: &DBC, message: &Message) -> Struct {
     message_struct.allow("dead_code");
     message_struct.derive("Debug");
     message_struct.vis("pub");
-    message_struct.generic("'a");
-    message_struct.field("frame_payload", "&'a[u8]");
+    message_struct.field("frame_payload", "Vec<u8>");
     message_struct
 }
 
-fn message_impl(dbc: &DBC, message: &Message) -> Result<Impl> {
+fn message_impl(opt: &Opt, dbc: &DBC, message: &Message) -> Result<Impl> {
 
     let mut msg_impl = Impl::new(codegen::Type::new(&message.message_name().to_camel_case()));
-    msg_impl.generic("'a");
-    msg_impl.target_generic("'a");
+
     let new_fn = msg_impl.new_fn("new");
     new_fn.allow("dead_code");
     new_fn.vis("pub");
-    new_fn.arg("frame_payload", codegen::Type::new("&[u8]"));
+    new_fn.arg("frame_payload", codegen::Type::new("Vec<u8>"));
 
     new_fn.line(format!("{} {{ frame_payload }}", message.message_name().to_camel_case()));
     new_fn.ret(codegen::Type::new(&message.message_name().to_camel_case()));
+
+    if opt.with_tokio {
+        msg_impl.push_fn(message_stream(message));
+    }
 
     for signal in message.signals() {
         msg_impl.push_fn(signal_fn(dbc, signal, message.message_id())?);
@@ -227,10 +240,40 @@ fn message_impl(dbc: &DBC, message: &Message) -> Result<Impl> {
     Ok(msg_impl)
 }
 
-pub fn can_reader(dbc: &DBC) -> Result<Scope> {
+/// Generate message stream using socketcan's Broadcast Manager filters via socketcan-tokio.
+fn message_stream(message: &Message) -> Function {
+    let mut stream_fn = codegen::Function::new("stream");
+    stream_fn.allow("dead_code");
+    stream_fn.vis("pub");
+
+    //stream_fn.generic("'b");
+    stream_fn.arg("can_interface", codegen::Type::new("String"));
+    stream_fn.arg("ival1", codegen::Type::new("std::time::Duration"));
+    stream_fn.arg("ival2", codegen::Type::new("std::time::Duration"));
+
+    let ret = format!("Box<Stream<Item = {}, Error = std::io::Error> + Sync + Send>", message.message_name().to_camel_case());
+    stream_fn.ret(ret);
+
+    stream_fn.line("let socket = CanBCMSocket::open_nb(&can_interface).unwrap();");
+    stream_fn.line(format!("let message_id = CanMessageId::try_from({} as u32).unwrap();", message.message_id().0.to_string()));
+    stream_fn.line("let frame_stream = socket.filter_id_incoming_frames(message_id, ival1, ival2).unwrap();");
+    stream_fn.line(format!("let f = frame_stream.map(|frame| {}::new(frame.data().to_vec()));",  message.message_name().to_camel_case()));
+    stream_fn.line("Box::new(f)");
+
+    stream_fn
+}
+
+pub fn can_reader(opt: &Opt, dbc: &DBC) -> Result<Scope> {
 
     let mut scope = Scope::new();
     scope.import("byteorder", "{ByteOrder, LE, BE}");
+
+    if opt.with_tokio {
+        scope.import("socketcan", "CanMessageId");
+        scope.import("socketcan_tokio::bcm", "CanBCMSocket");
+        scope.import("futures", "Stream");
+        scope.import("std::convert", "TryFrom");
+    }
 
     for message in dbc.messages() {
         scope.push_const(message_const(message));
@@ -248,7 +291,7 @@ pub fn can_reader(dbc: &DBC) -> Result<Scope> {
 
     for message in dbc.messages() {
         scope.push_struct(message_struct(&dbc, message));
-        scope.push_impl(message_impl(&dbc, message)?);
+        scope.push_impl(message_impl(opt, &dbc, message)?);
     }
 
     Ok(scope)

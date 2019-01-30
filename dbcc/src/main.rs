@@ -1,33 +1,29 @@
-use clap::{Arg, App};
-use dbcc::can_reader;
+
+
+use dbcc::{Opt, can_reader};
 use nom;
 use nom::verbose_errors;
-use pretty_env_logger;
 
+use pretty_env_logger;
+use structopt::StructOpt;
+
+use std::cmp;
 use std::fs::File;
 use std::io::prelude::*;
-use std::cmp;
+
+
 
 fn main() {
 
-    let matches = App::new("dbcc")
-                          .about("DBC to rust code compiler")
-                          .arg(Arg::with_name("INPUT")
-                               .help("Sets the dbc input path file to use")
-                               .required(true)
-                               .index(1))
-                          .get_matches();
-
     pretty_env_logger::init();
+    let opt = Opt::from_args();
 
-    let input_path = matches.value_of("INPUT").expect("INPUT missing");
-
-    let mut f = File::open(input_path).expect("Failed to open input file");
+    let mut f = File::open(opt.input.clone()).expect("Failed to open input file");
     let mut buffer = Vec::new();
     f.read_to_end(&mut buffer).expect("Failed to read file");
     match can_dbc::DBC::from_slice(&buffer) {
         Ok(dbc_content) => {
-            let code = can_reader(&dbc_content).expect("Failed to generate rust code");
+            let code = can_reader(&opt, &dbc_content).expect("Failed to generate rust code");
             println!("{}", code.to_string());
         },
         Err(e) => {
