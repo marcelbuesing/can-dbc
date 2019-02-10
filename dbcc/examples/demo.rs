@@ -13,7 +13,7 @@ fn main() {
     // J1939 - Operators External Light Controls Message Id
     let can_message_id = 2365443326u32;
     // can frame data field (0-8 bytes)
-    let can_frame_data: &[u8] = &[0x00, 0x50, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00];
+    let can_frame_data: Vec<u8> = vec![0x00, 0x50, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00];
 
     // CAN Message ID constant from generated code
     if can_message_id == j1939::MESSAGE_ID_OEL {
