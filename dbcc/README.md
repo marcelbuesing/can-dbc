@@ -65,38 +65,38 @@ fn main() {
 - Add the following dependency to your project's `Cargo.toml`
 ```YAML
 [dependencies]
-byteorder = "1.2"
+byteorder = "1.3"
 futures = "0.1"
 tokio = "0.1"
-
-[dependencies.socketcan]
-git = "https://github.com/marcelbuesing/socketcan-rs.git"
-rev = "b70291d4563a6e380e4eae8c912f5e4a77fae2cc"
-
-[dependencies.socketcan_tokio]
-git = "https://github.com/marcelbuesing/socketcan-rs.git"
-rev = "b70291d4563a6e380e4eae8c912f5e4a77fae2cc"
+tokio-socketcan-bcm = { version = "0.1", features = ["try_from"] }
 ```
 
 ```
-use tokio;
-
 mod j1939;
 
-let oel_stream = j1939::Oel::stream("can0".to_string(), Duration::from_secs(0), Duration::from_secs(0));
+use futures::future::Future;
+use futures::stream::Stream;
+use std::time::Duration;
+use tokio;
 
-let f = oel_stream.for_each(|oel| {
-    // Signal indicate the selected position of the operator's hazard light switch.
-    match oel.hazardlightswitch() {
-        j1939::HazardLightSwitch2365443326::HazardLampsToBeFlashing => println!("Hazard Lamps To Be Flashing"),
-        j1939::HazardLightSwitch2365443326::HazardLampsToBeOff => println!("Hazard Lamps To Be Off"),
-        j1939::HazardLightSwitch2365443326::NotAvailable => println!("Not available"),
-        j1939::HazardLightSwitch2365443326::Error => println!("Error"),
-        j1939::HazardLightSwitch2365443326::XValue(_) => unreachable!(),
-    }
-});
+fn main() {
+    let ival = Duration::from_secs(0);
+    let oel_stream = j1939::Oel::stream("vcan0", &ival, &ival);
 
-tokio::run(f.map_err(|_| ()));
+    let f = oel_stream.for_each(|oel| {
+        // Signal indicates the selected position of the operator's hazard light switch.
+        match oel.hazardlightswitch() {
+            j1939::HazardLightSwitch2365443326::HazardLampsToBeFlashing => println!("Hazard Lamps To Be Flashing"),
+            j1939::HazardLightSwitch2365443326::HazardLampsToBeOff => println!("Hazard Lamps To Be Off"),
+            j1939::HazardLightSwitch2365443326::NotAvailable => println!("Not available"),
+            j1939::HazardLightSwitch2365443326::Error => println!("Error"),
+            j1939::HazardLightSwitch2365443326::XValue(_) => unreachable!(),
+        }
+        Ok(())
+    });
+
+    tokio::run(f.map_err(|_| ()));
+}
 ```
 
 ## Naming

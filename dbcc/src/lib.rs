@@ -8,7 +8,7 @@ extern crate structopt;
 use codegen::{Const, Enum, Function, Struct, Scope, Impl};
 use can_dbc::{DBC, ByteOrder, Message, MessageId, Signal, ValueDescription};
 use heck::{CamelCase, ShoutySnakeCase};
-use log::{warn, info};
+use log::warn;
 
 use std::fmt::Write;
 use std::path::PathBuf;
@@ -22,7 +22,6 @@ mod tests {
     #[bench]
     fn bench_read_signal(b: &mut Bencher) {
         const byte_payload: &[u8] = &[0x4, 0x2, 0xA, 0xA, 0xF, 0xF, 0xE, 0xE, 0xD, 0xD, 0xA, 0xA, 0xF, 0xF, 0xD, 0xD];
-
 
         b.iter(|| {
             let frame_payload: u64 = LE::read_u64(byte_payload);
@@ -43,6 +42,9 @@ const PREFIX_CHAR: char = 'X';
 /// Character that is used to replace invalid characters
 /// in type names.
 const REPLACEMENT_CHAR: char = 'X';
+
+/// Suffix that is append to the raw signal function
+const RAW_FN_SUFFIX: &str = "raw_value";
 
 type Result<T> = std::result::Result<T, std::fmt::Error>;
 
@@ -110,7 +112,7 @@ pub fn signal_enum(val_desc: &ValueDescription) -> Option<Enum> {
     None
 }
 
-pub fn signal_enum_impl(val_desc: &ValueDescription) -> Option<Impl> {
+pub fn signal_enum_impl_from(val_desc: &ValueDescription) -> Option<Impl> {
     if let ValueDescription::Signal{ ref message_id, ref signal_name, ref value_descriptions } = val_desc {
         let enum_name = to_enum_name(message_id, signal_name);
         let mut enum_impl = Impl::new(codegen::Type::new(&enum_name));
@@ -119,6 +121,7 @@ pub fn signal_enum_impl(val_desc: &ValueDescription) -> Option<Impl> {
         let from_fn = enum_impl.new_fn("from");
         from_fn.allow("dead_code");
         from_fn.arg("val", codegen::Type::new("u64"));
+        from_fn.ret(codegen::Type::new("Self"));
 
         let mut matching = String::new();
         write!(&mut matching, "match val {{\n").unwrap();
@@ -129,22 +132,22 @@ pub fn signal_enum_impl(val_desc: &ValueDescription) -> Option<Impl> {
         write!(&mut matching, "}}").unwrap();
 
         from_fn.line(matching);
-        from_fn.ret(codegen::Type::new("Self"));
 
         return Some(enum_impl);
     }
     None
 }
 
-pub fn signal_fn(dbc: &DBC, signal: &Signal, message_id: &MessageId) -> Result<Function> {
-    let mut signal_fn = codegen::Function::new(&signal.name().to_lowercase());
+pub fn signal_fn_raw(dbc: &DBC, signal: &Signal, message_id: &MessageId) -> Result<Function> {
+    let raw_fn_name = format!("{}_{}", signal.name().to_lowercase(), RAW_FN_SUFFIX);
+
+    let mut signal_fn = codegen::Function::new(&raw_fn_name);
     signal_fn.allow("dead_code");
     signal_fn.vis("pub");
     signal_fn.arg_ref_self();
 
-    // Attempt to find a matching enum return type, default to `f64` otherwise
-    let ret_enum_type = dbc.value_descriptions_for_signal(message_id, signal.name()).map(|_| codegen::Type::new(&to_enum_name(message_id, signal.name())));
-    signal_fn.ret(ret_enum_type.clone().unwrap_or_else(|| codegen::Type::new("f64")));
+    let signal_return_type = signal_return_type(signal);
+    signal_fn.ret(codegen::Type::new(&signal_return_type));
 
     let default_signal_comment = format!("Read {} signal from can frame", signal.name());
     let signal_comment = dbc.signal_comment(message_id, signal.name()).unwrap_or(&default_signal_comment);
@@ -157,13 +160,31 @@ pub fn signal_fn(dbc: &DBC, signal: &Signal, message_id: &MessageId) -> Result<F
     signal_fn.line(read_byte_order);
 
     let bit_msk_const = 2u64.saturating_pow(*signal.signal_size() as u32) - 1;
-    let mut calc = String::new();
-
-    if ret_enum_type.is_some() {
-       write!(&mut calc, "{}::from((", to_enum_name(message_id, signal.name()))?; // TODO to_valid_upper_case called multiple times
-    }
-
     let signal_shift = shift_amount(*signal.byte_order(), *signal.start_bit(), *signal.signal_size());
+
+    let calc = calc_raw(signal, signal_return_type, signal_shift, bit_msk_const)?;
+    signal_fn.line(calc);
+
+    Ok(signal_fn)
+}
+
+pub fn signal_fn_enum(signal: &Signal, enum_type: String) -> Result<Function> {
+    let mut signal_fn = codegen::Function::new(&signal.name().to_lowercase());
+    signal_fn.allow("dead_code");
+    signal_fn.vis("pub");
+    signal_fn.arg_ref_self();
+
+    signal_fn.ret(enum_type.clone());
+
+    let raw_fn_name = format!("{}_{}", signal.name().to_lowercase(), RAW_FN_SUFFIX);
+
+    signal_fn.line(format!("{}::from(self.{}() as u64)", enum_type, raw_fn_name));
+
+    Ok(signal_fn)
+}
+
+fn calc_raw(signal: &Signal, signal_return_type: String, signal_shift: u64, bit_msk_const: u64) -> Result<String> {
+    let mut calc = String::new();
 
     // No shift required if start_bit == 0
     let shift = if signal_shift != 0 {
@@ -172,22 +193,36 @@ pub fn signal_fn(dbc: &DBC, signal: &Signal, message_id: &MessageId) -> Result<F
         format!("frame_payload")
     };
 
-    write!(&mut calc, "({} & {:#X}) as f64", shift, bit_msk_const)?;
+    write!(&mut calc, "({} & {:#X})", shift, bit_msk_const)?;
+
+    if *signal.signal_size() != 1 {
+        write!(&mut calc, " as {}", signal_return_type)?;
+    }
 
     if *signal.factor() != 1.0 {
         write!(&mut calc, " * {:.6}", signal.factor())?;
     }
 
-    if *signal.offset() != 0.0 {
+    if *signal.offset() != 0.0 && *signal.signal_size() <= 32 {
+        write!(&mut calc, " + {}f32", signal.offset())?;
+    } else if *signal.offset() != 0.0 {
         write!(&mut calc, " + {}f64", signal.offset())?;
     }
 
-    if ret_enum_type.is_some() {
-        write!(&mut calc, ") as u64)")?;
+    // boolean signal
+    if *signal.signal_size() == 1 {
+        write!(&mut calc, " == 1")?;
     }
 
-    signal_fn.line(calc);
-    Ok(signal_fn)
+    Ok(calc)
+}
+
+fn signal_return_type(signal: &Signal) -> String {
+    match signal.signal_size() {
+        _ if *signal.signal_size() == 1 => "bool".to_string(),
+        _ if *signal.signal_size() > 1 && *signal.signal_size() <= 32 => "f32".to_string(),
+        _ => "f64".to_string(),
+    }
 }
 
 fn shift_amount(byte_order: ByteOrder, start_bit: u64, signal_size: u64) -> u64 {
@@ -234,7 +269,14 @@ fn message_impl(opt: &Opt, dbc: &DBC, message: &Message) -> Result<Impl> {
     }
 
     for signal in message.signals() {
-        msg_impl.push_fn(signal_fn(dbc, signal, message.message_id())?);
+
+        msg_impl.push_fn(signal_fn_raw(dbc, signal, message.message_id())?);
+
+        // Check if this signal can be turned into an enum
+        let enum_type = dbc.value_descriptions_for_signal(message.message_id(), signal.name()).map(|_| to_enum_name(message.message_id(), signal.name()));
+        if let Some(enum_type) = enum_type {
+            msg_impl.push_fn(signal_fn_enum(signal, enum_type)?);
+        }
     }
 
     Ok(msg_impl)
@@ -246,17 +288,16 @@ fn message_stream(message: &Message) -> Function {
     stream_fn.allow("dead_code");
     stream_fn.vis("pub");
 
-    //stream_fn.generic("'b");
-    stream_fn.arg("can_interface", codegen::Type::new("String"));
-    stream_fn.arg("ival1", codegen::Type::new("std::time::Duration"));
-    stream_fn.arg("ival2", codegen::Type::new("std::time::Duration"));
+    stream_fn.arg("can_interface", codegen::Type::new("&str"));
+    stream_fn.arg("ival1", codegen::Type::new("&std::time::Duration"));
+    stream_fn.arg("ival2", codegen::Type::new("&std::time::Duration"));
 
     let ret = format!("Box<Stream<Item = {}, Error = std::io::Error> + Sync + Send>", message.message_name().to_camel_case());
     stream_fn.ret(ret);
 
-    stream_fn.line("let socket = CanBCMSocket::open_nb(&can_interface).unwrap();");
-    stream_fn.line(format!("let message_id = CanMessageId::try_from({} as u32).unwrap();", message.message_id().0.to_string()));
-    stream_fn.line("let frame_stream = socket.filter_id_incoming_frames(message_id, ival1, ival2).unwrap();");
+    stream_fn.line("let socket = BCMSocket::open_nb(&can_interface).unwrap();");
+    stream_fn.line(format!("let message_id = CANMessageId::try_from({} as u32).unwrap();", message.message_id().0.to_string()));
+    stream_fn.line("let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone()).unwrap();");
     stream_fn.line(format!("let f = frame_stream.map(|frame| {}::new(frame.data().to_vec()));",  message.message_name().to_camel_case()));
     stream_fn.line("Box::new(f)");
 
@@ -269,8 +310,7 @@ pub fn can_reader(opt: &Opt, dbc: &DBC) -> Result<Scope> {
     scope.import("byteorder", "{ByteOrder, LE, BE}");
 
     if opt.with_tokio {
-        scope.import("socketcan", "CanMessageId");
-        scope.import("socketcan_tokio::bcm", "CanBCMSocket");
+        scope.import("tokio_socketcan_bcm", "{CANMessageId, BCMSocket}");
         scope.import("futures", "Stream");
         scope.import("std::convert", "TryFrom");
     }
@@ -284,7 +324,7 @@ pub fn can_reader(opt: &Opt, dbc: &DBC) -> Result<Scope> {
             scope.push_enum(signal_enum);
         }
 
-        if let Some(enum_impl) = signal_enum_impl(value_description) {
+        if let Some(enum_impl) = signal_enum_impl_from(value_description) {
             scope.push_impl(enum_impl);
         }
     }
