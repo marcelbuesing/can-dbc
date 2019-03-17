@@ -259,8 +259,8 @@ fn message_impl(opt: &Opt, dbc: &DBC, message: &Message) -> Result<Impl> {
     let new_fn = msg_impl.new_fn("new");
     new_fn.allow("dead_code");
     new_fn.vis("pub");
-    new_fn.arg("frame_payload", codegen::Type::new("Vec<u8>"));
-
+    new_fn.arg("mut frame_payload", codegen::Type::new("Vec<u8>"));
+    new_fn.line("frame_payload.resize(8, 0);");
     new_fn.line(format!("{} {{ frame_payload }}", message.message_name().to_camel_case()));
     new_fn.ret(codegen::Type::new(&message.message_name().to_camel_case()));
 
