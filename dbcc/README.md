@@ -1,10 +1,15 @@
-# dbcc
+# dbcc [![Build Status](https://travis-ci.org/marcelbuesing/can-dbc.svg?branch=dev)](https://travis-ci.org/marcelbuesing/can-dbc) [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmarcelbuesing%2Fcan-dbc.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmarcelbuesing%2Fcan-dbc?ref=badge_shield)
+=============
+
 dbcc can translate `data base CAN` files into Rust code.
+The generated code allows interacting with CAN signals in a type safe manner by e.g. matching against signal value enum types.
+Furthermore it provides a convenient way to use [SocketCAN BCM Sockets](https://crates.io/crates/tokio-socketcan-bcm), via [tokio](https://crates.io/crates/tokio) streams, to filter for a specified message by can identifier.
 
 ## Features
 - [x] Generate message, signal decoder code
-- [x] Geneate message id constants
+- [x] Generate message id constants
 - [x] Generate enums for matching against signal values
+- [x] Generate tokio streams for CAN messages
 - [ ] Generate message, signal encoders
 
 ## Install
@@ -14,13 +19,13 @@ cargo install dbcc
 
 ## Run
 ```
-dbcc --input j1939.dbc > j1939.rs
+dbcc --input dbcc j1939.dbc > j1939.rs
 ```
 
 For warnings during the generation run with:
 
 ```
-RUST_LOG=info j1939.dbc > j1939.rs
+RUST_LOG=info dbcc j1939.dbc > j1939.rs
 ```
 
 ## Include
@@ -60,9 +65,10 @@ fn main() {
 }
 ```
 
-## Include SocketCan
+## Including SocketCAN Streams
+- Make sure you pass the `--with-tokio` flag when invoking dbcc.
 - Move the generated rust file to your project's `src/` folder.
-- Add the following dependency to your project's `Cargo.toml`
+- Add the following dependencies to your project's `Cargo.toml`
 ```YAML
 [dependencies]
 byteorder = "1.3"
@@ -71,31 +77,38 @@ tokio = "0.1"
 tokio-socketcan-bcm = { version = "0.2", features = ["try_from"] }
 ```
 
-```
+```Rust
 mod j1939;
 
 use futures::future::Future;
 use futures::stream::Stream;
+use std::io;
 use std::time::Duration;
 use tokio;
 
-fn main() {
+fn main() -> io::Result<()> {
     let ival = Duration::from_secs(0);
-    let oel_stream = j1939::Oel::stream("vcan0", &ival, &ival);
 
-    let f = oel_stream.for_each(|oel| {
-        // Signal indicates the selected position of the operator's hazard light switch.
-        match oel.hazardlightswitch() {
-            j1939::HazardLightSwitch2365443326::HazardLampsToBeFlashing => println!("Hazard Lamps To Be Flashing"),
-            j1939::HazardLightSwitch2365443326::HazardLampsToBeOff => println!("Hazard Lamps To Be Off"),
-            j1939::HazardLightSwitch2365443326::NotAvailable => println!("Not available"),
-            j1939::HazardLightSwitch2365443326::Error => println!("Error"),
-            j1939::HazardLightSwitch2365443326::XValue(_) => unreachable!(),
-        }
-        Ok(())
-    });
+    let f = j1939::Oel::stream("vcan0", &ival, &ival)?
+        .for_each(|oel| {
+            // Signal indicates the selected position of the operator's hazard light switch.
+            match oel.hazardlightswitch() {
+                j1939::HazardLightSwitch2365443326::HazardLampsToBeFlashing => {
+                    println!("Hazard Lamps To Be Flashing")
+                }
+                j1939::HazardLightSwitch2365443326::HazardLampsToBeOff => {
+                    println!("Hazard Lamps To Be Off")
+                }
+                j1939::HazardLightSwitch2365443326::NotAvailable => println!("Not available"),
+                j1939::HazardLightSwitch2365443326::Error => println!("Error"),
+                j1939::HazardLightSwitch2365443326::XValue(_) => unreachable!(),
+            }
+            Ok(())
+        });
 
     tokio::run(f.map_err(|_| ()));
+
+    Ok(())
 }
 ```
 

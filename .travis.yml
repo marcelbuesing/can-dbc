@@ -7,9 +7,9 @@ addons:
             - libssl-dev
 cache: cargo
 rust:
-# Waiting for Rust 2018 edition support
+# Waiting for multiple features
 #  - stable
-  - beta
+#  - beta
   - nightly
 matrix:
   allow_failures:
