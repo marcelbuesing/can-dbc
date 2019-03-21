@@ -10,28 +10,31 @@ use crate::gen::j1939;
 
 use futures::future::Future;
 use futures::stream::Stream;
+use std::io;
 use std::time::Duration;
 use tokio;
 
-fn main() {
+fn main() -> io::Result<()> {
     let ival = Duration::from_secs(0);
-    let oel_stream = j1939::Oel::stream("vcan0", &ival, &ival);
 
-    let f = oel_stream.for_each(|oel| {
-        // Signal indicates the selected position of the operator's hazard light switch.
-        match oel.hazardlightswitch() {
-            j1939::HazardLightSwitch2365443326::HazardLampsToBeFlashing => {
-                println!("Hazard Lamps To Be Flashing")
+    let f = j1939::Oel::stream("vcan0", &ival, &ival)?
+        .for_each(|oel| {
+            // Signal indicates the selected position of the operator's hazard light switch.
+            match oel.hazardlightswitch() {
+                j1939::HazardLightSwitch2365443326::HazardLampsToBeFlashing => {
+                    println!("Hazard Lamps To Be Flashing")
+                }
+                j1939::HazardLightSwitch2365443326::HazardLampsToBeOff => {
+                    println!("Hazard Lamps To Be Off")
+                }
+                j1939::HazardLightSwitch2365443326::NotAvailable => println!("Not available"),
+                j1939::HazardLightSwitch2365443326::Error => println!("Error"),
+                j1939::HazardLightSwitch2365443326::XValue(_) => unreachable!(),
             }
-            j1939::HazardLightSwitch2365443326::HazardLampsToBeOff => {
-                println!("Hazard Lamps To Be Off")
-            }
-            j1939::HazardLightSwitch2365443326::NotAvailable => println!("Not available"),
-            j1939::HazardLightSwitch2365443326::Error => println!("Error"),
-            j1939::HazardLightSwitch2365443326::XValue(_) => unreachable!(),
-        }
-        Ok(())
-    });
+            Ok(())
+        });
 
     tokio::run(f.map_err(|_| ()));
+
+    Ok(())
 }
