@@ -1,5 +1,4 @@
 /// If you are using Rust 2018 no `external crate byteorder;` is necessary
-
 // The `gen` module exists because `cargo test` fails
 // if `j1939.rs` is directly in the examples folder
 // (since it's treated like an example and a `main` is expected).
@@ -21,8 +20,12 @@ fn main() {
         let oel = j1939::Oel::new(can_frame_data);
 
         match oel.hazardlightswitch() {
-            j1939::HazardLightSwitch2365443326::HazardLampsToBeFlashing => println!("Hazard Lamps To Be Flashing"),
-            j1939::HazardLightSwitch2365443326::HazardLampsToBeOff => println!("Hazard Lamps To Be Off"),
+            j1939::HazardLightSwitch2365443326::HazardLampsToBeFlashing => {
+                println!("Hazard Lamps To Be Flashing")
+            }
+            j1939::HazardLightSwitch2365443326::HazardLampsToBeOff => {
+                println!("Hazard Lamps To Be Off")
+            }
             j1939::HazardLightSwitch2365443326::NotAvailable => println!("Not available"),
             j1939::HazardLightSwitch2365443326::Error => println!("Error"),
             j1939::HazardLightSwitch2365443326::XValue(_) => unreachable!(),

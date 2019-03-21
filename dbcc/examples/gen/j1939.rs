@@ -4,1189 +4,1189 @@ use futures::Stream;
 use std::convert::TryFrom;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DISP1: u32 = 2561212158;
+pub const MESSAGE_ID_DISP1: u32 = 2561212158;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DRC: u32 = 2566746366;
+pub const MESSAGE_ID_DRC: u32 = 2566746366;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EC2: u32 = 2566750206;
+pub const MESSAGE_ID_EC2: u32 = 2566750206;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EEC7: u32 = 2566755582;
+pub const MESSAGE_ID_EEC7: u32 = 2566755582;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EEC8: u32 = 2566746110;
+pub const MESSAGE_ID_EEC8: u32 = 2566746110;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EFL_P5: u32 = 2566752510;
+pub const MESSAGE_ID_EFL_P5: u32 = 2566752510;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EFL_P6: u32 = 2566752254;
+pub const MESSAGE_ID_EFL_P6: u32 = 2566752254;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EFL_P7: u32 = 2566751998;
+pub const MESSAGE_ID_EFL_P7: u32 = 2566751998;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EFL_P8: u32 = 2566751742;
+pub const MESSAGE_ID_EFL_P8: u32 = 2566751742;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EFL_P9: u32 = 2566751486;
+pub const MESSAGE_ID_EFL_P9: u32 = 2566751486;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EGRBV: u32 = 2499641854;
+pub const MESSAGE_ID_EGRBV: u32 = 2499641854;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ESV1: u32 = 2566748158;
+pub const MESSAGE_ID_ESV1: u32 = 2566748158;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ESV2: u32 = 2566747902;
+pub const MESSAGE_ID_ESV2: u32 = 2566747902;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ESV3: u32 = 2566747646;
+pub const MESSAGE_ID_ESV3: u32 = 2566747646;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ESV4: u32 = 2566747390;
+pub const MESSAGE_ID_ESV4: u32 = 2566747390;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ESV5: u32 = 2566747134;
+pub const MESSAGE_ID_ESV5: u32 = 2566747134;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ESV6: u32 = 2566746878;
+pub const MESSAGE_ID_ESV6: u32 = 2566746878;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_FLIC: u32 = 2561277694;
+pub const MESSAGE_ID_FLIC: u32 = 2561277694;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_J2012: u32 = 2633861886;
+pub const MESSAGE_ID_J2012: u32 = 2633861886;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_PTC1: u32 = 2566749438;
+pub const MESSAGE_ID_PTC1: u32 = 2566749438;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_SAS: u32 = 2565873150;
+pub const MESSAGE_ID_SAS: u32 = 2565873150;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_SCR1: u32 = 2566745854;
+pub const MESSAGE_ID_SCR1: u32 = 2566745854;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TCI: u32 = 2566751230;
+pub const MESSAGE_ID_TCI: u32 = 2566751230;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TRF2: u32 = 2566755838;
+pub const MESSAGE_ID_TRF2: u32 = 2566755838;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_VDS2: u32 = 2566752766;
+pub const MESSAGE_ID_VDS2: u32 = 2566752766;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_LF: u32 = 2633938942;
+pub const MESSAGE_ID_LF: u32 = 2633938942;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_LD: u32 = 2566799614;
+pub const MESSAGE_ID_LD: u32 = 2566799614;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_LC: u32 = 2365473278;
+pub const MESSAGE_ID_LC: u32 = 2365473278;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_LBC: u32 = 2365485822;
+pub const MESSAGE_ID_LBC: u32 = 2365485822;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_IT6: u32 = 2633926654;
+pub const MESSAGE_ID_IT6: u32 = 2633926654;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_IT5: u32 = 2633926398;
+pub const MESSAGE_ID_IT5: u32 = 2633926398;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_IT4: u32 = 2633926142;
+pub const MESSAGE_ID_IT4: u32 = 2633926142;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_IT3: u32 = 2633925886;
+pub const MESSAGE_ID_IT3: u32 = 2633925886;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_IT2: u32 = 2633925630;
+pub const MESSAGE_ID_IT2: u32 = 2633925630;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_IT1: u32 = 2633925374;
+pub const MESSAGE_ID_IT1: u32 = 2633925374;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ISO3: u32 = 2633927422;
+pub const MESSAGE_ID_ISO3: u32 = 2633927422;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ISO2: u32 = 2633927166;
+pub const MESSAGE_ID_ISO2: u32 = 2633927166;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ISO1: u32 = 2633926910;
+pub const MESSAGE_ID_ISO1: u32 = 2633926910;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ISCS: u32 = 2566768894;
+pub const MESSAGE_ID_ISCS: u32 = 2566768894;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ISC: u32 = 2566769406;
+pub const MESSAGE_ID_ISC: u32 = 2566769406;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_IO: u32 = 2566839550;
+pub const MESSAGE_ID_IO: u32 = 2566839550;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_IMT2: u32 = 2633934334;
+pub const MESSAGE_ID_IMT2: u32 = 2633934334;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_IMT1: u32 = 2566825726;
+pub const MESSAGE_ID_IMT1: u32 = 2566825726;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_IC2: u32 = 2566770942;
+pub const MESSAGE_ID_IC2: u32 = 2566770942;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_IC1: u32 = 2566846206;
+pub const MESSAGE_ID_IC1: u32 = 2566846206;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_HTR: u32 = 2566811134;
+pub const MESSAGE_ID_HTR: u32 = 2566811134;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_HRW: u32 = 2298375934;
+pub const MESSAGE_ID_HRW: u32 = 2298375934;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_HPG: u32 = 2565867774;
+pub const MESSAGE_ID_HPG: u32 = 2565867774;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_HOURS: u32 = 2566841854;
+pub const MESSAGE_ID_HOURS: u32 = 2566841854;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_HBS: u32 = 2365449982;
+pub const MESSAGE_ID_HBS: u32 = 2365449982;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GTFI: u32 = 2633939198;
+pub const MESSAGE_ID_GTFI: u32 = 2633939198;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GFP: u32 = 2633927678;
+pub const MESSAGE_ID_GFP: u32 = 2633927678;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GFI2: u32 = 2633925118;
+pub const MESSAGE_ID_GFI2: u32 = 2633925118;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GFI1: u32 = 2633937662;
+pub const MESSAGE_ID_GFI1: u32 = 2633937662;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GFD: u32 = 2566804990;
+pub const MESSAGE_ID_GFD: u32 = 2566804990;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GFC: u32 = 2633936894;
+pub const MESSAGE_ID_GFC: u32 = 2633936894;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_SEP2: u32 = 2566757630;
+pub const MESSAGE_ID_SEP2: u32 = 2566757630;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_SEP1: u32 = 2566757886;
+pub const MESSAGE_ID_SEP1: u32 = 2566757886;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_PTODE: u32 = 2566759678;
+pub const MESSAGE_ID_PTODE: u32 = 2566759678;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GFI3: u32 = 2432541438;
+pub const MESSAGE_ID_GFI3: u32 = 2432541438;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EFL_P4: u32 = 2566761214;
+pub const MESSAGE_ID_EFL_P4: u32 = 2566761214;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EEC6: u32 = 2432541694;
+pub const MESSAGE_ID_EEC6: u32 = 2432541694;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DC2: u32 = 2566759934;
+pub const MESSAGE_ID_DC2: u32 = 2566759934;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_CRI1: u32 = 2566757374;
+pub const MESSAGE_ID_CRI1: u32 = 2566757374;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AHI2: u32 = 2566756862;
+pub const MESSAGE_ID_AHI2: u32 = 2566756862;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AFC2: u32 = 2566758654;
+pub const MESSAGE_ID_AFC2: u32 = 2566758654;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AFC1: u32 = 2566758910;
+pub const MESSAGE_ID_AFC1: u32 = 2566758910;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AAC2: u32 = 2566758142;
+pub const MESSAGE_ID_AAC2: u32 = 2566758142;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AAC1: u32 = 2566758398;
+pub const MESSAGE_ID_AAC1: u32 = 2566758398;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AHI1: u32 = 2566756606;
+pub const MESSAGE_ID_AHI1: u32 = 2566756606;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_RGAAQ: u32 = 2364546302;
+pub const MESSAGE_ID_RGAAQ: u32 = 2364546302;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TFAC: u32 = 2431654654;
+pub const MESSAGE_ID_TFAC: u32 = 2431654654;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_KL3: u32 = 2364545534;
+pub const MESSAGE_ID_KL3: u32 = 2364545534;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_KL2: u32 = 2364545278;
+pub const MESSAGE_ID_KL2: u32 = 2364545278;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_KL1: u32 = 2364545022;
+pub const MESSAGE_ID_KL1: u32 = 2364545022;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_CCS: u32 = 2364544766;
+pub const MESSAGE_ID_CCS: u32 = 2364544766;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_RGTARP: u32 = 2364544510;
+pub const MESSAGE_ID_RGTARP: u32 = 2364544510;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_BI: u32 = 2364544254;
+pub const MESSAGE_ID_BI: u32 = 2364544254;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EBS11: u32 = 2349006590;
+pub const MESSAGE_ID_EBS11: u32 = 2349006590;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EBS12: u32 = 2566834686;
+pub const MESSAGE_ID_EBS12: u32 = 2566834686;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EBS21: u32 = 2550398718;
+pub const MESSAGE_ID_EBS21: u32 = 2550398718;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EBS22: u32 = 2566833406;
+pub const MESSAGE_ID_EBS22: u32 = 2566833406;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EBS23: u32 = 2365507326;
+pub const MESSAGE_ID_EBS23: u32 = 2365507326;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GPM11: u32 = 2565013246;
+pub const MESSAGE_ID_GPM11: u32 = 2565013246;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GPM12: u32 = 2566807038;
+pub const MESSAGE_ID_GPM12: u32 = 2566807038;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GPM13: u32 = 2365480958;
+pub const MESSAGE_ID_GPM13: u32 = 2365480958;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GPM14: u32 = 2566808062;
+pub const MESSAGE_ID_GPM14: u32 = 2566808062;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GPM15: u32 = 2566808574;
+pub const MESSAGE_ID_GPM15: u32 = 2566808574;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GPM16: u32 = 2566809086;
+pub const MESSAGE_ID_GPM16: u32 = 2566809086;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GPM21: u32 = 2564947710;
+pub const MESSAGE_ID_GPM21: u32 = 2564947710;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GPM22: u32 = 2566834430;
+pub const MESSAGE_ID_GPM22: u32 = 2566834430;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GPM23: u32 = 2365481214;
+pub const MESSAGE_ID_GPM23: u32 = 2365481214;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GPM24: u32 = 2566808318;
+pub const MESSAGE_ID_GPM24: u32 = 2566808318;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GPM25: u32 = 2566808830;
+pub const MESSAGE_ID_GPM25: u32 = 2566808830;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ISO15765_FUNCT: u32 = 2564554494;
+pub const MESSAGE_ID_ISO15765_FUNCT: u32 = 2564554494;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ISO15765_PHYS: u32 = 2564488958;
+pub const MESSAGE_ID_ISO15765_PHYS: u32 = 2564488958;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_NETWORK: u32 = 2565734142;
+pub const MESSAGE_ID_NETWORK: u32 = 2565734142;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_RGE11: u32 = 2565144318;
+pub const MESSAGE_ID_RGE11: u32 = 2565144318;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_RGE21: u32 = 2565209854;
+pub const MESSAGE_ID_RGE21: u32 = 2565209854;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_RGE22: u32 = 2566806782;
+pub const MESSAGE_ID_RGE22: u32 = 2566806782;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_RGE23: u32 = 2566807294;
+pub const MESSAGE_ID_RGE23: u32 = 2566807294;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DM26: u32 = 2566764798;
+pub const MESSAGE_ID_DM26: u32 = 2566764798;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DM18: u32 = 2564095742;
+pub const MESSAGE_ID_DM18: u32 = 2564095742;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_XBR: u32 = 2349137662;
+pub const MESSAGE_ID_XBR: u32 = 2349137662;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_WFI: u32 = 2566848510;
+pub const MESSAGE_ID_WFI: u32 = 2566848510;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_VW: u32 = 2566843134;
+pub const MESSAGE_ID_VW: u32 = 2566843134;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_VEP3: u32 = 2566804222;
+pub const MESSAGE_ID_VEP3: u32 = 2566804222;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_VEP2: u32 = 2633928190;
+pub const MESSAGE_ID_VEP2: u32 = 2633928190;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_VP: u32 = 2566845438;
+pub const MESSAGE_ID_VP: u32 = 2566845438;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_VI: u32 = 2566843646;
+pub const MESSAGE_ID_VI: u32 = 2566843646;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_VH: u32 = 2566842366;
+pub const MESSAGE_ID_VH: u32 = 2566842366;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_VF: u32 = 2566809854;
+pub const MESSAGE_ID_VF: u32 = 2566809854;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_VDS: u32 = 2566842622;
+pub const MESSAGE_ID_VDS: u32 = 2566842622;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_VDHR: u32 = 2566832638;
+pub const MESSAGE_ID_VDHR: u32 = 2566832638;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_VDC2: u32 = 2565868030;
+pub const MESSAGE_ID_VDC2: u32 = 2565868030;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_VDC1: u32 = 2566803454;
+pub const MESSAGE_ID_VDC1: u32 = 2566803454;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_VD: u32 = 2566840574;
+pub const MESSAGE_ID_VD: u32 = 2566840574;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TVI: u32 = 2633938686;
+pub const MESSAGE_ID_TVI: u32 = 2633938686;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TTI2: u32 = 2633937150;
+pub const MESSAGE_ID_TTI2: u32 = 2633937150;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TTI1: u32 = 2633938174;
+pub const MESSAGE_ID_TTI1: u32 = 2633938174;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TSI: u32 = 2633938430;
+pub const MESSAGE_ID_TSI: u32 = 2633938430;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TSC1: u32 = 2348875518;
+pub const MESSAGE_ID_TSC1: u32 = 2348875518;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TR7: u32 = 2566766846;
+pub const MESSAGE_ID_TR7: u32 = 2566766846;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TR6: u32 = 2566765310;
+pub const MESSAGE_ID_TR6: u32 = 2566765310;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TR5: u32 = 2566765566;
+pub const MESSAGE_ID_TR5: u32 = 2566765566;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TR4: u32 = 2566765822;
+pub const MESSAGE_ID_TR4: u32 = 2566765822;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TR3: u32 = 2566766078;
+pub const MESSAGE_ID_TR3: u32 = 2566766078;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TR2: u32 = 2566766590;
+pub const MESSAGE_ID_TR2: u32 = 2566766590;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TR1: u32 = 2566766334;
+pub const MESSAGE_ID_TR1: u32 = 2566766334;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TPRS: u32 = 2561605374;
+pub const MESSAGE_ID_TPRS: u32 = 2561605374;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TPRI: u32 = 2566765054;
+pub const MESSAGE_ID_TPRI: u32 = 2566765054;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TP3: u32 = 2633923326;
+pub const MESSAGE_ID_TP3: u32 = 2633923326;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TP2: u32 = 2633923070;
+pub const MESSAGE_ID_TP2: u32 = 2633923070;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TP1: u32 = 2633922814;
+pub const MESSAGE_ID_TP1: u32 = 2633922814;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TIRE: u32 = 2566845694;
+pub const MESSAGE_ID_TIRE: u32 = 2566845694;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TI1: u32 = 2566805246;
+pub const MESSAGE_ID_TI1: u32 = 2566805246;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TFI: u32 = 2633939966;
+pub const MESSAGE_ID_TFI: u32 = 2633939966;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TDI: u32 = 2633939710;
+pub const MESSAGE_ID_TDI: u32 = 2633939710;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TDA: u32 = 2564161278;
+pub const MESSAGE_ID_TDA: u32 = 2564161278;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TD: u32 = 2566842110;
+pub const MESSAGE_ID_TD: u32 = 2566842110;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TCW: u32 = 2566821630;
+pub const MESSAGE_ID_TCW: u32 = 2566821630;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TCO1: u32 = 2365484286;
+pub const MESSAGE_ID_TCO1: u32 = 2365484286;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TCI6: u32 = 2566771710;
+pub const MESSAGE_ID_TCI6: u32 = 2566771710;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TCI5: u32 = 2566821886;
+pub const MESSAGE_ID_TCI5: u32 = 2566821886;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TCI4: u32 = 2566822142;
+pub const MESSAGE_ID_TCI4: u32 = 2566822142;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TCI3: u32 = 2566822398;
+pub const MESSAGE_ID_TCI3: u32 = 2566822398;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TCI2: u32 = 2566822654;
+pub const MESSAGE_ID_TCI2: u32 = 2566822654;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TCI1: u32 = 2633931774;
+pub const MESSAGE_ID_TCI1: u32 = 2633931774;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TCFG2: u32 = 2566802430;
+pub const MESSAGE_ID_TCFG2: u32 = 2566802430;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TCFG: u32 = 2566841086;
+pub const MESSAGE_ID_TCFG: u32 = 2566841086;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TC1: u32 = 2348941054;
+pub const MESSAGE_ID_TC1: u32 = 2348941054;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TC: u32 = 2566839806;
+pub const MESSAGE_ID_TC: u32 = 2566839806;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TAVG: u32 = 2633911806;
+pub const MESSAGE_ID_TAVG: u32 = 2633911806;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_SPR: u32 = 2566775550;
+pub const MESSAGE_ID_SPR: u32 = 2566775550;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_SP2: u32 = 2566819838;
+pub const MESSAGE_ID_SP2: u32 = 2566819838;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_SOFT: u32 = 2566839038;
+pub const MESSAGE_ID_SOFT: u32 = 2566839038;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_SHUTDOW: u32 = 2566841598;
+pub const MESSAGE_ID_SHUTDOW: u32 = 2566841598;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_SERV: u32 = 2566832382;
+pub const MESSAGE_ID_SERV: u32 = 2566832382;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_S2: u32 = 2633928446;
+pub const MESSAGE_ID_S2: u32 = 2633928446;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_RTC1: u32 = 2566804478;
+pub const MESSAGE_ID_RTC1: u32 = 2566804478;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_RF: u32 = 2566847486;
+pub const MESSAGE_ID_RF: u32 = 2566847486;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_RESET: u32 = 2631859966;
+pub const MESSAGE_ID_RESET: u32 = 2631859966;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_RC: u32 = 2566840830;
+pub const MESSAGE_ID_RC: u32 = 2566840830;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_RBI: u32 = 2633930238;
+pub const MESSAGE_ID_RBI: u32 = 2633930238;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_PTO: u32 = 2566844670;
+pub const MESSAGE_ID_PTO: u32 = 2566844670;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_OWW: u32 = 2566770174;
+pub const MESSAGE_ID_OWW: u32 = 2566770174;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_OHECS: u32 = 2566769662;
+pub const MESSAGE_ID_OHECS: u32 = 2566769662;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_OHCSS: u32 = 2566768638;
+pub const MESSAGE_ID_OHCSS: u32 = 2566768638;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_OEL: u32 = 2365443326;
+pub const MESSAGE_ID_OEL: u32 = 2365443326;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_MVS: u32 = 2566776318;
+pub const MESSAGE_ID_MVS: u32 = 2566776318;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ML: u32 = 2566802686;
+pub const MESSAGE_ID_ML: u32 = 2566802686;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_MCI: u32 = 2566774014;
+pub const MESSAGE_ID_MCI: u32 = 2566774014;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_MBT3: u32 = 2566823166;
+pub const MESSAGE_ID_MBT3: u32 = 2566823166;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_MBT2: u32 = 2566823422;
+pub const MESSAGE_ID_MBT2: u32 = 2566823422;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_MBT1: u32 = 2566823678;
+pub const MESSAGE_ID_MBT1: u32 = 2566823678;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_LVDD: u32 = 2432595710;
+pub const MESSAGE_ID_LVDD: u32 = 2432595710;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_LVD: u32 = 2365486590;
+pub const MESSAGE_ID_LVD: u32 = 2365486590;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_LTP: u32 = 2365485566;
+pub const MESSAGE_ID_LTP: u32 = 2365485566;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_LTFI: u32 = 2633939454;
+pub const MESSAGE_ID_LTFI: u32 = 2633939454;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_LSP: u32 = 2365486334;
+pub const MESSAGE_ID_LSP: u32 = 2365486334;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_LOI: u32 = 2364542462;
+pub const MESSAGE_ID_LOI: u32 = 2364542462;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_LMP: u32 = 2365486078;
+pub const MESSAGE_ID_LMP: u32 = 2365486078;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_LFI: u32 = 2633937918;
+pub const MESSAGE_ID_LFI: u32 = 2633937918;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_LFE: u32 = 2566845182;
+pub const MESSAGE_ID_LFE: u32 = 2566845182;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_LFC: u32 = 2566842878;
+pub const MESSAGE_ID_LFC: u32 = 2566842878;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_FWD: u32 = 2633883646;
+pub const MESSAGE_ID_FWD: u32 = 2633883646;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_FMS: u32 = 2633880062;
+pub const MESSAGE_ID_FMS: u32 = 2633880062;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_FLI2: u32 = 2566806526;
+pub const MESSAGE_ID_FLI2: u32 = 2566806526;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_FLI1: u32 = 2431649790;
+pub const MESSAGE_ID_FLI1: u32 = 2431649790;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_FL: u32 = 2633929214;
+pub const MESSAGE_ID_FL: u32 = 2633929214;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_FD: u32 = 2566831614;
+pub const MESSAGE_ID_FD: u32 = 2566831614;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ETH: u32 = 2566820094;
+pub const MESSAGE_ID_ETH: u32 = 2566820094;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ETC8: u32 = 2364542206;
+pub const MESSAGE_ID_ETC8: u32 = 2364542206;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ETC7: u32 = 2566802174;
+pub const MESSAGE_ID_ETC7: u32 = 2566802174;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ETC6: u32 = 2633935870;
+pub const MESSAGE_ID_ETC6: u32 = 2633935870;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ETC5: u32 = 2633942014;
+pub const MESSAGE_ID_ETC5: u32 = 2633942014;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ETC4: u32 = 2633942526;
+pub const MESSAGE_ID_ETC4: u32 = 2633942526;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ETC3: u32 = 2633943038;
+pub const MESSAGE_ID_ETC3: u32 = 2633943038;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ETC2: u32 = 2565867006;
+pub const MESSAGE_ID_ETC2: u32 = 2565867006;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ETC1: u32 = 2364539646;
+pub const MESSAGE_ID_ETC1: u32 = 2364539646;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ET3: u32 = 2566810110;
+pub const MESSAGE_ID_ET3: u32 = 2566810110;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ET2: u32 = 2566825214;
+pub const MESSAGE_ID_ET2: u32 = 2566825214;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ET1: u32 = 2566844158;
+pub const MESSAGE_ID_ET1: u32 = 2566844158;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ET: u32 = 2566785022;
+pub const MESSAGE_ID_ET: u32 = 2566785022;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ESC1: u32 = 2565868542;
+pub const MESSAGE_ID_ESC1: u32 = 2565868542;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ERC2: u32 = 2633941758;
+pub const MESSAGE_ID_ERC2: u32 = 2633941758;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ERC1: u32 = 2565865726;
+pub const MESSAGE_ID_ERC1: u32 = 2565865726;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EPT5: u32 = 2633932798;
+pub const MESSAGE_ID_EPT5: u32 = 2633932798;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EPT4: u32 = 2566824190;
+pub const MESSAGE_ID_EPT4: u32 = 2566824190;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EPT3: u32 = 2633933310;
+pub const MESSAGE_ID_EPT3: u32 = 2633933310;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EPT2: u32 = 2633933566;
+pub const MESSAGE_ID_EPT2: u32 = 2633933566;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EPT1: u32 = 2633933822;
+pub const MESSAGE_ID_EPT1: u32 = 2633933822;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EPD: u32 = 2566776062;
+pub const MESSAGE_ID_EPD: u32 = 2566776062;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EP: u32 = 2566771454;
+pub const MESSAGE_ID_EP: u32 = 2566771454;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EOAC: u32 = 2566775806;
+pub const MESSAGE_ID_EOAC: u32 = 2566775806;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EO1: u32 = 2633935358;
+pub const MESSAGE_ID_EO1: u32 = 2633935358;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EJM3: u32 = 2365447166;
+pub const MESSAGE_ID_EJM3: u32 = 2365447166;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EJM2: u32 = 2365446654;
+pub const MESSAGE_ID_EJM2: u32 = 2365446654;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EJM1: u32 = 2365446142;
+pub const MESSAGE_ID_EJM1: u32 = 2365446142;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EI: u32 = 2633929470;
+pub const MESSAGE_ID_EI: u32 = 2633929470;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EH: u32 = 2633937406;
+pub const MESSAGE_ID_EH: u32 = 2633937406;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EGF1: u32 = 2364541694;
+pub const MESSAGE_ID_EGF1: u32 = 2364541694;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EFS: u32 = 2566810366;
+pub const MESSAGE_ID_EFS: u32 = 2566810366;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EFL_P3: u32 = 2566767102;
+pub const MESSAGE_ID_EFL_P3: u32 = 2566767102;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EFL_P2: u32 = 2566839294;
+pub const MESSAGE_ID_EFL_P2: u32 = 2566839294;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EFL_P1: u32 = 2566844414;
+pub const MESSAGE_ID_EFL_P1: u32 = 2566844414;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EES: u32 = 2633929726;
+pub const MESSAGE_ID_EES: u32 = 2633929726;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EEC5: u32 = 2566772222;
+pub const MESSAGE_ID_EEC5: u32 = 2566772222;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EEC4: u32 = 2633940734;
+pub const MESSAGE_ID_EEC4: u32 = 2633940734;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EEC3: u32 = 2566840318;
+pub const MESSAGE_ID_EEC3: u32 = 2566840318;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EEC2: u32 = 2364539902;
+pub const MESSAGE_ID_EEC2: u32 = 2364539902;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EEC1: u32 = 2364540158;
+pub const MESSAGE_ID_EEC1: u32 = 2364540158;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ECUID: u32 = 2566768126;
+pub const MESSAGE_ID_ECUID: u32 = 2566768126;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ECT1: u32 = 2566804734;
+pub const MESSAGE_ID_ECT1: u32 = 2566804734;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EC1: u32 = 2566841342;
+pub const MESSAGE_ID_EC1: u32 = 2566841342;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EBC5: u32 = 2566767870;
+pub const MESSAGE_ID_EBC5: u32 = 2566767870;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EBC4: u32 = 2633936126;
+pub const MESSAGE_ID_EBC4: u32 = 2633936126;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EBC3: u32 = 2566827518;
+pub const MESSAGE_ID_EBC3: u32 = 2566827518;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EBC2: u32 = 2566832126;
+pub const MESSAGE_ID_EBC2: u32 = 2566832126;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EBC1: u32 = 2565865982;
+pub const MESSAGE_ID_EBC1: u32 = 2565865982;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EAC1: u32 = 2565867262;
+pub const MESSAGE_ID_EAC1: u32 = 2565867262;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_EAC: u32 = 2566821118;
+pub const MESSAGE_ID_EAC: u32 = 2566821118;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DI: u32 = 2566810622;
+pub const MESSAGE_ID_DI: u32 = 2566810622;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DD: u32 = 2566847742;
+pub const MESSAGE_ID_DD: u32 = 2566847742;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_CSA: u32 = 2566768382;
+pub const MESSAGE_ID_CSA: u32 = 2566768382;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_CVW: u32 = 2566811902;
+pub const MESSAGE_ID_CVW: u32 = 2566811902;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_CTL: u32 = 2563768062;
+pub const MESSAGE_ID_CTL: u32 = 2563768062;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_CT6: u32 = 2633924862;
+pub const MESSAGE_ID_CT6: u32 = 2633924862;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_CT5: u32 = 2633924606;
+pub const MESSAGE_ID_CT5: u32 = 2633924606;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_CT4: u32 = 2633924350;
+pub const MESSAGE_ID_CT4: u32 = 2633924350;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_CT3: u32 = 2633924094;
+pub const MESSAGE_ID_CT3: u32 = 2633924094;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_CT2: u32 = 2633923838;
+pub const MESSAGE_ID_CT2: u32 = 2633923838;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_CT1: u32 = 2633923582;
+pub const MESSAGE_ID_CT1: u32 = 2633923582;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_CMI: u32 = 2633878014;
+pub const MESSAGE_ID_CMI: u32 = 2633878014;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_CM3: u32 = 2566771966;
+pub const MESSAGE_ID_CM3: u32 = 2566771966;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_CM1: u32 = 2564882174;
+pub const MESSAGE_ID_CM1: u32 = 2564882174;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_CL: u32 = 2563833598;
+pub const MESSAGE_ID_CL: u32 = 2563833598;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_CI: u32 = 2566843390;
+pub const MESSAGE_ID_CI: u32 = 2566843390;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_CCVS: u32 = 2566844926;
+pub const MESSAGE_ID_CCVS: u32 = 2566844926;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_CCSS: u32 = 2566843902;
+pub const MESSAGE_ID_CCSS: u32 = 2566843902;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_CCC: u32 = 2566809598;
+pub const MESSAGE_ID_CCC: u32 = 2566809598;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_CBI: u32 = 2633940222;
+pub const MESSAGE_ID_CBI: u32 = 2633940222;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_CACI: u32 = 2566775294;
+pub const MESSAGE_ID_CACI: u32 = 2566775294;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_BT1: u32 = 2566803710;
+pub const MESSAGE_ID_BT1: u32 = 2566803710;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_BM: u32 = 2566809342;
+pub const MESSAGE_ID_BM: u32 = 2566809342;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_BJM3: u32 = 2365446910;
+pub const MESSAGE_ID_BJM3: u32 = 2365446910;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_BJM2: u32 = 2365446398;
+pub const MESSAGE_ID_BJM2: u32 = 2365446398;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_BJM1: u32 = 2365445886;
+pub const MESSAGE_ID_BJM1: u32 = 2365445886;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_B: u32 = 2566847230;
+pub const MESSAGE_ID_B: u32 = 2566847230;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AWPP: u32 = 2566848254;
+pub const MESSAGE_ID_AWPP: u32 = 2566848254;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ATS: u32 = 2631728894;
+pub const MESSAGE_ID_ATS: u32 = 2631728894;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ATR: u32 = 2631794430;
+pub const MESSAGE_ID_ATR: u32 = 2631794430;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AT: u32 = 2633934846;
+pub const MESSAGE_ID_AT: u32 = 2633934846;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ASC6: u32 = 2362572542;
+pub const MESSAGE_ID_ASC6: u32 = 2362572542;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ASC5: u32 = 2365478910;
+pub const MESSAGE_ID_ASC5: u32 = 2365478910;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ASC4: u32 = 2566805758;
+pub const MESSAGE_ID_ASC4: u32 = 2566805758;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ASC3: u32 = 2566806014;
+pub const MESSAGE_ID_ASC3: u32 = 2566806014;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ASC2: u32 = 2362638078;
+pub const MESSAGE_ID_ASC2: u32 = 2362638078;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ASC1: u32 = 2365479678;
+pub const MESSAGE_ID_ASC1: u32 = 2365479678;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AS: u32 = 2566837758;
+pub const MESSAGE_ID_AS: u32 = 2566837758;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AP: u32 = 2633922558;
+pub const MESSAGE_ID_AP: u32 = 2633922558;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AMB2: u32 = 2566775038;
+pub const MESSAGE_ID_AMB2: u32 = 2566775038;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_WSMEM: u32 = 2633895166;
+pub const MESSAGE_ID_WSMEM: u32 = 2633895166;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DM8: u32 = 2566836478;
+pub const MESSAGE_ID_DM8: u32 = 2566836478;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DM7: u32 = 2565078782;
+pub const MESSAGE_ID_DM7: u32 = 2565078782;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DM6: u32 = 2566836222;
+pub const MESSAGE_ID_DM6: u32 = 2566836222;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DM5: u32 = 2566835966;
+pub const MESSAGE_ID_DM5: u32 = 2566835966;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DM4: u32 = 2566835710;
+pub const MESSAGE_ID_DM4: u32 = 2566835710;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DM3: u32 = 2566835454;
+pub const MESSAGE_ID_DM3: u32 = 2566835454;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DM25: u32 = 2566764542;
+pub const MESSAGE_ID_DM25: u32 = 2566764542;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DM24: u32 = 2566764286;
+pub const MESSAGE_ID_DM24: u32 = 2566764286;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DM23: u32 = 2555576062;
+pub const MESSAGE_ID_DM23: u32 = 2555576062;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DM22: u32 = 2562981630;
+pub const MESSAGE_ID_DM22: u32 = 2562981630;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DM21: u32 = 2562850558;
+pub const MESSAGE_ID_DM21: u32 = 2562850558;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DM20: u32 = 2562916094;
+pub const MESSAGE_ID_DM20: u32 = 2562916094;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DM2: u32 = 2566835198;
+pub const MESSAGE_ID_DM2: u32 = 2566835198;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DM19: u32 = 2564030206;
+pub const MESSAGE_ID_DM19: u32 = 2564030206;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DM17: u32 = 2564226814;
+pub const MESSAGE_ID_DM17: u32 = 2564226814;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DM16: u32 = 2564292350;
+pub const MESSAGE_ID_DM16: u32 = 2564292350;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DM15: u32 = 2564357886;
+pub const MESSAGE_ID_DM15: u32 = 2564357886;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DM14: u32 = 2564423422;
+pub const MESSAGE_ID_DM14: u32 = 2564423422;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DM13: u32 = 2564816638;
+pub const MESSAGE_ID_DM13: u32 = 2564816638;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DM12: u32 = 2566837502;
+pub const MESSAGE_ID_DM12: u32 = 2566837502;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DM11: u32 = 2566837246;
+pub const MESSAGE_ID_DM11: u32 = 2566837246;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DM10: u32 = 2566836990;
+pub const MESSAGE_ID_DM10: u32 = 2566836990;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DM1: u32 = 2566834942;
+pub const MESSAGE_ID_DM1: u32 = 2566834942;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_UTACR: u32 = 2566780926;
+pub const MESSAGE_ID_UTACR: u32 = 2566780926;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_UTACP: u32 = 2566781182;
+pub const MESSAGE_ID_UTACP: u32 = 2566781182;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_UTACE: u32 = 2566778366;
+pub const MESSAGE_ID_UTACE: u32 = 2566778366;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_UPCACR: u32 = 2566778622;
+pub const MESSAGE_ID_UPCACR: u32 = 2566778622;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_UPCACP: u32 = 2566778878;
+pub const MESSAGE_ID_UPCACP: u32 = 2566778878;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_UPCAC: u32 = 2566779134;
+pub const MESSAGE_ID_UPCAC: u32 = 2566779134;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_UPBACR: u32 = 2566779390;
+pub const MESSAGE_ID_UPBACR: u32 = 2566779390;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_UPBACP: u32 = 2566779646;
+pub const MESSAGE_ID_UPBACP: u32 = 2566779646;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_UPBAC: u32 = 2566779902;
+pub const MESSAGE_ID_UPBAC: u32 = 2566779902;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_UPACCR: u32 = 2566780158;
+pub const MESSAGE_ID_UPACCR: u32 = 2566780158;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_UPAACP: u32 = 2566780414;
+pub const MESSAGE_ID_UPAACP: u32 = 2566780414;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_UPAAC: u32 = 2566780670;
+pub const MESSAGE_ID_UPAAC: u32 = 2566780670;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_UAAC: u32 = 2566781438;
+pub const MESSAGE_ID_UAAC: u32 = 2566781438;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GTACR: u32 = 2566784254;
+pub const MESSAGE_ID_GTACR: u32 = 2566784254;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GTACP: u32 = 2566784510;
+pub const MESSAGE_ID_GTACP: u32 = 2566784510;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GTACE: u32 = 2566781694;
+pub const MESSAGE_ID_GTACE: u32 = 2566781694;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GPCACR: u32 = 2566781950;
+pub const MESSAGE_ID_GPCACR: u32 = 2566781950;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GPCACP: u32 = 2566782206;
+pub const MESSAGE_ID_GPCACP: u32 = 2566782206;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GPCAC: u32 = 2566782462;
+pub const MESSAGE_ID_GPCAC: u32 = 2566782462;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GPBACRP: u32 = 2566782718;
+pub const MESSAGE_ID_GPBACRP: u32 = 2566782718;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GPBACP: u32 = 2566782974;
+pub const MESSAGE_ID_GPBACP: u32 = 2566782974;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GPBAC: u32 = 2566783230;
+pub const MESSAGE_ID_GPBAC: u32 = 2566783230;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GPAACR: u32 = 2566783486;
+pub const MESSAGE_ID_GPAACR: u32 = 2566783486;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GPAACP: u32 = 2566783742;
+pub const MESSAGE_ID_GPAACP: u32 = 2566783742;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GPAAC: u32 = 2566783998;
+pub const MESSAGE_ID_GPAAC: u32 = 2566783998;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_GAAC: u32 = 2566784766;
+pub const MESSAGE_ID_GAAC: u32 = 2566784766;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_BUSC: u32 = 2566776830;
+pub const MESSAGE_ID_BUSC: u32 = 2566776830;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_BPCAC: u32 = 2566777342;
+pub const MESSAGE_ID_BPCAC: u32 = 2566777342;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_BPBAC: u32 = 2566777598;
+pub const MESSAGE_ID_BPBAC: u32 = 2566777598;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_BPAAC: u32 = 2566777854;
+pub const MESSAGE_ID_BPAAC: u32 = 2566777854;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_BGSC: u32 = 2566777086;
+pub const MESSAGE_ID_BGSC: u32 = 2566777086;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_BAAC: u32 = 2566778110;
+pub const MESSAGE_ID_BAAC: u32 = 2566778110;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_WSMSTR: u32 = 2633895422;
+pub const MESSAGE_ID_WSMSTR: u32 = 2633895422;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_CA: u32 = 2566838526;
+pub const MESSAGE_ID_CA: u32 = 2566838526;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ACL: u32 = 2565799678;
+pub const MESSAGE_ID_ACL: u32 = 2565799678;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_XFER: u32 = 2563440382;
+pub const MESSAGE_ID_XFER: u32 = 2563440382;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TPDT: u32 = 2565603070;
+pub const MESSAGE_ID_TPDT: u32 = 2565603070;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TPCM: u32 = 2565668606;
+pub const MESSAGE_ID_TPCM: u32 = 2565668606;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_RQST2: u32 = 2563374846;
+pub const MESSAGE_ID_RQST2: u32 = 2563374846;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_RQST: u32 = 2565537534;
+pub const MESSAGE_ID_RQST: u32 = 2565537534;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DM29: u32 = 2560556798;
+pub const MESSAGE_ID_DM29: u32 = 2560556798;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DM28: u32 = 2566750462;
+pub const MESSAGE_ID_DM28: u32 = 2566750462;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DM27: u32 = 2566750974;
+pub const MESSAGE_ID_DM27: u32 = 2566750974;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ATI2: u32 = 2566748414;
+pub const MESSAGE_ID_ATI2: u32 = 2566748414;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ATI1: u32 = 2566748670;
+pub const MESSAGE_ID_ATI1: u32 = 2566748670;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AAC3: u32 = 2566745598;
+pub const MESSAGE_ID_AAC3: u32 = 2566745598;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AAC4: u32 = 2566745342;
+pub const MESSAGE_ID_AAC4: u32 = 2566745342;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AETC: u32 = 2566754558;
+pub const MESSAGE_ID_AETC: u32 = 2566754558;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AFSS: u32 = 2566749950;
+pub const MESSAGE_ID_AFSS: u32 = 2566749950;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AT1I1: u32 = 2565869310;
+pub const MESSAGE_ID_AT1I1: u32 = 2565869310;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AT1I2: u32 = 2566763774;
+pub const MESSAGE_ID_AT1I2: u32 = 2566763774;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AT1O1: u32 = 2565869566;
+pub const MESSAGE_ID_AT1O1: u32 = 2565869566;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AT1O2: u32 = 2566763518;
+pub const MESSAGE_ID_AT1O2: u32 = 2566763518;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AT2I1: u32 = 2565869822;
+pub const MESSAGE_ID_AT2I1: u32 = 2565869822;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AT2I2: u32 = 2566763006;
+pub const MESSAGE_ID_AT2I2: u32 = 2566763006;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AT2O1: u32 = 2565870078;
+pub const MESSAGE_ID_AT2O1: u32 = 2565870078;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AT2O2: u32 = 2566762750;
+pub const MESSAGE_ID_AT2O2: u32 = 2566762750;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ATGP1: u32 = 2566753534;
+pub const MESSAGE_ID_ATGP1: u32 = 2566753534;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ATGP2: u32 = 2566753278;
+pub const MESSAGE_ID_ATGP2: u32 = 2566753278;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ATM2: u32 = 2566762494;
+pub const MESSAGE_ID_ATM2: u32 = 2566762494;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ATS1: u32 = 2566749182;
+pub const MESSAGE_ID_ATS1: u32 = 2566749182;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ATS2: u32 = 2566748926;
+pub const MESSAGE_ID_ATS2: u32 = 2566748926;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AUXIO1: u32 = 2566838782;
+pub const MESSAGE_ID_AUXIO1: u32 = 2566838782;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AUXIO2: u32 = 2561146622;
+pub const MESSAGE_ID_AUXIO2: u32 = 2561146622;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AUXIO3: u32 = 2561081086;
+pub const MESSAGE_ID_AUXIO3: u32 = 2561081086;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AUXIO4: u32 = 2561015550;
+pub const MESSAGE_ID_AUXIO4: u32 = 2561015550;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_BSA: u32 = 2566746622;
+pub const MESSAGE_ID_BSA: u32 = 2566746622;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AMB: u32 = 2566845950;
+pub const MESSAGE_ID_AMB: u32 = 2566845950;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AIR2: u32 = 2566840062;
+pub const MESSAGE_ID_AIR2: u32 = 2566840062;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AIR1: u32 = 2566827774;
+pub const MESSAGE_ID_AIR1: u32 = 2566827774;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AI: u32 = 2566846974;
+pub const MESSAGE_ID_AI: u32 = 2566846974;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AF2: u32 = 2633935614;
+pub const MESSAGE_ID_AF2: u32 = 2633935614;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ACC2: u32 = 2566803966;
+pub const MESSAGE_ID_ACC2: u32 = 2566803966;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ACC1: u32 = 2432593918;
+pub const MESSAGE_ID_ACC1: u32 = 2432593918;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AC: u32 = 2633935102;
+pub const MESSAGE_ID_AC: u32 = 2633935102;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_AAI: u32 = 2633927934;
+pub const MESSAGE_ID_AAI: u32 = 2633927934;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_A1: u32 = 2566847998;
+pub const MESSAGE_ID_A1: u32 = 2566847998;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ACKM: u32 = 2565406462;
+pub const MESSAGE_ID_ACKM: u32 = 2565406462;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_ATM1: u32 = 2566763262;
+pub const MESSAGE_ID_ATM1: u32 = 2566763262;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_DC1: u32 = 2566803198;
+pub const MESSAGE_ID_DC1: u32 = 2566803198;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_FWSS1: u32 = 2565870334;
+pub const MESSAGE_ID_FWSS1: u32 = 2565870334;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_FWSS2: u32 = 2566762238;
+pub const MESSAGE_ID_FWSS2: u32 = 2566762238;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_SSI: u32 = 2364543998;
+pub const MESSAGE_ID_SSI: u32 = 2364543998;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_TRF1: u32 = 2566846718;
+pub const MESSAGE_ID_TRF1: u32 = 2566846718;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_VEP1: u32 = 2566846462;
+pub const MESSAGE_ID_VEP1: u32 = 2566846462;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_WCM2: u32 = 2566760702;
+pub const MESSAGE_ID_WCM2: u32 = 2566760702;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_WCM1: u32 = 2566760958;
+pub const MESSAGE_ID_WCM1: u32 = 2566760958;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_VROM: u32 = 2633869310;
+pub const MESSAGE_ID_VROM: u32 = 2633869310;
 
 #[allow(dead_code)]
- pub const MESSAGE_ID_VREP: u32 = 2365433598;
+pub const MESSAGE_ID_VREP: u32 = 2365433598;
 
 #[allow(dead_code)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -30393,7 +30393,8 @@ pub struct Disp1 {
 
 impl Disp1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Disp1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Disp1 {
+        frame_payload.resize(8, 0);
         Disp1 { frame_payload }
     }
 
@@ -30435,7 +30436,8 @@ pub struct Drc {
 
 impl Drc {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Drc {
+    pub fn new(mut frame_payload: Vec<u8>) -> Drc {
+        frame_payload.resize(8, 0);
         Drc { frame_payload }
     }
 
@@ -30566,7 +30568,8 @@ pub struct Ec2 {
 
 impl Ec2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ec2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ec2 {
+        frame_payload.resize(8, 0);
         Ec2 { frame_payload }
     }
 
@@ -30596,7 +30599,8 @@ pub struct Eec7 {
 
 impl Eec7 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Eec7 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Eec7 {
+        frame_payload.resize(8, 0);
         Eec7 { frame_payload }
     }
 
@@ -30633,7 +30637,8 @@ pub struct Eec8 {
 
 impl Eec8 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Eec8 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Eec8 {
+        frame_payload.resize(8, 0);
         Eec8 { frame_payload }
     }
 
@@ -30663,7 +30668,8 @@ pub struct EflP5 {
 
 impl EflP5 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> EflP5 {
+    pub fn new(mut frame_payload: Vec<u8>) -> EflP5 {
+        frame_payload.resize(8, 0);
         EflP5 { frame_payload }
     }
 
@@ -30714,7 +30720,8 @@ pub struct EflP6 {
 
 impl EflP6 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> EflP6 {
+    pub fn new(mut frame_payload: Vec<u8>) -> EflP6 {
+        frame_payload.resize(8, 0);
         EflP6 { frame_payload }
     }
 
@@ -30765,7 +30772,8 @@ pub struct EflP7 {
 
 impl EflP7 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> EflP7 {
+    pub fn new(mut frame_payload: Vec<u8>) -> EflP7 {
+        frame_payload.resize(8, 0);
         EflP7 { frame_payload }
     }
 
@@ -30816,7 +30824,8 @@ pub struct EflP8 {
 
 impl EflP8 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> EflP8 {
+    pub fn new(mut frame_payload: Vec<u8>) -> EflP8 {
+        frame_payload.resize(8, 0);
         EflP8 { frame_payload }
     }
 
@@ -30867,7 +30876,8 @@ pub struct EflP9 {
 
 impl EflP9 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> EflP9 {
+    pub fn new(mut frame_payload: Vec<u8>) -> EflP9 {
+        frame_payload.resize(8, 0);
         EflP9 { frame_payload }
     }
 
@@ -30918,7 +30928,8 @@ pub struct Egrbv {
 
 impl Egrbv {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Egrbv {
+    pub fn new(mut frame_payload: Vec<u8>) -> Egrbv {
+        frame_payload.resize(8, 0);
         Egrbv { frame_payload }
     }
 
@@ -30948,7 +30959,8 @@ pub struct Esv1 {
 
 impl Esv1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Esv1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Esv1 {
+        frame_payload.resize(8, 0);
         Esv1 { frame_payload }
     }
 
@@ -30999,7 +31011,8 @@ pub struct Esv2 {
 
 impl Esv2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Esv2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Esv2 {
+        frame_payload.resize(8, 0);
         Esv2 { frame_payload }
     }
 
@@ -31050,7 +31063,8 @@ pub struct Esv3 {
 
 impl Esv3 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Esv3 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Esv3 {
+        frame_payload.resize(8, 0);
         Esv3 { frame_payload }
     }
 
@@ -31101,7 +31115,8 @@ pub struct Esv4 {
 
 impl Esv4 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Esv4 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Esv4 {
+        frame_payload.resize(8, 0);
         Esv4 { frame_payload }
     }
 
@@ -31152,7 +31167,8 @@ pub struct Esv5 {
 
 impl Esv5 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Esv5 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Esv5 {
+        frame_payload.resize(8, 0);
         Esv5 { frame_payload }
     }
 
@@ -31203,7 +31219,8 @@ pub struct Esv6 {
 
 impl Esv6 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Esv6 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Esv6 {
+        frame_payload.resize(8, 0);
         Esv6 { frame_payload }
     }
 
@@ -31254,7 +31271,8 @@ pub struct Flic {
 
 impl Flic {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Flic {
+    pub fn new(mut frame_payload: Vec<u8>) -> Flic {
+        frame_payload.resize(8, 0);
         Flic { frame_payload }
     }
 
@@ -31289,7 +31307,8 @@ pub struct J2012 {
 
 impl J2012 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> J2012 {
+    pub fn new(mut frame_payload: Vec<u8>) -> J2012 {
+        frame_payload.resize(8, 0);
         J2012 { frame_payload }
     }
 
@@ -31338,7 +31357,8 @@ pub struct Ptc1 {
 
 impl Ptc1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ptc1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ptc1 {
+        frame_payload.resize(8, 0);
         Ptc1 { frame_payload }
     }
 
@@ -31505,7 +31525,8 @@ pub struct Sas {
 
 impl Sas {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Sas {
+    pub fn new(mut frame_payload: Vec<u8>) -> Sas {
+        frame_payload.resize(8, 0);
         Sas { frame_payload }
     }
 
@@ -31599,7 +31620,8 @@ pub struct Scr1 {
 
 impl Scr1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Scr1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Scr1 {
+        frame_payload.resize(8, 0);
         Scr1 { frame_payload }
     }
 
@@ -31636,7 +31658,8 @@ pub struct Tci {
 
 impl Tci {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tci {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tci {
+        frame_payload.resize(8, 0);
         Tci { frame_payload }
     }
 
@@ -31671,7 +31694,8 @@ pub struct Trf2 {
 
 impl Trf2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Trf2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Trf2 {
+        frame_payload.resize(8, 0);
         Trf2 { frame_payload }
     }
 
@@ -31718,7 +31742,8 @@ pub struct Vds2 {
 
 impl Vds2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Vds2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Vds2 {
+        frame_payload.resize(8, 0);
         Vds2 { frame_payload }
     }
 
@@ -31748,7 +31773,8 @@ pub struct Lf {
 
 impl Lf {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Lf {
+    pub fn new(mut frame_payload: Vec<u8>) -> Lf {
+        frame_payload.resize(8, 0);
         Lf { frame_payload }
     }
 
@@ -31806,7 +31832,8 @@ pub struct Ld {
 
 impl Ld {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ld {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ld {
+        frame_payload.resize(8, 0);
         Ld { frame_payload }
     }
 
@@ -32201,7 +32228,8 @@ pub struct Lc {
 
 impl Lc {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Lc {
+    pub fn new(mut frame_payload: Vec<u8>) -> Lc {
+        frame_payload.resize(8, 0);
         Lc { frame_payload }
     }
 
@@ -32608,7 +32636,8 @@ pub struct Lbc {
 
 impl Lbc {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Lbc {
+    pub fn new(mut frame_payload: Vec<u8>) -> Lbc {
+        frame_payload.resize(8, 0);
         Lbc { frame_payload }
     }
 
@@ -32650,7 +32679,8 @@ pub struct It6 {
 
 impl It6 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> It6 {
+    pub fn new(mut frame_payload: Vec<u8>) -> It6 {
+        frame_payload.resize(8, 0);
         It6 { frame_payload }
     }
 
@@ -32701,7 +32731,8 @@ pub struct It5 {
 
 impl It5 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> It5 {
+    pub fn new(mut frame_payload: Vec<u8>) -> It5 {
+        frame_payload.resize(8, 0);
         It5 { frame_payload }
     }
 
@@ -32752,7 +32783,8 @@ pub struct It4 {
 
 impl It4 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> It4 {
+    pub fn new(mut frame_payload: Vec<u8>) -> It4 {
+        frame_payload.resize(8, 0);
         It4 { frame_payload }
     }
 
@@ -32803,7 +32835,8 @@ pub struct It3 {
 
 impl It3 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> It3 {
+    pub fn new(mut frame_payload: Vec<u8>) -> It3 {
+        frame_payload.resize(8, 0);
         It3 { frame_payload }
     }
 
@@ -32854,7 +32887,8 @@ pub struct It2 {
 
 impl It2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> It2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> It2 {
+        frame_payload.resize(8, 0);
         It2 { frame_payload }
     }
 
@@ -32905,7 +32939,8 @@ pub struct It1 {
 
 impl It1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> It1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> It1 {
+        frame_payload.resize(8, 0);
         It1 { frame_payload }
     }
 
@@ -32956,7 +32991,8 @@ pub struct Iso3 {
 
 impl Iso3 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Iso3 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Iso3 {
+        frame_payload.resize(8, 0);
         Iso3 { frame_payload }
     }
 
@@ -33007,7 +33043,8 @@ pub struct Iso2 {
 
 impl Iso2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Iso2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Iso2 {
+        frame_payload.resize(8, 0);
         Iso2 { frame_payload }
     }
 
@@ -33086,7 +33123,8 @@ pub struct Iso1 {
 
 impl Iso1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Iso1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Iso1 {
+        frame_payload.resize(8, 0);
         Iso1 { frame_payload }
     }
 
@@ -33165,7 +33203,8 @@ pub struct Iscs {
 
 impl Iscs {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Iscs {
+    pub fn new(mut frame_payload: Vec<u8>) -> Iscs {
+        frame_payload.resize(8, 0);
         Iscs { frame_payload }
     }
 
@@ -33200,7 +33239,8 @@ pub struct Isc {
 
 impl Isc {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Isc {
+    pub fn new(mut frame_payload: Vec<u8>) -> Isc {
+        frame_payload.resize(8, 0);
         Isc { frame_payload }
     }
 
@@ -33235,7 +33275,8 @@ pub struct Io {
 
 impl Io {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Io {
+    pub fn new(mut frame_payload: Vec<u8>) -> Io {
+        frame_payload.resize(8, 0);
         Io { frame_payload }
     }
 
@@ -33272,7 +33313,8 @@ pub struct Imt2 {
 
 impl Imt2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Imt2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Imt2 {
+        frame_payload.resize(8, 0);
         Imt2 { frame_payload }
     }
 
@@ -33330,7 +33372,8 @@ pub struct Imt1 {
 
 impl Imt1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Imt1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Imt1 {
+        frame_payload.resize(8, 0);
         Imt1 { frame_payload }
     }
 
@@ -33381,7 +33424,8 @@ pub struct Ic2 {
 
 impl Ic2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ic2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ic2 {
+        frame_payload.resize(8, 0);
         Ic2 { frame_payload }
     }
 
@@ -33439,7 +33483,8 @@ pub struct Ic1 {
 
 impl Ic1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ic1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ic1 {
+        frame_payload.resize(8, 0);
         Ic1 { frame_payload }
     }
 
@@ -33511,7 +33556,8 @@ pub struct Htr {
 
 impl Htr {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Htr {
+    pub fn new(mut frame_payload: Vec<u8>) -> Htr {
+        frame_payload.resize(8, 0);
         Htr { frame_payload }
     }
 
@@ -33615,7 +33661,8 @@ pub struct Hrw {
 
 impl Hrw {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Hrw {
+    pub fn new(mut frame_payload: Vec<u8>) -> Hrw {
+        frame_payload.resize(8, 0);
         Hrw { frame_payload }
     }
 
@@ -33666,7 +33713,8 @@ pub struct Hpg {
 
 impl Hpg {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Hpg {
+    pub fn new(mut frame_payload: Vec<u8>) -> Hpg {
+        frame_payload.resize(8, 0);
         Hpg { frame_payload }
     }
 
@@ -33732,7 +33780,8 @@ pub struct Hours {
 
 impl Hours {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Hours {
+    pub fn new(mut frame_payload: Vec<u8>) -> Hours {
+        frame_payload.resize(8, 0);
         Hours { frame_payload }
     }
 
@@ -33769,7 +33818,8 @@ pub struct Hbs {
 
 impl Hbs {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Hbs {
+    pub fn new(mut frame_payload: Vec<u8>) -> Hbs {
+        frame_payload.resize(8, 0);
         Hbs { frame_payload }
     }
 
@@ -33878,7 +33928,8 @@ pub struct Gtfi {
 
 impl Gtfi {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gtfi {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gtfi {
+        frame_payload.resize(8, 0);
         Gtfi { frame_payload }
     }
 
@@ -33943,7 +33994,8 @@ pub struct Gfp {
 
 impl Gfp {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gfp {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gfp {
+        frame_payload.resize(8, 0);
         Gfp { frame_payload }
     }
 
@@ -33994,7 +34046,8 @@ pub struct Gfi2 {
 
 impl Gfi2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gfi2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gfi2 {
+        frame_payload.resize(8, 0);
         Gfi2 { frame_payload }
     }
 
@@ -34059,7 +34112,8 @@ pub struct Gfi1 {
 
 impl Gfi1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gfi1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gfi1 {
+        frame_payload.resize(8, 0);
         Gfi1 { frame_payload }
     }
 
@@ -34103,7 +34157,8 @@ pub struct Gfd {
 
 impl Gfd {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gfd {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gfd {
+        frame_payload.resize(8, 0);
         Gfd { frame_payload }
     }
 
@@ -34133,7 +34188,8 @@ pub struct Gfc {
 
 impl Gfc {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gfc {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gfc {
+        frame_payload.resize(8, 0);
         Gfc { frame_payload }
     }
 
@@ -34170,7 +34226,8 @@ pub struct Sep2 {
 
 impl Sep2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Sep2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Sep2 {
+        frame_payload.resize(8, 0);
         Sep2 { frame_payload }
     }
 
@@ -34207,7 +34264,8 @@ pub struct Sep1 {
 
 impl Sep1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Sep1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Sep1 {
+        frame_payload.resize(8, 0);
         Sep1 { frame_payload }
     }
 
@@ -34258,7 +34316,8 @@ pub struct Ptode {
 
 impl Ptode {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ptode {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ptode {
+        frame_payload.resize(8, 0);
         Ptode { frame_payload }
     }
 
@@ -34425,7 +34484,8 @@ pub struct Gfi3 {
 
 impl Gfi3 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gfi3 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gfi3 {
+        frame_payload.resize(8, 0);
         Gfi3 { frame_payload }
     }
 
@@ -34476,7 +34536,8 @@ pub struct EflP4 {
 
 impl EflP4 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> EflP4 {
+    pub fn new(mut frame_payload: Vec<u8>) -> EflP4 {
+        frame_payload.resize(8, 0);
         EflP4 { frame_payload }
     }
 
@@ -34548,7 +34609,8 @@ pub struct Eec6 {
 
 impl Eec6 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Eec6 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Eec6 {
+        frame_payload.resize(8, 0);
         Eec6 { frame_payload }
     }
 
@@ -34597,7 +34659,8 @@ pub struct Dc2 {
 
 impl Dc2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dc2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dc2 {
+        frame_payload.resize(8, 0);
         Dc2 { frame_payload }
     }
 
@@ -34980,7 +35043,8 @@ pub struct Cri1 {
 
 impl Cri1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Cri1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Cri1 {
+        frame_payload.resize(8, 0);
         Cri1 { frame_payload }
     }
 
@@ -35050,7 +35114,8 @@ pub struct Ahi2 {
 
 impl Ahi2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ahi2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ahi2 {
+        frame_payload.resize(8, 0);
         Ahi2 { frame_payload }
     }
 
@@ -35129,7 +35194,8 @@ pub struct Afc2 {
 
 impl Afc2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Afc2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Afc2 {
+        frame_payload.resize(8, 0);
         Afc2 { frame_payload }
     }
 
@@ -35209,7 +35275,8 @@ pub struct Afc1 {
 
 impl Afc1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Afc1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Afc1 {
+        frame_payload.resize(8, 0);
         Afc1 { frame_payload }
     }
 
@@ -35289,7 +35356,8 @@ pub struct Aac2 {
 
 impl Aac2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Aac2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Aac2 {
+        frame_payload.resize(8, 0);
         Aac2 { frame_payload }
     }
 
@@ -35388,7 +35456,8 @@ pub struct Aac1 {
 
 impl Aac1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Aac1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Aac1 {
+        frame_payload.resize(8, 0);
         Aac1 { frame_payload }
     }
 
@@ -35487,7 +35556,8 @@ pub struct Ahi1 {
 
 impl Ahi1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ahi1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ahi1 {
+        frame_payload.resize(8, 0);
         Ahi1 { frame_payload }
     }
 
@@ -35538,7 +35608,8 @@ pub struct Rgaaq {
 
 impl Rgaaq {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Rgaaq {
+    pub fn new(mut frame_payload: Vec<u8>) -> Rgaaq {
+        frame_payload.resize(8, 0);
         Rgaaq { frame_payload }
     }
 
@@ -35568,7 +35639,8 @@ pub struct Tfac {
 
 impl Tfac {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tfac {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tfac {
+        frame_payload.resize(8, 0);
         Tfac { frame_payload }
     }
 
@@ -35619,7 +35691,8 @@ pub struct Kl3 {
 
 impl Kl3 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Kl3 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Kl3 {
+        frame_payload.resize(8, 0);
         Kl3 { frame_payload }
     }
 
@@ -35698,7 +35771,8 @@ pub struct Kl2 {
 
 impl Kl2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Kl2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Kl2 {
+        frame_payload.resize(8, 0);
         Kl2 { frame_payload }
     }
 
@@ -35777,7 +35851,8 @@ pub struct Kl1 {
 
 impl Kl1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Kl1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Kl1 {
+        frame_payload.resize(8, 0);
         Kl1 { frame_payload }
     }
 
@@ -35856,7 +35931,8 @@ pub struct Ccs {
 
 impl Ccs {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ccs {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ccs {
+        frame_payload.resize(8, 0);
         Ccs { frame_payload }
     }
 
@@ -36167,7 +36243,8 @@ pub struct Rgtarp {
 
 impl Rgtarp {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Rgtarp {
+    pub fn new(mut frame_payload: Vec<u8>) -> Rgtarp {
+        frame_payload.resize(8, 0);
         Rgtarp { frame_payload }
     }
 
@@ -36216,7 +36293,8 @@ pub struct Bi {
 
 impl Bi {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Bi {
+    pub fn new(mut frame_payload: Vec<u8>) -> Bi {
+        frame_payload.resize(8, 0);
         Bi { frame_payload }
     }
 
@@ -36284,7 +36362,8 @@ pub struct Ebs11 {
 
 impl Ebs11 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ebs11 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ebs11 {
+        frame_payload.resize(8, 0);
         Ebs11 { frame_payload }
     }
 
@@ -36400,7 +36479,8 @@ pub struct Ebs12 {
 
 impl Ebs12 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ebs12 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ebs12 {
+        frame_payload.resize(8, 0);
         Ebs12 { frame_payload }
     }
 
@@ -36478,7 +36558,8 @@ pub struct Ebs21 {
 
 impl Ebs21 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ebs21 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ebs21 {
+        frame_payload.resize(8, 0);
         Ebs21 { frame_payload }
     }
 
@@ -36594,7 +36675,8 @@ pub struct Ebs22 {
 
 impl Ebs22 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ebs22 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ebs22 {
+        frame_payload.resize(8, 0);
         Ebs22 { frame_payload }
     }
 
@@ -36799,7 +36881,8 @@ pub struct Ebs23 {
 
 impl Ebs23 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ebs23 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ebs23 {
+        frame_payload.resize(8, 0);
         Ebs23 { frame_payload }
     }
 
@@ -36972,7 +37055,8 @@ pub struct Gpm11 {
 
 impl Gpm11 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gpm11 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gpm11 {
+        frame_payload.resize(8, 0);
         Gpm11 { frame_payload }
     }
 
@@ -37031,7 +37115,8 @@ pub struct Gpm12 {
 
 impl Gpm12 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gpm12 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gpm12 {
+        frame_payload.resize(8, 0);
         Gpm12 { frame_payload }
     }
 
@@ -37075,7 +37160,8 @@ pub struct Gpm13 {
 
 impl Gpm13 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gpm13 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gpm13 {
+        frame_payload.resize(8, 0);
         Gpm13 { frame_payload }
     }
 
@@ -37170,7 +37256,8 @@ pub struct Gpm14 {
 
 impl Gpm14 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gpm14 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gpm14 {
+        frame_payload.resize(8, 0);
         Gpm14 { frame_payload }
     }
 
@@ -37329,7 +37416,8 @@ pub struct Gpm15 {
 
 impl Gpm15 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gpm15 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gpm15 {
+        frame_payload.resize(8, 0);
         Gpm15 { frame_payload }
     }
 
@@ -37416,7 +37504,8 @@ pub struct Gpm16 {
 
 impl Gpm16 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gpm16 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gpm16 {
+        frame_payload.resize(8, 0);
         Gpm16 { frame_payload }
     }
 
@@ -37448,7 +37537,8 @@ pub struct Gpm21 {
 
 impl Gpm21 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gpm21 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gpm21 {
+        frame_payload.resize(8, 0);
         Gpm21 { frame_payload }
     }
 
@@ -37485,7 +37575,8 @@ pub struct Gpm22 {
 
 impl Gpm22 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gpm22 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gpm22 {
+        frame_payload.resize(8, 0);
         Gpm22 { frame_payload }
     }
 
@@ -37560,7 +37651,8 @@ pub struct Gpm23 {
 
 impl Gpm23 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gpm23 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gpm23 {
+        frame_payload.resize(8, 0);
         Gpm23 { frame_payload }
     }
 
@@ -37618,7 +37710,8 @@ pub struct Gpm24 {
 
 impl Gpm24 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gpm24 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gpm24 {
+        frame_payload.resize(8, 0);
         Gpm24 { frame_payload }
     }
 
@@ -37768,7 +37861,8 @@ pub struct Gpm25 {
 
 impl Gpm25 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gpm25 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gpm25 {
+        frame_payload.resize(8, 0);
         Gpm25 { frame_payload }
     }
 
@@ -38055,7 +38149,8 @@ pub struct Iso15765Funct {
 
 impl Iso15765Funct {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Iso15765Funct {
+    pub fn new(mut frame_payload: Vec<u8>) -> Iso15765Funct {
+        frame_payload.resize(8, 0);
         Iso15765Funct { frame_payload }
     }
 
@@ -38137,7 +38232,8 @@ pub struct Iso15765Phys {
 
 impl Iso15765Phys {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Iso15765Phys {
+    pub fn new(mut frame_payload: Vec<u8>) -> Iso15765Phys {
+        frame_payload.resize(8, 0);
         Iso15765Phys { frame_payload }
     }
 
@@ -38219,7 +38315,8 @@ pub struct Network {
 
 impl Network {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Network {
+    pub fn new(mut frame_payload: Vec<u8>) -> Network {
+        frame_payload.resize(8, 0);
         Network { frame_payload }
     }
 
@@ -38282,7 +38379,8 @@ pub struct Rge11 {
 
 impl Rge11 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Rge11 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Rge11 {
+        frame_payload.resize(8, 0);
         Rge11 { frame_payload }
     }
 
@@ -38460,7 +38558,8 @@ pub struct Rge21 {
 
 impl Rge21 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Rge21 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Rge21 {
+        frame_payload.resize(8, 0);
         Rge21 { frame_payload }
     }
 
@@ -38653,7 +38752,8 @@ pub struct Rge22 {
 
 impl Rge22 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Rge22 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Rge22 {
+        frame_payload.resize(8, 0);
         Rge22 { frame_payload }
     }
 
@@ -38690,7 +38790,8 @@ pub struct Rge23 {
 
 impl Rge23 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Rge23 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Rge23 {
+        frame_payload.resize(8, 0);
         Rge23 { frame_payload }
     }
 
@@ -38775,7 +38876,8 @@ pub struct Dm26 {
 
 impl Dm26 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dm26 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dm26 {
+        frame_payload.resize(8, 0);
         Dm26 { frame_payload }
     }
 
@@ -39100,7 +39202,8 @@ pub struct Dm18 {
 
 impl Dm18 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dm18 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dm18 {
+        frame_payload.resize(8, 0);
         Dm18 { frame_payload }
     }
 
@@ -39149,7 +39252,8 @@ pub struct Xbr {
 
 impl Xbr {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Xbr {
+    pub fn new(mut frame_payload: Vec<u8>) -> Xbr {
+        frame_payload.resize(8, 0);
         Xbr { frame_payload }
     }
 
@@ -39229,7 +39333,8 @@ pub struct Wfi {
 
 impl Wfi {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Wfi {
+    pub fn new(mut frame_payload: Vec<u8>) -> Wfi {
+        frame_payload.resize(8, 0);
         Wfi { frame_payload }
     }
 
@@ -39264,7 +39369,8 @@ pub struct Vw {
 
 impl Vw {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Vw {
+    pub fn new(mut frame_payload: Vec<u8>) -> Vw {
+        frame_payload.resize(8, 0);
         Vw { frame_payload }
     }
 
@@ -39315,7 +39421,8 @@ pub struct Vep3 {
 
 impl Vep3 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Vep3 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Vep3 {
+        frame_payload.resize(8, 0);
         Vep3 { frame_payload }
     }
 
@@ -39352,7 +39459,8 @@ pub struct Vep2 {
 
 impl Vep2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Vep2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Vep2 {
+        frame_payload.resize(8, 0);
         Vep2 { frame_payload }
     }
 
@@ -39410,7 +39518,8 @@ pub struct Vp {
 
 impl Vp {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Vp {
+    pub fn new(mut frame_payload: Vec<u8>) -> Vp {
+        frame_payload.resize(8, 0);
         Vp { frame_payload }
     }
 
@@ -39447,7 +39556,8 @@ pub struct Vi {
 
 impl Vi {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Vi {
+    pub fn new(mut frame_payload: Vec<u8>) -> Vi {
+        frame_payload.resize(8, 0);
         Vi { frame_payload }
     }
 
@@ -39470,7 +39580,8 @@ pub struct Vh {
 
 impl Vh {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Vh {
+    pub fn new(mut frame_payload: Vec<u8>) -> Vh {
+        frame_payload.resize(8, 0);
         Vh { frame_payload }
     }
 
@@ -39507,7 +39618,8 @@ pub struct Vf {
 
 impl Vf {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Vf {
+    pub fn new(mut frame_payload: Vec<u8>) -> Vf {
+        frame_payload.resize(8, 0);
         Vf { frame_payload }
     }
 
@@ -39568,7 +39680,8 @@ pub struct Vds {
 
 impl Vds {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Vds {
+    pub fn new(mut frame_payload: Vec<u8>) -> Vds {
+        frame_payload.resize(8, 0);
         Vds { frame_payload }
     }
 
@@ -39619,7 +39732,8 @@ pub struct Vdhr {
 
 impl Vdhr {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Vdhr {
+    pub fn new(mut frame_payload: Vec<u8>) -> Vdhr {
+        frame_payload.resize(8, 0);
         Vdhr { frame_payload }
     }
 
@@ -39656,7 +39770,8 @@ pub struct Vdc2 {
 
 impl Vdc2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Vdc2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Vdc2 {
+        frame_payload.resize(8, 0);
         Vdc2 { frame_payload }
     }
 
@@ -39726,7 +39841,8 @@ pub struct Vdc1 {
 
 impl Vdc1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Vdc1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Vdc1 {
+        frame_payload.resize(8, 0);
         Vdc1 { frame_payload }
     }
 
@@ -39833,7 +39949,8 @@ pub struct Vd {
 
 impl Vd {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Vd {
+    pub fn new(mut frame_payload: Vec<u8>) -> Vd {
+        frame_payload.resize(8, 0);
         Vd { frame_payload }
     }
 
@@ -39870,7 +39987,8 @@ pub struct Tvi {
 
 impl Tvi {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tvi {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tvi {
+        frame_payload.resize(8, 0);
         Tvi { frame_payload }
     }
 
@@ -39907,7 +40025,8 @@ pub struct Tti2 {
 
 impl Tti2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tti2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tti2 {
+        frame_payload.resize(8, 0);
         Tti2 { frame_payload }
     }
 
@@ -39965,7 +40084,8 @@ pub struct Tti1 {
 
 impl Tti1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tti1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tti1 {
+        frame_payload.resize(8, 0);
         Tti1 { frame_payload }
     }
 
@@ -40016,7 +40136,8 @@ pub struct Tsi {
 
 impl Tsi {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tsi {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tsi {
+        frame_payload.resize(8, 0);
         Tsi { frame_payload }
     }
 
@@ -40067,7 +40188,8 @@ pub struct Tsc1 {
 
 impl Tsc1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tsc1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tsc1 {
+        frame_payload.resize(8, 0);
         Tsc1 { frame_payload }
     }
 
@@ -40164,7 +40286,8 @@ pub struct Tr7 {
 
 impl Tr7 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tr7 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tr7 {
+        frame_payload.resize(8, 0);
         Tr7 { frame_payload }
     }
 
@@ -40242,7 +40365,8 @@ pub struct Tr6 {
 
 impl Tr6 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tr6 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tr6 {
+        frame_payload.resize(8, 0);
         Tr6 { frame_payload }
     }
 
@@ -40289,7 +40413,8 @@ pub struct Tr5 {
 
 impl Tr5 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tr5 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tr5 {
+        frame_payload.resize(8, 0);
         Tr5 { frame_payload }
     }
 
@@ -40414,7 +40539,8 @@ pub struct Tr4 {
 
 impl Tr4 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tr4 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tr4 {
+        frame_payload.resize(8, 0);
         Tr4 { frame_payload }
     }
 
@@ -40527,7 +40653,8 @@ pub struct Tr3 {
 
 impl Tr3 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tr3 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tr3 {
+        frame_payload.resize(8, 0);
         Tr3 { frame_payload }
     }
 
@@ -40629,7 +40756,8 @@ pub struct Tr2 {
 
 impl Tr2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tr2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tr2 {
+        frame_payload.resize(8, 0);
         Tr2 { frame_payload }
     }
 
@@ -40659,7 +40787,8 @@ pub struct Tr1 {
 
 impl Tr1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tr1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tr1 {
+        frame_payload.resize(8, 0);
         Tr1 { frame_payload }
     }
 
@@ -40710,7 +40839,8 @@ pub struct Tprs {
 
 impl Tprs {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tprs {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tprs {
+        frame_payload.resize(8, 0);
         Tprs { frame_payload }
     }
 
@@ -40747,7 +40877,8 @@ pub struct Tpri {
 
 impl Tpri {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tpri {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tpri {
+        frame_payload.resize(8, 0);
         Tpri { frame_payload }
     }
 
@@ -40784,7 +40915,8 @@ pub struct Tp3 {
 
 impl Tp3 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tp3 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tp3 {
+        frame_payload.resize(8, 0);
         Tp3 { frame_payload }
     }
 
@@ -40828,7 +40960,8 @@ pub struct Tp2 {
 
 impl Tp2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tp2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tp2 {
+        frame_payload.resize(8, 0);
         Tp2 { frame_payload }
     }
 
@@ -40872,7 +41005,8 @@ pub struct Tp1 {
 
 impl Tp1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tp1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tp1 {
+        frame_payload.resize(8, 0);
         Tp1 { frame_payload }
     }
 
@@ -41022,7 +41156,8 @@ pub struct Tire {
 
 impl Tire {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tire {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tire {
+        frame_payload.resize(8, 0);
         Tire { frame_payload }
     }
 
@@ -41121,7 +41256,8 @@ pub struct Ti1 {
 
 impl Ti1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ti1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ti1 {
+        frame_payload.resize(8, 0);
         Ti1 { frame_payload }
     }
 
@@ -41172,7 +41308,8 @@ pub struct Tfi {
 
 impl Tfi {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tfi {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tfi {
+        frame_payload.resize(8, 0);
         Tfi { frame_payload }
     }
 
@@ -41223,7 +41360,8 @@ pub struct Tdi {
 
 impl Tdi {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tdi {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tdi {
+        frame_payload.resize(8, 0);
         Tdi { frame_payload }
     }
 
@@ -41267,7 +41405,8 @@ pub struct Tda {
 
 impl Tda {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tda {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tda {
+        frame_payload.resize(8, 0);
         Tda { frame_payload }
     }
 
@@ -41346,7 +41485,8 @@ pub struct Td {
 
 impl Td {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Td {
+    pub fn new(mut frame_payload: Vec<u8>) -> Td {
+        frame_payload.resize(8, 0);
         Td { frame_payload }
     }
 
@@ -41425,7 +41565,8 @@ pub struct Tcw {
 
 impl Tcw {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tcw {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tcw {
+        frame_payload.resize(8, 0);
         Tcw { frame_payload }
     }
 
@@ -41483,7 +41624,8 @@ pub struct Tco1 {
 
 impl Tco1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tco1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tco1 {
+        frame_payload.resize(8, 0);
         Tco1 { frame_payload }
     }
 
@@ -41664,7 +41806,8 @@ pub struct Tci6 {
 
 impl Tci6 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tci6 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tci6 {
+        frame_payload.resize(8, 0);
         Tci6 { frame_payload }
     }
 
@@ -41715,7 +41858,8 @@ pub struct Tci5 {
 
 impl Tci5 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tci5 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tci5 {
+        frame_payload.resize(8, 0);
         Tci5 { frame_payload }
     }
 
@@ -41766,7 +41910,8 @@ pub struct Tci4 {
 
 impl Tci4 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tci4 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tci4 {
+        frame_payload.resize(8, 0);
         Tci4 { frame_payload }
     }
 
@@ -41817,7 +41962,8 @@ pub struct Tci3 {
 
 impl Tci3 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tci3 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tci3 {
+        frame_payload.resize(8, 0);
         Tci3 { frame_payload }
     }
 
@@ -41868,7 +42014,8 @@ pub struct Tci2 {
 
 impl Tci2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tci2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tci2 {
+        frame_payload.resize(8, 0);
         Tci2 { frame_payload }
     }
 
@@ -41919,7 +42066,8 @@ pub struct Tci1 {
 
 impl Tci1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tci1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tci1 {
+        frame_payload.resize(8, 0);
         Tci1 { frame_payload }
     }
 
@@ -41970,7 +42118,8 @@ pub struct Tcfg2 {
 
 impl Tcfg2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tcfg2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tcfg2 {
+        frame_payload.resize(8, 0);
         Tcfg2 { frame_payload }
     }
 
@@ -42000,7 +42149,8 @@ pub struct Tcfg {
 
 impl Tcfg {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tcfg {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tcfg {
+        frame_payload.resize(8, 0);
         Tcfg { frame_payload }
     }
 
@@ -42044,7 +42194,8 @@ pub struct Tc1 {
 
 impl Tc1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tc1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tc1 {
+        frame_payload.resize(8, 0);
         Tc1 { frame_payload }
     }
 
@@ -42266,7 +42417,8 @@ pub struct Tc {
 
 impl Tc {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tc {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tc {
+        frame_payload.resize(8, 0);
         Tc { frame_payload }
     }
 
@@ -42310,7 +42462,8 @@ pub struct Tavg {
 
 impl Tavg {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tavg {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tavg {
+        frame_payload.resize(8, 0);
         Tavg { frame_payload }
     }
 
@@ -42347,7 +42500,8 @@ pub struct Spr {
 
 impl Spr {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Spr {
+    pub fn new(mut frame_payload: Vec<u8>) -> Spr {
+        frame_payload.resize(8, 0);
         Spr { frame_payload }
     }
 
@@ -42412,7 +42566,8 @@ pub struct Sp2 {
 
 impl Sp2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Sp2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Sp2 {
+        frame_payload.resize(8, 0);
         Sp2 { frame_payload }
     }
 
@@ -42442,7 +42597,8 @@ pub struct Soft {
 
 impl Soft {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Soft {
+    pub fn new(mut frame_payload: Vec<u8>) -> Soft {
+        frame_payload.resize(8, 0);
         Soft { frame_payload }
     }
 
@@ -42472,7 +42628,8 @@ pub struct Shutdow {
 
 impl Shutdow {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Shutdow {
+    pub fn new(mut frame_payload: Vec<u8>) -> Shutdow {
+        frame_payload.resize(8, 0);
         Shutdow { frame_payload }
     }
 
@@ -42711,7 +42868,8 @@ pub struct Serv {
 
 impl Serv {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Serv {
+    pub fn new(mut frame_payload: Vec<u8>) -> Serv {
+        frame_payload.resize(8, 0);
         Serv { frame_payload }
     }
 
@@ -42776,7 +42934,8 @@ pub struct S2 {
 
 impl S2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> S2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> S2 {
+        frame_payload.resize(8, 0);
         S2 { frame_payload }
     }
 
@@ -42813,7 +42972,8 @@ pub struct Rtc1 {
 
 impl Rtc1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Rtc1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Rtc1 {
+        frame_payload.resize(8, 0);
         Rtc1 { frame_payload }
     }
 
@@ -42892,7 +43052,8 @@ pub struct Rf {
 
 impl Rf {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Rf {
+    pub fn new(mut frame_payload: Vec<u8>) -> Rf {
+        frame_payload.resize(8, 0);
         Rf { frame_payload }
     }
 
@@ -42929,7 +43090,8 @@ pub struct Reset {
 
 impl Reset {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Reset {
+    pub fn new(mut frame_payload: Vec<u8>) -> Reset {
+        frame_payload.resize(8, 0);
         Reset { frame_payload }
     }
 
@@ -42995,7 +43157,8 @@ pub struct Rc {
 
 impl Rc {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Rc {
+    pub fn new(mut frame_payload: Vec<u8>) -> Rc {
+        frame_payload.resize(8, 0);
         Rc { frame_payload }
     }
 
@@ -43126,7 +43289,8 @@ pub struct Rbi {
 
 impl Rbi {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Rbi {
+    pub fn new(mut frame_payload: Vec<u8>) -> Rbi {
+        frame_payload.resize(8, 0);
         Rbi { frame_payload }
     }
 
@@ -43156,7 +43320,8 @@ pub struct Pto {
 
 impl Pto {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Pto {
+    pub fn new(mut frame_payload: Vec<u8>) -> Pto {
+        frame_payload.resize(8, 0);
         Pto { frame_payload }
     }
 
@@ -43320,7 +43485,8 @@ pub struct Oww {
 
 impl Oww {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Oww {
+    pub fn new(mut frame_payload: Vec<u8>) -> Oww {
+        frame_payload.resize(8, 0);
         Oww { frame_payload }
     }
 
@@ -43436,7 +43602,8 @@ pub struct Ohecs {
 
 impl Ohecs {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ohecs {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ohecs {
+        frame_payload.resize(8, 0);
         Ohecs { frame_payload }
     }
 
@@ -43555,7 +43722,8 @@ pub struct Ohcss {
 
 impl Ohcss {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ohcss {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ohcss {
+        frame_payload.resize(8, 0);
         Ohcss { frame_payload }
     }
 
@@ -43674,7 +43842,8 @@ pub struct Oel {
 
 impl Oel {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Oel {
+    pub fn new(mut frame_payload: Vec<u8>) -> Oel {
+        frame_payload.resize(8, 0);
         Oel { frame_payload }
     }
 
@@ -43771,7 +43940,8 @@ pub struct Mvs {
 
 impl Mvs {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Mvs {
+    pub fn new(mut frame_payload: Vec<u8>) -> Mvs {
+        frame_payload.resize(8, 0);
         Mvs { frame_payload }
     }
 
@@ -43850,7 +44020,8 @@ pub struct Ml {
 
 impl Ml {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ml {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ml {
+        frame_payload.resize(8, 0);
         Ml { frame_payload }
     }
 
@@ -43964,7 +44135,8 @@ pub struct Mci {
 
 impl Mci {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Mci {
+    pub fn new(mut frame_payload: Vec<u8>) -> Mci {
+        frame_payload.resize(8, 0);
         Mci { frame_payload }
     }
 
@@ -44023,7 +44195,8 @@ pub struct Mbt3 {
 
 impl Mbt3 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Mbt3 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Mbt3 {
+        frame_payload.resize(8, 0);
         Mbt3 { frame_payload }
     }
 
@@ -44067,7 +44240,8 @@ pub struct Mbt2 {
 
 impl Mbt2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Mbt2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Mbt2 {
+        frame_payload.resize(8, 0);
         Mbt2 { frame_payload }
     }
 
@@ -44118,7 +44292,8 @@ pub struct Mbt1 {
 
 impl Mbt1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Mbt1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Mbt1 {
+        frame_payload.resize(8, 0);
         Mbt1 { frame_payload }
     }
 
@@ -44169,7 +44344,8 @@ pub struct Lvdd {
 
 impl Lvdd {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Lvdd {
+    pub fn new(mut frame_payload: Vec<u8>) -> Lvdd {
+        frame_payload.resize(8, 0);
         Lvdd { frame_payload }
     }
 
@@ -44252,7 +44428,8 @@ pub struct Lvd {
 
 impl Lvd {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Lvd {
+    pub fn new(mut frame_payload: Vec<u8>) -> Lvd {
+        frame_payload.resize(8, 0);
         Lvd { frame_payload }
     }
 
@@ -44308,7 +44485,8 @@ pub struct Ltp {
 
 impl Ltp {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ltp {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ltp {
+        frame_payload.resize(8, 0);
         Ltp { frame_payload }
     }
 
@@ -44376,7 +44554,8 @@ pub struct Ltfi {
 
 impl Ltfi {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ltfi {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ltfi {
+        frame_payload.resize(8, 0);
         Ltfi { frame_payload }
     }
 
@@ -44441,7 +44620,8 @@ pub struct Lsp {
 
 impl Lsp {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Lsp {
+    pub fn new(mut frame_payload: Vec<u8>) -> Lsp {
+        frame_payload.resize(8, 0);
         Lsp { frame_payload }
     }
 
@@ -44478,7 +44658,8 @@ pub struct Loi {
 
 impl Loi {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Loi {
+    pub fn new(mut frame_payload: Vec<u8>) -> Loi {
+        frame_payload.resize(8, 0);
         Loi { frame_payload }
     }
 
@@ -44609,7 +44790,8 @@ pub struct Lmp {
 
 impl Lmp {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Lmp {
+    pub fn new(mut frame_payload: Vec<u8>) -> Lmp {
+        frame_payload.resize(8, 0);
         Lmp { frame_payload }
     }
 
@@ -44639,7 +44821,8 @@ pub struct Lfi {
 
 impl Lfi {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Lfi {
+    pub fn new(mut frame_payload: Vec<u8>) -> Lfi {
+        frame_payload.resize(8, 0);
         Lfi { frame_payload }
     }
 
@@ -44676,7 +44859,8 @@ pub struct Lfe {
 
 impl Lfe {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Lfe {
+    pub fn new(mut frame_payload: Vec<u8>) -> Lfe {
+        frame_payload.resize(8, 0);
         Lfe { frame_payload }
     }
 
@@ -44734,7 +44918,8 @@ pub struct Lfc {
 
 impl Lfc {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Lfc {
+    pub fn new(mut frame_payload: Vec<u8>) -> Lfc {
+        frame_payload.resize(8, 0);
         Lfc { frame_payload }
     }
 
@@ -44771,7 +44956,8 @@ pub struct Fwd {
 
 impl Fwd {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Fwd {
+    pub fn new(mut frame_payload: Vec<u8>) -> Fwd {
+        frame_payload.resize(8, 0);
         Fwd { frame_payload }
     }
 
@@ -44806,7 +44992,8 @@ pub struct Fms {
 
 impl Fms {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Fms {
+    pub fn new(mut frame_payload: Vec<u8>) -> Fms {
+        frame_payload.resize(8, 0);
         Fms { frame_payload }
     }
 
@@ -44860,7 +45047,8 @@ pub struct Fli2 {
 
 impl Fli2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Fli2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Fli2 {
+        frame_payload.resize(8, 0);
         Fli2 { frame_payload }
     }
 
@@ -44919,7 +45107,8 @@ pub struct Fli1 {
 
 impl Fli1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Fli1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Fli1 {
+        frame_payload.resize(8, 0);
         Fli1 { frame_payload }
     }
 
@@ -44966,7 +45155,8 @@ pub struct Fl {
 
 impl Fl {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Fl {
+    pub fn new(mut frame_payload: Vec<u8>) -> Fl {
+        frame_payload.resize(8, 0);
         Fl { frame_payload }
     }
 
@@ -45013,7 +45203,8 @@ pub struct Fd {
 
 impl Fd {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Fd {
+    pub fn new(mut frame_payload: Vec<u8>) -> Fd {
+        frame_payload.resize(8, 0);
         Fd { frame_payload }
     }
 
@@ -45062,7 +45253,8 @@ pub struct Eth {
 
 impl Eth {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Eth {
+    pub fn new(mut frame_payload: Vec<u8>) -> Eth {
+        frame_payload.resize(8, 0);
         Eth { frame_payload }
     }
 
@@ -45228,7 +45420,8 @@ pub struct Etc8 {
 
 impl Etc8 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Etc8 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Etc8 {
+        frame_payload.resize(8, 0);
         Etc8 { frame_payload }
     }
 
@@ -45258,7 +45451,8 @@ pub struct Etc7 {
 
 impl Etc7 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Etc7 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Etc7 {
+        frame_payload.resize(8, 0);
         Etc7 { frame_payload }
     }
 
@@ -45408,7 +45602,8 @@ pub struct Etc6 {
 
 impl Etc6 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Etc6 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Etc6 {
+        frame_payload.resize(8, 0);
         Etc6 { frame_payload }
     }
 
@@ -45459,7 +45654,8 @@ pub struct Etc5 {
 
 impl Etc5 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Etc5 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Etc5 {
+        frame_payload.resize(8, 0);
         Etc5 { frame_payload }
     }
 
@@ -45542,7 +45738,8 @@ pub struct Etc4 {
 
 impl Etc4 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Etc4 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Etc4 {
+        frame_payload.resize(8, 0);
         Etc4 { frame_payload }
     }
 
@@ -45579,7 +45776,8 @@ pub struct Etc3 {
 
 impl Etc3 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Etc3 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Etc3 {
+        frame_payload.resize(8, 0);
         Etc3 { frame_payload }
     }
 
@@ -45796,7 +45994,8 @@ pub struct Etc2 {
 
 impl Etc2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Etc2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Etc2 {
+        frame_payload.resize(8, 0);
         Etc2 { frame_payload }
     }
 
@@ -45854,7 +46053,8 @@ pub struct Etc1 {
 
 impl Etc1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Etc1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Etc1 {
+        frame_payload.resize(8, 0);
         Etc1 { frame_payload }
     }
 
@@ -45965,7 +46165,8 @@ pub struct Et3 {
 
 impl Et3 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Et3 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Et3 {
+        frame_payload.resize(8, 0);
         Et3 { frame_payload }
     }
 
@@ -46016,7 +46217,8 @@ pub struct Et2 {
 
 impl Et2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Et2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Et2 {
+        frame_payload.resize(8, 0);
         Et2 { frame_payload }
     }
 
@@ -46067,7 +46269,8 @@ pub struct Et1 {
 
 impl Et1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Et1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Et1 {
+        frame_payload.resize(8, 0);
         Et1 { frame_payload }
     }
 
@@ -46132,7 +46335,8 @@ pub struct Et {
 
 impl Et {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Et {
+    pub fn new(mut frame_payload: Vec<u8>) -> Et {
+        frame_payload.resize(8, 0);
         Et { frame_payload }
     }
 
@@ -46169,7 +46373,8 @@ pub struct Esc1 {
 
 impl Esc1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Esc1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Esc1 {
+        frame_payload.resize(8, 0);
         Esc1 { frame_payload }
     }
 
@@ -46266,7 +46471,8 @@ pub struct Erc2 {
 
 impl Erc2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Erc2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Erc2 {
+        frame_payload.resize(8, 0);
         Erc2 { frame_payload }
     }
 
@@ -46301,7 +46507,8 @@ pub struct Erc1 {
 
 impl Erc1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Erc1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Erc1 {
+        frame_payload.resize(8, 0);
         Erc1 { frame_payload }
     }
 
@@ -46416,7 +46623,8 @@ pub struct Ept5 {
 
 impl Ept5 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ept5 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ept5 {
+        frame_payload.resize(8, 0);
         Ept5 { frame_payload }
     }
 
@@ -46467,7 +46675,8 @@ pub struct Ept4 {
 
 impl Ept4 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ept4 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ept4 {
+        frame_payload.resize(8, 0);
         Ept4 { frame_payload }
     }
 
@@ -46518,7 +46727,8 @@ pub struct Ept3 {
 
 impl Ept3 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ept3 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ept3 {
+        frame_payload.resize(8, 0);
         Ept3 { frame_payload }
     }
 
@@ -46569,7 +46779,8 @@ pub struct Ept2 {
 
 impl Ept2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ept2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ept2 {
+        frame_payload.resize(8, 0);
         Ept2 { frame_payload }
     }
 
@@ -46620,7 +46831,8 @@ pub struct Ept1 {
 
 impl Ept1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ept1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ept1 {
+        frame_payload.resize(8, 0);
         Ept1 { frame_payload }
     }
 
@@ -46671,7 +46883,8 @@ pub struct Epd {
 
 impl Epd {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Epd {
+    pub fn new(mut frame_payload: Vec<u8>) -> Epd {
+        frame_payload.resize(8, 0);
         Epd { frame_payload }
     }
 
@@ -46701,7 +46914,8 @@ pub struct Ep {
 
 impl Ep {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ep {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ep {
+        frame_payload.resize(8, 0);
         Ep { frame_payload }
     }
 
@@ -46738,7 +46952,8 @@ pub struct Eoac {
 
 impl Eoac {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Eoac {
+    pub fn new(mut frame_payload: Vec<u8>) -> Eoac {
+        frame_payload.resize(8, 0);
         Eoac { frame_payload }
     }
 
@@ -46768,7 +46983,8 @@ pub struct Eo1 {
 
 impl Eo1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Eo1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Eo1 {
+        frame_payload.resize(8, 0);
         Eo1 { frame_payload }
     }
 
@@ -46831,7 +47047,8 @@ pub struct Ejm3 {
 
 impl Ejm3 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ejm3 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ejm3 {
+        frame_payload.resize(8, 0);
         Ejm3 { frame_payload }
     }
 
@@ -47019,7 +47236,8 @@ pub struct Ejm2 {
 
 impl Ejm2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ejm2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ejm2 {
+        frame_payload.resize(8, 0);
         Ejm2 { frame_payload }
     }
 
@@ -47207,7 +47425,8 @@ pub struct Ejm1 {
 
 impl Ejm1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ejm1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ejm1 {
+        frame_payload.resize(8, 0);
         Ejm1 { frame_payload }
     }
 
@@ -47395,7 +47614,8 @@ pub struct Ei {
 
 impl Ei {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ei {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ei {
+        frame_payload.resize(8, 0);
         Ei { frame_payload }
     }
 
@@ -47453,7 +47673,8 @@ pub struct Eh {
 
 impl Eh {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Eh {
+    pub fn new(mut frame_payload: Vec<u8>) -> Eh {
+        frame_payload.resize(8, 0);
         Eh { frame_payload }
     }
 
@@ -47490,7 +47711,8 @@ pub struct Egf1 {
 
 impl Egf1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Egf1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Egf1 {
+        frame_payload.resize(8, 0);
         Egf1 { frame_payload }
     }
 
@@ -47527,7 +47749,8 @@ pub struct Efs {
 
 impl Efs {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Efs {
+    pub fn new(mut frame_payload: Vec<u8>) -> Efs {
+        frame_payload.resize(8, 0);
         Efs { frame_payload }
     }
 
@@ -47650,7 +47873,8 @@ pub struct EflP3 {
 
 impl EflP3 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> EflP3 {
+    pub fn new(mut frame_payload: Vec<u8>) -> EflP3 {
+        frame_payload.resize(8, 0);
         EflP3 { frame_payload }
     }
 
@@ -47687,7 +47911,8 @@ pub struct EflP2 {
 
 impl EflP2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> EflP2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> EflP2 {
+        frame_payload.resize(8, 0);
         EflP2 { frame_payload }
     }
 
@@ -47738,7 +47963,8 @@ pub struct EflP1 {
 
 impl EflP1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> EflP1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> EflP1 {
+        frame_payload.resize(8, 0);
         EflP1 { frame_payload }
     }
 
@@ -47810,7 +48036,8 @@ pub struct Ees {
 
 impl Ees {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ees {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ees {
+        frame_payload.resize(8, 0);
         Ees { frame_payload }
     }
 
@@ -47864,7 +48091,8 @@ pub struct Eec5 {
 
 impl Eec5 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Eec5 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Eec5 {
+        frame_payload.resize(8, 0);
         Eec5 { frame_payload }
     }
 
@@ -47927,7 +48155,8 @@ pub struct Eec4 {
 
 impl Eec4 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Eec4 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Eec4 {
+        frame_payload.resize(8, 0);
         Eec4 { frame_payload }
     }
 
@@ -47983,7 +48212,8 @@ pub struct Eec3 {
 
 impl Eec3 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Eec3 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Eec3 {
+        frame_payload.resize(8, 0);
         Eec3 { frame_payload }
     }
 
@@ -48055,7 +48285,8 @@ pub struct Eec2 {
 
 impl Eec2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Eec2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Eec2 {
+        frame_payload.resize(8, 0);
         Eec2 { frame_payload }
     }
 
@@ -48173,7 +48404,8 @@ pub struct Eec1 {
 
 impl Eec1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Eec1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Eec1 {
+        frame_payload.resize(8, 0);
         Eec1 { frame_payload }
     }
 
@@ -48255,7 +48487,8 @@ pub struct Ecuid {
 
 impl Ecuid {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ecuid {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ecuid {
+        frame_payload.resize(8, 0);
         Ecuid { frame_payload }
     }
 
@@ -48278,7 +48511,8 @@ pub struct Ect1 {
 
 impl Ect1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ect1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ect1 {
+        frame_payload.resize(8, 0);
         Ect1 { frame_payload }
     }
 
@@ -48357,7 +48591,8 @@ pub struct Ec1 {
 
 impl Ec1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ec1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ec1 {
+        frame_payload.resize(8, 0);
         Ec1 { frame_payload }
     }
 
@@ -48594,7 +48829,8 @@ pub struct Ebc5 {
 
 impl Ebc5 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ebc5 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ebc5 {
+        frame_payload.resize(8, 0);
         Ebc5 { frame_payload }
     }
 
@@ -48696,7 +48932,8 @@ pub struct Ebc4 {
 
 impl Ebc4 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ebc4 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ebc4 {
+        frame_payload.resize(8, 0);
         Ebc4 { frame_payload }
     }
 
@@ -48775,7 +49012,8 @@ pub struct Ebc3 {
 
 impl Ebc3 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ebc3 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ebc3 {
+        frame_payload.resize(8, 0);
         Ebc3 { frame_payload }
     }
 
@@ -48854,7 +49092,8 @@ pub struct Ebc2 {
 
 impl Ebc2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ebc2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ebc2 {
+        frame_payload.resize(8, 0);
         Ebc2 { frame_payload }
     }
 
@@ -48926,7 +49165,8 @@ pub struct Ebc1 {
 
 impl Ebc1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ebc1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ebc1 {
+        frame_payload.resize(8, 0);
         Ebc1 { frame_payload }
     }
 
@@ -49198,7 +49438,8 @@ pub struct Eac1 {
 
 impl Eac1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Eac1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Eac1 {
+        frame_payload.resize(8, 0);
         Eac1 { frame_payload }
     }
 
@@ -49336,7 +49577,8 @@ pub struct Eac {
 
 impl Eac {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Eac {
+    pub fn new(mut frame_payload: Vec<u8>) -> Eac {
+        frame_payload.resize(8, 0);
         Eac { frame_payload }
     }
 
@@ -49380,7 +49622,8 @@ pub struct Di {
 
 impl Di {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Di {
+    pub fn new(mut frame_payload: Vec<u8>) -> Di {
+        frame_payload.resize(8, 0);
         Di { frame_payload }
     }
 
@@ -49403,7 +49646,8 @@ pub struct Dd {
 
 impl Dd {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dd {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dd {
+        frame_payload.resize(8, 0);
         Dd { frame_payload }
     }
 
@@ -49461,7 +49705,8 @@ pub struct Csa {
 
 impl Csa {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Csa {
+    pub fn new(mut frame_payload: Vec<u8>) -> Csa {
+        frame_payload.resize(8, 0);
         Csa { frame_payload }
     }
 
@@ -49532,7 +49777,8 @@ pub struct Cvw {
 
 impl Cvw {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Cvw {
+    pub fn new(mut frame_payload: Vec<u8>) -> Cvw {
+        frame_payload.resize(8, 0);
         Cvw { frame_payload }
     }
 
@@ -49569,7 +49815,8 @@ pub struct Ctl {
 
 impl Ctl {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ctl {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ctl {
+        frame_payload.resize(8, 0);
         Ctl { frame_payload }
     }
 
@@ -49648,7 +49895,8 @@ pub struct Ct6 {
 
 impl Ct6 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ct6 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ct6 {
+        frame_payload.resize(8, 0);
         Ct6 { frame_payload }
     }
 
@@ -49685,7 +49933,8 @@ pub struct Ct5 {
 
 impl Ct5 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ct5 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ct5 {
+        frame_payload.resize(8, 0);
         Ct5 { frame_payload }
     }
 
@@ -49736,7 +49985,8 @@ pub struct Ct4 {
 
 impl Ct4 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ct4 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ct4 {
+        frame_payload.resize(8, 0);
         Ct4 { frame_payload }
     }
 
@@ -49787,7 +50037,8 @@ pub struct Ct3 {
 
 impl Ct3 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ct3 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ct3 {
+        frame_payload.resize(8, 0);
         Ct3 { frame_payload }
     }
 
@@ -49838,7 +50089,8 @@ pub struct Ct2 {
 
 impl Ct2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ct2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ct2 {
+        frame_payload.resize(8, 0);
         Ct2 { frame_payload }
     }
 
@@ -49889,7 +50141,8 @@ pub struct Ct1 {
 
 impl Ct1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ct1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ct1 {
+        frame_payload.resize(8, 0);
         Ct1 { frame_payload }
     }
 
@@ -49940,7 +50193,8 @@ pub struct Cmi {
 
 impl Cmi {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Cmi {
+    pub fn new(mut frame_payload: Vec<u8>) -> Cmi {
+        frame_payload.resize(8, 0);
         Cmi { frame_payload }
     }
 
@@ -49970,7 +50224,8 @@ pub struct Cm3 {
 
 impl Cm3 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Cm3 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Cm3 {
+        frame_payload.resize(8, 0);
         Cm3 { frame_payload }
     }
 
@@ -50041,7 +50296,8 @@ pub struct Cm1 {
 
 impl Cm1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Cm1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Cm1 {
+        frame_payload.resize(8, 0);
         Cm1 { frame_payload }
     }
 
@@ -50204,7 +50460,8 @@ pub struct Cl {
 
 impl Cl {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Cl {
+    pub fn new(mut frame_payload: Vec<u8>) -> Cl {
+        frame_payload.resize(8, 0);
         Cl { frame_payload }
     }
 
@@ -50234,7 +50491,8 @@ pub struct Ci {
 
 impl Ci {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ci {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ci {
+        frame_payload.resize(8, 0);
         Ci { frame_payload }
     }
 
@@ -50257,7 +50515,8 @@ pub struct Ccvs {
 
 impl Ccvs {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ccvs {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ccvs {
+        frame_payload.resize(8, 0);
         Ccvs { frame_payload }
     }
 
@@ -50500,7 +50759,8 @@ pub struct Ccss {
 
 impl Ccss {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ccss {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ccss {
+        frame_payload.resize(8, 0);
         Ccss { frame_payload }
     }
 
@@ -50544,7 +50804,8 @@ pub struct Ccc {
 
 impl Ccc {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ccc {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ccc {
+        frame_payload.resize(8, 0);
         Ccc { frame_payload }
     }
 
@@ -50574,7 +50835,8 @@ pub struct Cbi {
 
 impl Cbi {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Cbi {
+    pub fn new(mut frame_payload: Vec<u8>) -> Cbi {
+        frame_payload.resize(8, 0);
         Cbi { frame_payload }
     }
 
@@ -50625,7 +50887,8 @@ pub struct Caci {
 
 impl Caci {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Caci {
+    pub fn new(mut frame_payload: Vec<u8>) -> Caci {
+        frame_payload.resize(8, 0);
         Caci { frame_payload }
     }
 
@@ -50655,7 +50918,8 @@ pub struct Bt1 {
 
 impl Bt1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Bt1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Bt1 {
+        frame_payload.resize(8, 0);
         Bt1 { frame_payload }
     }
 
@@ -50692,7 +50956,8 @@ pub struct Bm {
 
 impl Bm {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Bm {
+    pub fn new(mut frame_payload: Vec<u8>) -> Bm {
+        frame_payload.resize(8, 0);
         Bm { frame_payload }
     }
 
@@ -50727,7 +50992,8 @@ pub struct Bjm3 {
 
 impl Bjm3 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Bjm3 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Bjm3 {
+        frame_payload.resize(8, 0);
         Bjm3 { frame_payload }
     }
 
@@ -51004,7 +51270,8 @@ pub struct Bjm2 {
 
 impl Bjm2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Bjm2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Bjm2 {
+        frame_payload.resize(8, 0);
         Bjm2 { frame_payload }
     }
 
@@ -51281,7 +51548,8 @@ pub struct Bjm1 {
 
 impl Bjm1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Bjm1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Bjm1 {
+        frame_payload.resize(8, 0);
         Bjm1 { frame_payload }
     }
 
@@ -51558,7 +51826,8 @@ pub struct B {
 
 impl B {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> B {
+    pub fn new(mut frame_payload: Vec<u8>) -> B {
+        frame_payload.resize(8, 0);
         B { frame_payload }
     }
 
@@ -51638,7 +51907,8 @@ pub struct Awpp {
 
 impl Awpp {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Awpp {
+    pub fn new(mut frame_payload: Vec<u8>) -> Awpp {
+        frame_payload.resize(8, 0);
         Awpp { frame_payload }
     }
 
@@ -51668,7 +51938,8 @@ pub struct Ats {
 
 impl Ats {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ats {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ats {
+        frame_payload.resize(8, 0);
         Ats { frame_payload }
     }
 
@@ -51746,7 +52017,8 @@ pub struct Atr {
 
 impl Atr {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Atr {
+    pub fn new(mut frame_payload: Vec<u8>) -> Atr {
+        frame_payload.resize(8, 0);
         Atr { frame_payload }
     }
 
@@ -51812,7 +52084,8 @@ pub struct At {
 
 impl At {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> At {
+    pub fn new(mut frame_payload: Vec<u8>) -> At {
+        frame_payload.resize(8, 0);
         At { frame_payload }
     }
 
@@ -51870,7 +52143,8 @@ pub struct Asc6 {
 
 impl Asc6 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Asc6 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Asc6 {
+        frame_payload.resize(8, 0);
         Asc6 { frame_payload }
     }
 
@@ -51921,7 +52195,8 @@ pub struct Asc5 {
 
 impl Asc5 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Asc5 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Asc5 {
+        frame_payload.resize(8, 0);
         Asc5 { frame_payload }
     }
 
@@ -52001,7 +52276,8 @@ pub struct Asc4 {
 
 impl Asc4 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Asc4 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Asc4 {
+        frame_payload.resize(8, 0);
         Asc4 { frame_payload }
     }
 
@@ -52052,7 +52328,8 @@ pub struct Asc3 {
 
 impl Asc3 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Asc3 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Asc3 {
+        frame_payload.resize(8, 0);
         Asc3 { frame_payload }
     }
 
@@ -52103,7 +52380,8 @@ pub struct Asc2 {
 
 impl Asc2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Asc2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Asc2 {
+        frame_payload.resize(8, 0);
         Asc2 { frame_payload }
     }
 
@@ -52291,7 +52569,8 @@ pub struct Asc1 {
 
 impl Asc1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Asc1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Asc1 {
+        frame_payload.resize(8, 0);
         Asc1 { frame_payload }
     }
 
@@ -52578,7 +52857,8 @@ pub struct As {
 
 impl As {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> As {
+    pub fn new(mut frame_payload: Vec<u8>) -> As {
+        frame_payload.resize(8, 0);
         As { frame_payload }
     }
 
@@ -52656,7 +52936,8 @@ pub struct Ap {
 
 impl Ap {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ap {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ap {
+        frame_payload.resize(8, 0);
         Ap { frame_payload }
     }
 
@@ -52700,7 +52981,8 @@ pub struct Amb2 {
 
 impl Amb2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Amb2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Amb2 {
+        frame_payload.resize(8, 0);
         Amb2 { frame_payload }
     }
 
@@ -52737,7 +53019,8 @@ pub struct Wsmem {
 
 impl Wsmem {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Wsmem {
+    pub fn new(mut frame_payload: Vec<u8>) -> Wsmem {
+        frame_payload.resize(8, 0);
         Wsmem { frame_payload }
     }
 
@@ -52836,7 +53119,8 @@ pub struct Dm8 {
 
 impl Dm8 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dm8 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dm8 {
+        frame_payload.resize(8, 0);
         Dm8 { frame_payload }
     }
 
@@ -52894,7 +53178,8 @@ pub struct Dm7 {
 
 impl Dm7 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dm7 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dm7 {
+        frame_payload.resize(8, 0);
         Dm7 { frame_payload }
     }
 
@@ -52924,7 +53209,8 @@ pub struct Dm6 {
 
 impl Dm6 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dm6 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dm6 {
+        frame_payload.resize(8, 0);
         Dm6 { frame_payload }
     }
 
@@ -53245,7 +53531,8 @@ pub struct Dm5 {
 
 impl Dm5 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dm5 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dm5 {
+        frame_payload.resize(8, 0);
         Dm5 { frame_payload }
     }
 
@@ -53582,7 +53869,8 @@ pub struct Dm4 {
 
 impl Dm4 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dm4 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dm4 {
+        frame_payload.resize(8, 0);
         Dm4 { frame_payload }
     }
 
@@ -53700,7 +53988,8 @@ pub struct Dm3 {
 
 impl Dm3 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dm3 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dm3 {
+        frame_payload.resize(8, 0);
         Dm3 { frame_payload }
     }
 
@@ -53723,7 +54012,8 @@ pub struct Dm25 {
 
 impl Dm25 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dm25 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dm25 {
+        frame_payload.resize(8, 0);
         Dm25 { frame_payload }
     }
 
@@ -53794,7 +54084,8 @@ pub struct Dm24 {
 
 impl Dm24 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dm24 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dm24 {
+        frame_payload.resize(8, 0);
         Dm24 { frame_payload }
     }
 
@@ -53988,7 +54279,8 @@ pub struct Dm23 {
 
 impl Dm23 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dm23 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dm23 {
+        frame_payload.resize(8, 0);
         Dm23 { frame_payload }
     }
 
@@ -54309,7 +54601,8 @@ pub struct Dm22 {
 
 impl Dm22 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dm22 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dm22 {
+        frame_payload.resize(8, 0);
         Dm22 { frame_payload }
     }
 
@@ -54372,7 +54665,8 @@ pub struct Dm21 {
 
 impl Dm21 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dm21 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dm21 {
+        frame_payload.resize(8, 0);
         Dm21 { frame_payload }
     }
 
@@ -54423,7 +54717,8 @@ pub struct Dm20 {
 
 impl Dm20 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dm20 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dm20 {
+        frame_payload.resize(8, 0);
         Dm20 { frame_payload }
     }
 
@@ -54481,7 +54776,8 @@ pub struct Dm2 {
 
 impl Dm2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dm2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dm2 {
+        frame_payload.resize(8, 0);
         Dm2 { frame_payload }
     }
 
@@ -54802,7 +55098,8 @@ pub struct Dm19 {
 
 impl Dm19 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dm19 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dm19 {
+        frame_payload.resize(8, 0);
         Dm19 { frame_payload }
     }
 
@@ -54860,7 +55157,8 @@ pub struct Dm17 {
 
 impl Dm17 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dm17 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dm17 {
+        frame_payload.resize(8, 0);
         Dm17 { frame_payload }
     }
 
@@ -54883,7 +55181,8 @@ pub struct Dm16 {
 
 impl Dm16 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dm16 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dm16 {
+        frame_payload.resize(8, 0);
         Dm16 { frame_payload }
     }
 
@@ -54913,7 +55212,8 @@ pub struct Dm15 {
 
 impl Dm15 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dm15 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dm15 {
+        frame_payload.resize(8, 0);
         Dm15 { frame_payload }
     }
 
@@ -54998,7 +55298,8 @@ pub struct Dm14 {
 
 impl Dm14 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dm14 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dm14 {
+        frame_payload.resize(8, 0);
         Dm14 { frame_payload }
     }
 
@@ -55090,7 +55391,8 @@ pub struct Dm13 {
 
 impl Dm13 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dm13 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dm13 {
+        frame_payload.resize(8, 0);
         Dm13 { frame_payload }
     }
 
@@ -55253,7 +55555,8 @@ pub struct Dm12 {
 
 impl Dm12 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dm12 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dm12 {
+        frame_payload.resize(8, 0);
         Dm12 { frame_payload }
     }
 
@@ -55574,7 +55877,8 @@ pub struct Dm11 {
 
 impl Dm11 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dm11 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dm11 {
+        frame_payload.resize(8, 0);
         Dm11 { frame_payload }
     }
 
@@ -55597,7 +55901,8 @@ pub struct Dm10 {
 
 impl Dm10 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dm10 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dm10 {
+        frame_payload.resize(8, 0);
         Dm10 { frame_payload }
     }
 
@@ -55627,7 +55932,8 @@ pub struct Dm1 {
 
 impl Dm1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dm1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dm1 {
+        frame_payload.resize(8, 0);
         Dm1 { frame_payload }
     }
 
@@ -55948,7 +56254,8 @@ pub struct Utacr {
 
 impl Utacr {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Utacr {
+    pub fn new(mut frame_payload: Vec<u8>) -> Utacr {
+        frame_payload.resize(8, 0);
         Utacr { frame_payload }
     }
 
@@ -55992,7 +56299,8 @@ pub struct Utacp {
 
 impl Utacp {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Utacp {
+    pub fn new(mut frame_payload: Vec<u8>) -> Utacp {
+        frame_payload.resize(8, 0);
         Utacp { frame_payload }
     }
 
@@ -56029,7 +56337,8 @@ pub struct Utace {
 
 impl Utace {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Utace {
+    pub fn new(mut frame_payload: Vec<u8>) -> Utace {
+        frame_payload.resize(8, 0);
         Utace { frame_payload }
     }
 
@@ -56066,7 +56375,8 @@ pub struct Upcacr {
 
 impl Upcacr {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Upcacr {
+    pub fn new(mut frame_payload: Vec<u8>) -> Upcacr {
+        frame_payload.resize(8, 0);
         Upcacr { frame_payload }
     }
 
@@ -56110,7 +56420,8 @@ pub struct Upcacp {
 
 impl Upcacp {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Upcacp {
+    pub fn new(mut frame_payload: Vec<u8>) -> Upcacp {
+        frame_payload.resize(8, 0);
         Upcacp { frame_payload }
     }
 
@@ -56147,7 +56458,8 @@ pub struct Upcac {
 
 impl Upcac {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Upcac {
+    pub fn new(mut frame_payload: Vec<u8>) -> Upcac {
+        frame_payload.resize(8, 0);
         Upcac { frame_payload }
     }
 
@@ -56198,7 +56510,8 @@ pub struct Upbacr {
 
 impl Upbacr {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Upbacr {
+    pub fn new(mut frame_payload: Vec<u8>) -> Upbacr {
+        frame_payload.resize(8, 0);
         Upbacr { frame_payload }
     }
 
@@ -56242,7 +56555,8 @@ pub struct Upbacp {
 
 impl Upbacp {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Upbacp {
+    pub fn new(mut frame_payload: Vec<u8>) -> Upbacp {
+        frame_payload.resize(8, 0);
         Upbacp { frame_payload }
     }
 
@@ -56279,7 +56593,8 @@ pub struct Upbac {
 
 impl Upbac {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Upbac {
+    pub fn new(mut frame_payload: Vec<u8>) -> Upbac {
+        frame_payload.resize(8, 0);
         Upbac { frame_payload }
     }
 
@@ -56330,7 +56645,8 @@ pub struct Upaccr {
 
 impl Upaccr {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Upaccr {
+    pub fn new(mut frame_payload: Vec<u8>) -> Upaccr {
+        frame_payload.resize(8, 0);
         Upaccr { frame_payload }
     }
 
@@ -56374,7 +56690,8 @@ pub struct Upaacp {
 
 impl Upaacp {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Upaacp {
+    pub fn new(mut frame_payload: Vec<u8>) -> Upaacp {
+        frame_payload.resize(8, 0);
         Upaacp { frame_payload }
     }
 
@@ -56411,7 +56728,8 @@ pub struct Upaac {
 
 impl Upaac {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Upaac {
+    pub fn new(mut frame_payload: Vec<u8>) -> Upaac {
+        frame_payload.resize(8, 0);
         Upaac { frame_payload }
     }
 
@@ -56462,7 +56780,8 @@ pub struct Uaac {
 
 impl Uaac {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Uaac {
+    pub fn new(mut frame_payload: Vec<u8>) -> Uaac {
+        frame_payload.resize(8, 0);
         Uaac { frame_payload }
     }
 
@@ -56513,7 +56832,8 @@ pub struct Gtacr {
 
 impl Gtacr {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gtacr {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gtacr {
+        frame_payload.resize(8, 0);
         Gtacr { frame_payload }
     }
 
@@ -56557,7 +56877,8 @@ pub struct Gtacp {
 
 impl Gtacp {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gtacp {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gtacp {
+        frame_payload.resize(8, 0);
         Gtacp { frame_payload }
     }
 
@@ -56594,7 +56915,8 @@ pub struct Gtace {
 
 impl Gtace {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gtace {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gtace {
+        frame_payload.resize(8, 0);
         Gtace { frame_payload }
     }
 
@@ -56631,7 +56953,8 @@ pub struct Gpcacr {
 
 impl Gpcacr {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gpcacr {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gpcacr {
+        frame_payload.resize(8, 0);
         Gpcacr { frame_payload }
     }
 
@@ -56675,7 +56998,8 @@ pub struct Gpcacp {
 
 impl Gpcacp {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gpcacp {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gpcacp {
+        frame_payload.resize(8, 0);
         Gpcacp { frame_payload }
     }
 
@@ -56712,7 +57036,8 @@ pub struct Gpcac {
 
 impl Gpcac {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gpcac {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gpcac {
+        frame_payload.resize(8, 0);
         Gpcac { frame_payload }
     }
 
@@ -56763,7 +57088,8 @@ pub struct Gpbacrp {
 
 impl Gpbacrp {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gpbacrp {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gpbacrp {
+        frame_payload.resize(8, 0);
         Gpbacrp { frame_payload }
     }
 
@@ -56807,7 +57133,8 @@ pub struct Gpbacp {
 
 impl Gpbacp {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gpbacp {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gpbacp {
+        frame_payload.resize(8, 0);
         Gpbacp { frame_payload }
     }
 
@@ -56844,7 +57171,8 @@ pub struct Gpbac {
 
 impl Gpbac {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gpbac {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gpbac {
+        frame_payload.resize(8, 0);
         Gpbac { frame_payload }
     }
 
@@ -56895,7 +57223,8 @@ pub struct Gpaacr {
 
 impl Gpaacr {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gpaacr {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gpaacr {
+        frame_payload.resize(8, 0);
         Gpaacr { frame_payload }
     }
 
@@ -56939,7 +57268,8 @@ pub struct Gpaacp {
 
 impl Gpaacp {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gpaacp {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gpaacp {
+        frame_payload.resize(8, 0);
         Gpaacp { frame_payload }
     }
 
@@ -56976,7 +57306,8 @@ pub struct Gpaac {
 
 impl Gpaac {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gpaac {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gpaac {
+        frame_payload.resize(8, 0);
         Gpaac { frame_payload }
     }
 
@@ -57027,7 +57358,8 @@ pub struct Gaac {
 
 impl Gaac {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Gaac {
+    pub fn new(mut frame_payload: Vec<u8>) -> Gaac {
+        frame_payload.resize(8, 0);
         Gaac { frame_payload }
     }
 
@@ -57078,7 +57410,8 @@ pub struct Busc {
 
 impl Busc {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Busc {
+    pub fn new(mut frame_payload: Vec<u8>) -> Busc {
+        frame_payload.resize(8, 0);
         Busc { frame_payload }
     }
 
@@ -57143,7 +57476,8 @@ pub struct Bpcac {
 
 impl Bpcac {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Bpcac {
+    pub fn new(mut frame_payload: Vec<u8>) -> Bpcac {
+        frame_payload.resize(8, 0);
         Bpcac { frame_payload }
     }
 
@@ -57187,7 +57521,8 @@ pub struct Bpbac {
 
 impl Bpbac {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Bpbac {
+    pub fn new(mut frame_payload: Vec<u8>) -> Bpbac {
+        frame_payload.resize(8, 0);
         Bpbac { frame_payload }
     }
 
@@ -57231,7 +57566,8 @@ pub struct Bpaac {
 
 impl Bpaac {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Bpaac {
+    pub fn new(mut frame_payload: Vec<u8>) -> Bpaac {
+        frame_payload.resize(8, 0);
         Bpaac { frame_payload }
     }
 
@@ -57275,7 +57611,8 @@ pub struct Bgsc {
 
 impl Bgsc {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Bgsc {
+    pub fn new(mut frame_payload: Vec<u8>) -> Bgsc {
+        frame_payload.resize(8, 0);
         Bgsc { frame_payload }
     }
 
@@ -57340,7 +57677,8 @@ pub struct Baac {
 
 impl Baac {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Baac {
+    pub fn new(mut frame_payload: Vec<u8>) -> Baac {
+        frame_payload.resize(8, 0);
         Baac { frame_payload }
     }
 
@@ -57384,7 +57722,8 @@ pub struct Wsmstr {
 
 impl Wsmstr {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Wsmstr {
+    pub fn new(mut frame_payload: Vec<u8>) -> Wsmstr {
+        frame_payload.resize(8, 0);
         Wsmstr { frame_payload }
     }
 
@@ -57414,7 +57753,8 @@ pub struct Ca {
 
 impl Ca {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ca {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ca {
+        frame_payload.resize(8, 0);
         Ca { frame_payload }
     }
 
@@ -57520,7 +57860,8 @@ pub struct Acl {
 
 impl Acl {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Acl {
+    pub fn new(mut frame_payload: Vec<u8>) -> Acl {
+        frame_payload.resize(8, 0);
         Acl { frame_payload }
     }
 
@@ -57619,7 +57960,8 @@ pub struct Xfer {
 
 impl Xfer {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Xfer {
+    pub fn new(mut frame_payload: Vec<u8>) -> Xfer {
+        frame_payload.resize(8, 0);
         Xfer { frame_payload }
     }
 
@@ -57663,7 +58005,8 @@ pub struct Tpdt {
 
 impl Tpdt {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tpdt {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tpdt {
+        frame_payload.resize(8, 0);
         Tpdt { frame_payload }
     }
 
@@ -57693,7 +58036,8 @@ pub struct Tpcm {
 
 impl Tpcm {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Tpcm {
+    pub fn new(mut frame_payload: Vec<u8>) -> Tpcm {
+        frame_payload.resize(8, 0);
         Tpcm { frame_payload }
     }
 
@@ -57810,7 +58154,8 @@ pub struct Rqst2 {
 
 impl Rqst2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Rqst2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Rqst2 {
+        frame_payload.resize(8, 0);
         Rqst2 { frame_payload }
     }
 
@@ -57852,7 +58197,8 @@ pub struct Rqst {
 
 impl Rqst {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Rqst {
+    pub fn new(mut frame_payload: Vec<u8>) -> Rqst {
+        frame_payload.resize(8, 0);
         Rqst { frame_payload }
     }
 
@@ -57882,7 +58228,8 @@ pub struct Dm29 {
 
 impl Dm29 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dm29 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dm29 {
+        frame_payload.resize(8, 0);
         Dm29 { frame_payload }
     }
 
@@ -57940,7 +58287,8 @@ pub struct Dm28 {
 
 impl Dm28 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dm28 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dm28 {
+        frame_payload.resize(8, 0);
         Dm28 { frame_payload }
     }
 
@@ -58261,7 +58609,8 @@ pub struct Dm27 {
 
 impl Dm27 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dm27 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dm27 {
+        frame_payload.resize(8, 0);
         Dm27 { frame_payload }
     }
 
@@ -58582,7 +58931,8 @@ pub struct Ati2 {
 
 impl Ati2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ati2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ati2 {
+        frame_payload.resize(8, 0);
         Ati2 { frame_payload }
     }
 
@@ -58661,7 +59011,8 @@ pub struct Ati1 {
 
 impl Ati1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ati1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ati1 {
+        frame_payload.resize(8, 0);
         Ati1 { frame_payload }
     }
 
@@ -58740,7 +59091,8 @@ pub struct Aac3 {
 
 impl Aac3 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Aac3 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Aac3 {
+        frame_payload.resize(8, 0);
         Aac3 { frame_payload }
     }
 
@@ -58791,7 +59143,8 @@ pub struct Aac4 {
 
 impl Aac4 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Aac4 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Aac4 {
+        frame_payload.resize(8, 0);
         Aac4 { frame_payload }
     }
 
@@ -58842,7 +59195,8 @@ pub struct Aetc {
 
 impl Aetc {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Aetc {
+    pub fn new(mut frame_payload: Vec<u8>) -> Aetc {
+        frame_payload.resize(8, 0);
         Aetc { frame_payload }
     }
 
@@ -58884,7 +59238,8 @@ pub struct Afss {
 
 impl Afss {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Afss {
+    pub fn new(mut frame_payload: Vec<u8>) -> Afss {
+        frame_payload.resize(8, 0);
         Afss { frame_payload }
     }
 
@@ -58955,7 +59310,8 @@ pub struct At1i1 {
 
 impl At1i1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> At1i1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> At1i1 {
+        frame_payload.resize(8, 0);
         At1i1 { frame_payload }
     }
 
@@ -59068,7 +59424,8 @@ pub struct At1i2 {
 
 impl At1i2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> At1i2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> At1i2 {
+        frame_payload.resize(8, 0);
         At1i2 { frame_payload }
     }
 
@@ -59119,7 +59476,8 @@ pub struct At1o1 {
 
 impl At1o1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> At1o1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> At1o1 {
+        frame_payload.resize(8, 0);
         At1o1 { frame_payload }
     }
 
@@ -59237,7 +59595,8 @@ pub struct At1o2 {
 
 impl At1o2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> At1o2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> At1o2 {
+        frame_payload.resize(8, 0);
         At1o2 { frame_payload }
     }
 
@@ -59288,7 +59647,8 @@ pub struct At2i1 {
 
 impl At2i1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> At2i1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> At2i1 {
+        frame_payload.resize(8, 0);
         At2i1 { frame_payload }
     }
 
@@ -59406,7 +59766,8 @@ pub struct At2i2 {
 
 impl At2i2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> At2i2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> At2i2 {
+        frame_payload.resize(8, 0);
         At2i2 { frame_payload }
     }
 
@@ -59457,7 +59818,8 @@ pub struct At2o1 {
 
 impl At2o1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> At2o1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> At2o1 {
+        frame_payload.resize(8, 0);
         At2o1 { frame_payload }
     }
 
@@ -59575,7 +59937,8 @@ pub struct At2o2 {
 
 impl At2o2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> At2o2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> At2o2 {
+        frame_payload.resize(8, 0);
         At2o2 { frame_payload }
     }
 
@@ -59626,7 +59989,8 @@ pub struct Atgp1 {
 
 impl Atgp1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Atgp1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Atgp1 {
+        frame_payload.resize(8, 0);
         Atgp1 { frame_payload }
     }
 
@@ -59663,7 +60027,8 @@ pub struct Atgp2 {
 
 impl Atgp2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Atgp2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Atgp2 {
+        frame_payload.resize(8, 0);
         Atgp2 { frame_payload }
     }
 
@@ -59700,7 +60065,8 @@ pub struct Atm2 {
 
 impl Atm2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Atm2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Atm2 {
+        frame_payload.resize(8, 0);
         Atm2 { frame_payload }
     }
 
@@ -59758,7 +60124,8 @@ pub struct Ats1 {
 
 impl Ats1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ats1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ats1 {
+        frame_payload.resize(8, 0);
         Ats1 { frame_payload }
     }
 
@@ -59812,7 +60179,8 @@ pub struct Ats2 {
 
 impl Ats2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ats2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ats2 {
+        frame_payload.resize(8, 0);
         Ats2 { frame_payload }
     }
 
@@ -59866,7 +60234,8 @@ pub struct Auxio1 {
 
 impl Auxio1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Auxio1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Auxio1 {
+        frame_payload.resize(8, 0);
         Auxio1 { frame_payload }
     }
 
@@ -59903,7 +60272,8 @@ pub struct Auxio2 {
 
 impl Auxio2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Auxio2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Auxio2 {
+        frame_payload.resize(8, 0);
         Auxio2 { frame_payload }
     }
 
@@ -60310,7 +60680,8 @@ pub struct Auxio3 {
 
 impl Auxio3 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Auxio3 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Auxio3 {
+        frame_payload.resize(8, 0);
         Auxio3 { frame_payload }
     }
 
@@ -60717,7 +61088,8 @@ pub struct Auxio4 {
 
 impl Auxio4 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Auxio4 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Auxio4 {
+        frame_payload.resize(8, 0);
         Auxio4 { frame_payload }
     }
 
@@ -61124,7 +61496,8 @@ pub struct Bsa {
 
 impl Bsa {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Bsa {
+    pub fn new(mut frame_payload: Vec<u8>) -> Bsa {
+        frame_payload.resize(8, 0);
         Bsa { frame_payload }
     }
 
@@ -61387,7 +61760,8 @@ pub struct Amb {
 
 impl Amb {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Amb {
+    pub fn new(mut frame_payload: Vec<u8>) -> Amb {
+        frame_payload.resize(8, 0);
         Amb { frame_payload }
     }
 
@@ -61445,7 +61819,8 @@ pub struct Air2 {
 
 impl Air2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Air2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Air2 {
+        frame_payload.resize(8, 0);
         Air2 { frame_payload }
     }
 
@@ -61475,7 +61850,8 @@ pub struct Air1 {
 
 impl Air1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Air1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Air1 {
+        frame_payload.resize(8, 0);
         Air1 { frame_payload }
     }
 
@@ -61552,7 +61928,8 @@ pub struct Ai {
 
 impl Ai {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ai {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ai {
+        frame_payload.resize(8, 0);
         Ai { frame_payload }
     }
 
@@ -61617,7 +61994,8 @@ pub struct Af2 {
 
 impl Af2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Af2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Af2 {
+        frame_payload.resize(8, 0);
         Af2 { frame_payload }
     }
 
@@ -61668,7 +62046,8 @@ pub struct Acc2 {
 
 impl Acc2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Acc2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Acc2 {
+        frame_payload.resize(8, 0);
         Acc2 { frame_payload }
     }
 
@@ -61703,7 +62082,8 @@ pub struct Acc1 {
 
 impl Acc1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Acc1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Acc1 {
+        frame_payload.resize(8, 0);
         Acc1 { frame_payload }
     }
 
@@ -61814,7 +62194,8 @@ pub struct Ac {
 
 impl Ac {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ac {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ac {
+        frame_payload.resize(8, 0);
         Ac { frame_payload }
     }
 
@@ -61844,7 +62225,8 @@ pub struct Aai {
 
 impl Aai {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Aai {
+    pub fn new(mut frame_payload: Vec<u8>) -> Aai {
+        frame_payload.resize(8, 0);
         Aai { frame_payload }
     }
 
@@ -61902,7 +62284,8 @@ pub struct A1 {
 
 impl A1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> A1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> A1 {
+        frame_payload.resize(8, 0);
         A1 { frame_payload }
     }
 
@@ -61939,7 +62322,8 @@ pub struct Ackm {
 
 impl Ackm {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ackm {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ackm {
+        frame_payload.resize(8, 0);
         Ackm { frame_payload }
     }
 
@@ -62016,7 +62400,8 @@ pub struct Atm1 {
 
 impl Atm1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Atm1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Atm1 {
+        frame_payload.resize(8, 0);
         Atm1 { frame_payload }
     }
 
@@ -62081,7 +62466,8 @@ pub struct Dc1 {
 
 impl Dc1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Dc1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Dc1 {
+        frame_payload.resize(8, 0);
         Dc1 { frame_payload }
     }
 
@@ -62140,7 +62526,8 @@ pub struct Fwss1 {
 
 impl Fwss1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Fwss1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Fwss1 {
+        frame_payload.resize(8, 0);
         Fwss1 { frame_payload }
     }
 
@@ -62196,7 +62583,8 @@ pub struct Fwss2 {
 
 impl Fwss2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Fwss2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Fwss2 {
+        frame_payload.resize(8, 0);
         Fwss2 { frame_payload }
     }
 
@@ -62274,7 +62662,8 @@ pub struct Ssi {
 
 impl Ssi {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Ssi {
+    pub fn new(mut frame_payload: Vec<u8>) -> Ssi {
+        frame_payload.resize(8, 0);
         Ssi { frame_payload }
     }
 
@@ -62373,7 +62762,8 @@ pub struct Trf1 {
 
 impl Trf1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Trf1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Trf1 {
+        frame_payload.resize(8, 0);
         Trf1 { frame_payload }
     }
 
@@ -62462,7 +62852,8 @@ pub struct Vep1 {
 
 impl Vep1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Vep1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Vep1 {
+        frame_payload.resize(8, 0);
         Vep1 { frame_payload }
     }
 
@@ -62520,7 +62911,8 @@ pub struct Wcm2 {
 
 impl Wcm2 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Wcm2 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Wcm2 {
+        frame_payload.resize(8, 0);
         Wcm2 { frame_payload }
     }
 
@@ -62598,7 +62990,8 @@ pub struct Wcm1 {
 
 impl Wcm1 {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Wcm1 {
+    pub fn new(mut frame_payload: Vec<u8>) -> Wcm1 {
+        frame_payload.resize(8, 0);
         Wcm1 { frame_payload }
     }
 
@@ -62676,7 +63069,8 @@ pub struct Vrom {
 
 impl Vrom {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Vrom {
+    pub fn new(mut frame_payload: Vec<u8>) -> Vrom {
+        frame_payload.resize(8, 0);
         Vrom { frame_payload }
     }
 
@@ -62759,7 +63153,8 @@ pub struct Vrep {
 
 impl Vrep {
     #[allow(dead_code)]
-    pub fn new(frame_payload: Vec<u8>) -> Vrep {
+    pub fn new(mut frame_payload: Vec<u8>) -> Vrep {
+        frame_payload.resize(8, 0);
         Vrep { frame_payload }
     }
 

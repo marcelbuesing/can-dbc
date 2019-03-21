@@ -1,1 +1,1 @@
-pub (crate) mod j1939;
+pub(crate) mod j1939;
