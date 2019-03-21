@@ -68,7 +68,7 @@ fn main() {
 byteorder = "1.3"
 futures = "0.1"
 tokio = "0.1"
-tokio-socketcan-bcm = { version = "0.1", features = ["try_from"] }
+tokio-socketcan-bcm = { version = "0.2", features = ["try_from"] }
 ```
 
 ```

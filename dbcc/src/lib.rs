@@ -335,23 +335,14 @@ fn message_stream(message: &Message) -> Function {
     stream_fn.arg("ival1", codegen::Type::new("&std::time::Duration"));
     stream_fn.arg("ival2", codegen::Type::new("&std::time::Duration"));
 
-    let ret = format!(
-        "Box<Stream<Item = {}, Error = std::io::Error> + Sync + Send>",
-        message.message_name().to_camel_case()
-    );
+    let ret = format!("std::io::Result<Box<Stream<Item = {}, Error = std::io::Error> + Sync + Send>>", message.message_name().to_camel_case());
     stream_fn.ret(ret);
 
-    stream_fn.line("let socket = BCMSocket::open_nb(&can_interface).unwrap();");
-    stream_fn.line(format!(
-        "let message_id = CANMessageId::try_from({} as u32).unwrap();",
-        message.message_id().0.to_string()
-    ));
-    stream_fn.line("let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone()).unwrap();");
-    stream_fn.line(format!(
-        "let f = frame_stream.map(|frame| {}::new(frame.data().to_vec()));",
-        message.message_name().to_camel_case()
-    ));
-    stream_fn.line("Box::new(f)");
+    stream_fn.line("let socket = BCMSocket::open_nb(&can_interface)?;");
+    stream_fn.line(format!("let message_id = CANMessageId::try_from({} as u32).unwrap();", message.message_id().0.to_string()));
+    stream_fn.line("let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;");
+    stream_fn.line(format!("let f = frame_stream.map(|frame| {}::new(frame.data().to_vec()));",  message.message_name().to_camel_case()));
+    stream_fn.line("Ok(Box::new(f))");
 
     stream_fn
 }
