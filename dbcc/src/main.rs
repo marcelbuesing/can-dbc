@@ -1,6 +1,4 @@
-
-
-use dbcc::{Opt, can_reader};
+use dbcc::{can_reader, Opt};
 use nom;
 use nom::verbose_errors;
 
@@ -11,10 +9,7 @@ use std::cmp;
 use std::fs::File;
 use std::io::prelude::*;
 
-
-
 fn main() {
-
     pretty_env_logger::init();
     let opt = Opt::from_args();
 

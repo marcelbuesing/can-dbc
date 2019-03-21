@@ -16,15 +16,11 @@ name = "dbcc"
 
 [dependencies]
 can-dbc = { version = "1.0.1",  path = "../can-dbc" }
+codegen = "0.1.1"
 heck = "0.3"
 log = "0.4"
 pretty_env_logger = "0.3"
 structopt = "0.2"
-
-# TODO replace this with upstream version once changes have been merged and released
-[dependencies.codegen]
-git = "https://github.com/marcelbuesing/codegen.git"
-rev = "d6ffa62757254c847c2fe5dac1471e7175e6e220"
 
 [dependencies.nom]
 version = "4.1"

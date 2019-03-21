@@ -5,8 +5,8 @@ extern crate test;
 #[macro_use]
 extern crate structopt;
 
-use codegen::{Const, Enum, Function, Struct, Scope, Impl};
-use can_dbc::{DBC, ByteOrder, Message, MessageId, Signal, ValueDescription};
+use can_dbc::{ByteOrder, Message, MessageId, Signal, ValueDescription, DBC};
+use codegen::{Enum, Function, Impl, Scope, Struct};
 use heck::{CamelCase, ShoutySnakeCase};
 use log::warn;
 
@@ -15,13 +15,15 @@ use std::path::PathBuf;
 
 #[cfg(test)]
 mod tests {
-    use test::{Bencher, black_box};
     use byteorder;
     use byteorder::{ByteOrder, LE};
+    use test::{black_box, Bencher};
 
     #[bench]
     fn bench_read_signal(b: &mut Bencher) {
-        const byte_payload: &[u8] = &[0x4, 0x2, 0xA, 0xA, 0xF, 0xF, 0xE, 0xE, 0xD, 0xD, 0xA, 0xA, 0xF, 0xF, 0xD, 0xD];
+        const byte_payload: &[u8] = &[
+            0x4, 0x2, 0xA, 0xA, 0xF, 0xF, 0xE, 0xE, 0xD, 0xD, 0xA, 0xA, 0xF, 0xF, 0xD, 0xD,
+        ];
 
         b.iter(|| {
             let frame_payload: u64 = LE::read_u64(byte_payload);
@@ -78,7 +80,10 @@ impl TypeName for str {
             if chr.is_digit(10) || chr.is_alphabetic() || chr == '_' {
                 out.push(chr);
             } else {
-                warn!("`{}` character in string: {} is replaced by `{}`", chr, self, REPLACEMENT_CHAR);
+                warn!(
+                    "`{}` character in string: {} is replaced by `{}`",
+                    chr, self, REPLACEMENT_CHAR
+                );
                 out.push(REPLACEMENT_CHAR);
             }
         }
@@ -88,12 +93,16 @@ impl TypeName for str {
 }
 
 fn to_enum_name(message_id: &MessageId, signal_name: &str) -> String {
-     format!("{}{}", &signal_name.to_camel_case(), message_id.0)
+    format!("{}{}", &signal_name.to_camel_case(), message_id.0)
 }
 
 pub fn signal_enum(val_desc: &ValueDescription) -> Option<Enum> {
-    if let ValueDescription::Signal{ ref message_id, ref signal_name, ref value_descriptions } = val_desc {
-
+    if let ValueDescription::Signal {
+        ref message_id,
+        ref signal_name,
+        ref value_descriptions,
+    } = val_desc
+    {
         let mut sig_enum = Enum::new(&to_enum_name(message_id, signal_name));
         sig_enum.allow("dead_code");
         sig_enum.vis("pub");
@@ -113,7 +122,12 @@ pub fn signal_enum(val_desc: &ValueDescription) -> Option<Enum> {
 }
 
 pub fn signal_enum_impl_from(val_desc: &ValueDescription) -> Option<Impl> {
-    if let ValueDescription::Signal{ ref message_id, ref signal_name, ref value_descriptions } = val_desc {
+    if let ValueDescription::Signal {
+        ref message_id,
+        ref signal_name,
+        ref value_descriptions,
+    } = val_desc
+    {
         let enum_name = to_enum_name(message_id, signal_name);
         let mut enum_impl = Impl::new(codegen::Type::new(&enum_name));
         enum_impl.impl_trait("From<u64>");
@@ -126,9 +140,21 @@ pub fn signal_enum_impl_from(val_desc: &ValueDescription) -> Option<Impl> {
         let mut matching = String::new();
         write!(&mut matching, "match val {{\n").unwrap();
         for value_description in value_descriptions {
-            write!(&mut matching, "    {} => {}::{},\n", value_description.a(), enum_name, value_description.b().to_camel_case().to_type_name()).unwrap();
+            write!(
+                &mut matching,
+                "    {} => {}::{},\n",
+                value_description.a(),
+                enum_name,
+                value_description.b().to_camel_case().to_type_name()
+            )
+            .unwrap();
         }
-        write!(&mut matching, "    value => {}::XValue(value),\n", enum_name).unwrap();
+        write!(
+            &mut matching,
+            "    value => {}::XValue(value),\n",
+            enum_name
+        )
+        .unwrap();
         write!(&mut matching, "}}").unwrap();
 
         from_fn.line(matching);
@@ -150,7 +176,9 @@ pub fn signal_fn_raw(dbc: &DBC, signal: &Signal, message_id: &MessageId) -> Resu
     signal_fn.ret(codegen::Type::new(&signal_return_type));
 
     let default_signal_comment = format!("Read {} signal from can frame", signal.name());
-    let signal_comment = dbc.signal_comment(message_id, signal.name()).unwrap_or(&default_signal_comment);
+    let signal_comment = dbc
+        .signal_comment(message_id, signal.name())
+        .unwrap_or(&default_signal_comment);
     signal_fn.doc(signal_comment);
 
     let read_byte_order = match signal.byte_order() {
@@ -160,7 +188,11 @@ pub fn signal_fn_raw(dbc: &DBC, signal: &Signal, message_id: &MessageId) -> Resu
     signal_fn.line(read_byte_order);
 
     let bit_msk_const = 2u64.saturating_pow(*signal.signal_size() as u32) - 1;
-    let signal_shift = shift_amount(*signal.byte_order(), *signal.start_bit(), *signal.signal_size());
+    let signal_shift = shift_amount(
+        *signal.byte_order(),
+        *signal.start_bit(),
+        *signal.signal_size(),
+    );
 
     let calc = calc_raw(signal, signal_return_type, signal_shift, bit_msk_const)?;
     signal_fn.line(calc);
@@ -178,12 +210,20 @@ pub fn signal_fn_enum(signal: &Signal, enum_type: String) -> Result<Function> {
 
     let raw_fn_name = format!("{}_{}", signal.name().to_lowercase(), RAW_FN_SUFFIX);
 
-    signal_fn.line(format!("{}::from(self.{}() as u64)", enum_type, raw_fn_name));
+    signal_fn.line(format!(
+        "{}::from(self.{}() as u64)",
+        enum_type, raw_fn_name
+    ));
 
     Ok(signal_fn)
 }
 
-fn calc_raw(signal: &Signal, signal_return_type: String, signal_shift: u64, bit_msk_const: u64) -> Result<String> {
+fn calc_raw(
+    signal: &Signal,
+    signal_return_type: String,
+    signal_shift: u64,
+    bit_msk_const: u64,
+) -> Result<String> {
     let mut calc = String::new();
 
     // No shift required if start_bit == 0
@@ -232,12 +272,12 @@ fn shift_amount(byte_order: ByteOrder, start_bit: u64, signal_size: u64) -> u64 
     }
 }
 
-fn message_const(message: &Message) -> Const {
-    let const_name = format!("MESSAGE_ID_{}", message.message_name().to_shouty_snake_case());
-    let mut c = Const::new(&const_name, codegen::Type::new("u32"), message.message_id().0.to_string());
-    c.allow("dead_code");
-    c.vis("pub");
-    c
+fn message_const(message: &Message) -> String {
+    format!(
+        "#[allow(dead_code)]\npub const MESSAGE_ID_{}: u32 = {};",
+        message.message_name().to_shouty_snake_case(),
+        message.message_id().0
+    )
 }
 
 fn message_struct(dbc: &DBC, message: &Message) -> Struct {
@@ -253,7 +293,6 @@ fn message_struct(dbc: &DBC, message: &Message) -> Struct {
 }
 
 fn message_impl(opt: &Opt, dbc: &DBC, message: &Message) -> Result<Impl> {
-
     let mut msg_impl = Impl::new(codegen::Type::new(&message.message_name().to_camel_case()));
 
     let new_fn = msg_impl.new_fn("new");
@@ -261,7 +300,10 @@ fn message_impl(opt: &Opt, dbc: &DBC, message: &Message) -> Result<Impl> {
     new_fn.vis("pub");
     new_fn.arg("mut frame_payload", codegen::Type::new("Vec<u8>"));
     new_fn.line("frame_payload.resize(8, 0);");
-    new_fn.line(format!("{} {{ frame_payload }}", message.message_name().to_camel_case()));
+    new_fn.line(format!(
+        "{} {{ frame_payload }}",
+        message.message_name().to_camel_case()
+    ));
     new_fn.ret(codegen::Type::new(&message.message_name().to_camel_case()));
 
     if opt.with_tokio {
@@ -269,11 +311,12 @@ fn message_impl(opt: &Opt, dbc: &DBC, message: &Message) -> Result<Impl> {
     }
 
     for signal in message.signals() {
-
         msg_impl.push_fn(signal_fn_raw(dbc, signal, message.message_id())?);
 
         // Check if this signal can be turned into an enum
-        let enum_type = dbc.value_descriptions_for_signal(message.message_id(), signal.name()).map(|_| to_enum_name(message.message_id(), signal.name()));
+        let enum_type = dbc
+            .value_descriptions_for_signal(message.message_id(), signal.name())
+            .map(|_| to_enum_name(message.message_id(), signal.name()));
         if let Some(enum_type) = enum_type {
             msg_impl.push_fn(signal_fn_enum(signal, enum_type)?);
         }
@@ -292,20 +335,28 @@ fn message_stream(message: &Message) -> Function {
     stream_fn.arg("ival1", codegen::Type::new("&std::time::Duration"));
     stream_fn.arg("ival2", codegen::Type::new("&std::time::Duration"));
 
-    let ret = format!("Box<Stream<Item = {}, Error = std::io::Error> + Sync + Send>", message.message_name().to_camel_case());
+    let ret = format!(
+        "Box<Stream<Item = {}, Error = std::io::Error> + Sync + Send>",
+        message.message_name().to_camel_case()
+    );
     stream_fn.ret(ret);
 
     stream_fn.line("let socket = BCMSocket::open_nb(&can_interface).unwrap();");
-    stream_fn.line(format!("let message_id = CANMessageId::try_from({} as u32).unwrap();", message.message_id().0.to_string()));
+    stream_fn.line(format!(
+        "let message_id = CANMessageId::try_from({} as u32).unwrap();",
+        message.message_id().0.to_string()
+    ));
     stream_fn.line("let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone()).unwrap();");
-    stream_fn.line(format!("let f = frame_stream.map(|frame| {}::new(frame.data().to_vec()));",  message.message_name().to_camel_case()));
+    stream_fn.line(format!(
+        "let f = frame_stream.map(|frame| {}::new(frame.data().to_vec()));",
+        message.message_name().to_camel_case()
+    ));
     stream_fn.line("Box::new(f)");
 
     stream_fn
 }
 
 pub fn can_reader(opt: &Opt, dbc: &DBC) -> Result<Scope> {
-
     let mut scope = Scope::new();
     scope.import("byteorder", "{ByteOrder, LE, BE}");
 
@@ -316,7 +367,7 @@ pub fn can_reader(opt: &Opt, dbc: &DBC) -> Result<Scope> {
     }
 
     for message in dbc.messages() {
-        scope.push_const(message_const(message));
+        scope.raw(&message_const(message));
     }
 
     for value_description in dbc.value_descriptions() {
