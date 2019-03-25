@@ -2,8 +2,6 @@
 #![feature(test)]
 
 extern crate test;
-#[macro_use]
-extern crate structopt;
 
 use can_dbc::{ByteOrder, Message, MessageId, Signal, ValueDescription, DBC};
 use codegen::{Enum, Function, Impl, Scope, Struct};
@@ -11,7 +9,6 @@ use heck::{CamelCase, ShoutySnakeCase};
 use log::warn;
 
 use std::fmt::Write;
-use std::path::PathBuf;
 
 #[cfg(test)]
 mod tests {
@@ -50,13 +47,10 @@ const RAW_FN_SUFFIX: &str = "raw_value";
 
 type Result<T> = std::result::Result<T, std::fmt::Error>;
 
-#[derive(StructOpt, Debug)]
-#[structopt(name = "dbcc", about = "DBC to rust code compiler")]
-pub struct Opt {
-    #[structopt(short = "i", long = "input", parse(from_os_str), help = "DBC file")]
-    pub input: PathBuf,
-
-    #[structopt(long = "with-tokio", help = "Generate Tokio streams.")]
+#[derive(Debug)]
+pub struct DbccOpt {
+    /// Should tokio SocketCan BCM streams be generated.
+    /// This requires the `tokio-socketcan-bcm` crate.
     pub with_tokio: bool,
 }
 
@@ -292,7 +286,7 @@ fn message_struct(dbc: &DBC, message: &Message) -> Struct {
     message_struct
 }
 
-fn message_impl(opt: &Opt, dbc: &DBC, message: &Message) -> Result<Impl> {
+fn message_impl(opt: &DbccOpt, dbc: &DBC, message: &Message) -> Result<Impl> {
     let mut msg_impl = Impl::new(codegen::Type::new(&message.message_name().to_camel_case()));
 
     let new_fn = msg_impl.new_fn("new");
@@ -335,19 +329,28 @@ fn message_stream(message: &Message) -> Function {
     stream_fn.arg("ival1", codegen::Type::new("&std::time::Duration"));
     stream_fn.arg("ival2", codegen::Type::new("&std::time::Duration"));
 
-    let ret = format!("std::io::Result<Box<Stream<Item = {}, Error = std::io::Error> + Sync + Send>>", message.message_name().to_camel_case());
+    let ret = format!(
+        "std::io::Result<Box<Stream<Item = {}, Error = std::io::Error> + Sync + Send>>",
+        message.message_name().to_camel_case()
+    );
     stream_fn.ret(ret);
 
     stream_fn.line("let socket = BCMSocket::open_nb(&can_interface)?;");
-    stream_fn.line(format!("let message_id = CANMessageId::try_from({} as u32).unwrap();", message.message_id().0.to_string()));
+    stream_fn.line(format!(
+        "let message_id = CANMessageId::try_from({} as u32).unwrap();",
+        message.message_id().0.to_string()
+    ));
     stream_fn.line("let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;");
-    stream_fn.line(format!("let f = frame_stream.map(|frame| {}::new(frame.data().to_vec()));",  message.message_name().to_camel_case()));
+    stream_fn.line(format!(
+        "let f = frame_stream.map(|frame| {}::new(frame.data().to_vec()));",
+        message.message_name().to_camel_case()
+    ));
     stream_fn.line("Ok(Box::new(f))");
 
     stream_fn
 }
 
-pub fn can_reader(opt: &Opt, dbc: &DBC) -> Result<Scope> {
+pub fn can_reader(opt: &DbccOpt, dbc: &DBC) -> Result<Scope> {
     let mut scope = Scope::new();
     scope.import("byteorder", "{ByteOrder, LE, BE}");
 

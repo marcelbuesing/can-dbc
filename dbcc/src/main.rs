@@ -1,4 +1,4 @@
-use dbcc::{can_reader, Opt};
+use dbcc::{can_reader, DbccOpt};
 use nom;
 use nom::verbose_errors;
 
@@ -8,6 +8,20 @@ use structopt::StructOpt;
 use std::cmp;
 use std::fs::File;
 use std::io::prelude::*;
+use std::path::PathBuf;
+
+#[derive(StructOpt, Debug)]
+#[structopt(name = "dbcc", about = "DBC to rust code compiler")]
+pub struct Opt {
+    /// File input
+    #[structopt(short = "i", long = "input", parse(from_os_str), help = "DBC file")]
+    pub input: PathBuf,
+
+    /// Should tokio SocketCan BCM streams be generated.
+    /// This requires the `tokio-socketcan-bcm` crate.
+    #[structopt(long = "with-tokio", help = "Generate Tokio streams.")]
+    pub with_tokio: bool,
+}
 
 fn main() {
     pretty_env_logger::init();
@@ -18,6 +32,7 @@ fn main() {
     f.read_to_end(&mut buffer).expect("Failed to read file");
     match can_dbc::DBC::from_slice(&buffer) {
         Ok(dbc_content) => {
+            let opt = DbccOpt { with_tokio: opt.with_tokio };
             let code = can_reader(&opt, &dbc_content).expect("Failed to generate rust code");
             println!("{}", code.to_string());
         },
