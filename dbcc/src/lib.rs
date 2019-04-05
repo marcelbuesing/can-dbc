@@ -353,7 +353,7 @@ fn message_stream(message: &Message) -> Function {
 
     let message_id = match message.message_id().0 & EFF_MASK {
             0...SFF_MASK => format!("let message_id = CANMessageId::SFF({} as u16);", (message.message_id().0 & EFF_MASK).to_string()),
-            SFF_MASK...EFF_MASK => format!("let message_id = CANMessageId::EFF({} as u16);", (message.message_id().0 & SFF_MASK).to_string()),
+            SFF_MASK...EFF_MASK => format!("let message_id = CANMessageId::EFF({});", (message.message_id().0 & SFF_MASK).to_string()),
             _ => unreachable!(),
     };
     stream_fn.line(message_id);
@@ -375,7 +375,6 @@ pub fn can_reader(opt: &DbccOpt, dbc: &DBC) -> Result<Scope> {
     if opt.with_tokio {
         scope.import("tokio_socketcan_bcm", "{CANMessageId, BCMSocket}");
         scope.import("futures", "Stream");
-        scope.import("std::convert", "TryFrom");
     }
 
     for message in dbc.messages() {
