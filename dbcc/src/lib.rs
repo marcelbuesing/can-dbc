@@ -7,6 +7,7 @@ use can_dbc::{ByteOrder, Message, MessageId, Signal, ValueDescription, DBC, Mult
 use codegen::{Enum, Function, Impl, Scope, Struct};
 use heck::{CamelCase, ShoutySnakeCase};
 use log::warn;
+use socketcan::{SFF_MASK, EFF_MASK};
 
 use std::fmt::Write;
 
@@ -349,10 +350,14 @@ fn message_stream(message: &Message) -> Function {
     stream_fn.ret(ret);
 
     stream_fn.line("let socket = BCMSocket::open_nb(&can_interface)?;");
-    stream_fn.line(format!(
-        "let message_id = CANMessageId::try_from({} as u32).unwrap();",
-        message.message_id().0.to_string()
-    ));
+
+    let message_id = match message.message_id().0 {
+            0...SFF_MASK => format!("let message_id = CANMessageId::SFF({} as u16);", message.message_id().0.to_string()),
+            SFF_MASK...EFF_MASK => format!("let message_id = CANMessageId::EFF({} as u16);", message.message_id().0.to_string()),
+            _ => panic!(format!("can message identifier `{}` exceeds max size", message.message_id().0)),
+    };
+    stream_fn.line(message_id);
+
     stream_fn.line("let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;");
     stream_fn.line(format!(
         "let f = frame_stream.map(|frame| {}::new(frame.data().to_vec()));",
