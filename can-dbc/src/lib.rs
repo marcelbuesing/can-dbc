@@ -137,8 +137,10 @@ BA_ \"Attr\" BO_ 56949545 344;
 /// Possible error cases for `can-dbc`
 #[derive(Debug)]
 pub enum Error<'a> {
-    // Remaining String
+    /// Remaining String, the DBC was only read partially.
+    /// Occurs when e.g. an unexpected symbol occurs.
     Incomplete(DBC, Vec<u8>),
+    /// Parser failed
     NomError(nom::Err<nom::types::CompleteByteSlice<'a>, u32>)
 }
 
@@ -171,7 +173,7 @@ pub struct Signal {
 /// Must be unique in DBC file.
 #[derive(Copy, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "serde", derive(Serialize))]
-pub struct MessageId(pub u64);
+pub struct MessageId(pub u32);
 
 #[derive(Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "serde", derive(Serialize))]
@@ -488,6 +490,8 @@ pub struct DBC {
 }
 
 impl DBC {
+
+    /// Read a DBC from a buffer
     pub fn from_slice(buffer: &[u8]) -> Result<DBC, Error> {
         match parser::dbc(CompleteByteSlice(buffer)) {
             Ok((remaining, dbc)) => {

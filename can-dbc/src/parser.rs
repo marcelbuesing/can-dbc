@@ -461,6 +461,12 @@ named!(c_ident<CompleteByteSlice, String>,
 
 named!(c_ident_vec<CompleteByteSlice, Vec<String>>, separated_list!(comma, c_ident));
 
+named!(u32_s<CompleteByteSlice, u32>, map_res!(
+        digit,
+        |s: CompleteByteSlice| std::str::FromStr::from_str(str::from_utf8(s.as_bytes()).unwrap())
+    )
+ );
+
 named!(u64_s<CompleteByteSlice, u64>, map_res!(
         digit,
         |s: CompleteByteSlice| std::str::FromStr::from_str(str::from_utf8(s.as_bytes()).unwrap())
@@ -486,7 +492,7 @@ named!(pub big_endian<CompleteByteSlice, ByteOrder>, map!(char!('0'), |_| ByteOr
 
 named!(pub byte_order<CompleteByteSlice, ByteOrder>, alt_complete!(little_endian | big_endian));
 
-named!(pub message_id<CompleteByteSlice, MessageId>, map!(u64_s, MessageId));
+named!(pub message_id<CompleteByteSlice, MessageId>, map!(u32_s, MessageId));
 
 named!(pub signed<CompleteByteSlice, ValueType>, map!(char!('-'), |_| ValueType::Signed));
 
