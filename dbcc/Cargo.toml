@@ -26,6 +26,7 @@ heck = "0.3"
 log = "0.4"
 pretty_env_logger = "0.3"
 structopt = "0.2"
+socketcan = "1.7"
 
 [dependencies.nom]
 version = "4.2"
