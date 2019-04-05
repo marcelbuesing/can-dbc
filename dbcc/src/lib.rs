@@ -173,7 +173,14 @@ pub fn signal_fn_raw(dbc: &DBC, signal: &Signal, message_id: &MessageId) -> Resu
     let signal_comment = dbc
         .signal_comment(message_id, signal.name())
         .unwrap_or(&default_signal_comment);
-    signal_fn.doc(signal_comment);
+
+    let signal_unit = if !signal.unit().is_empty() {
+        format!("\nUnit: {}", signal.unit())
+    } else {
+        String::default()
+    };
+
+    signal_fn.doc(&format!("{}{}", signal_comment, signal_unit));
 
     let read_byte_order = match signal.byte_order() {
         ByteOrder::LittleEndian => "let frame_payload: u64 = LE::read_u64(&self.frame_payload);",
