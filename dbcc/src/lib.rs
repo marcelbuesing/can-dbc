@@ -3,7 +3,7 @@
 
 extern crate test;
 
-use can_dbc::{ByteOrder, Message, MessageId, Signal, ValueDescription, DBC};
+use can_dbc::{ByteOrder, Message, MessageId, Signal, ValueDescription, DBC, MultiplexIndicator};
 use codegen::{Enum, Function, Impl, Scope, Struct};
 use heck::{CamelCase, ShoutySnakeCase};
 use log::warn;
@@ -305,6 +305,12 @@ fn message_impl(opt: &DbccOpt, dbc: &DBC, message: &Message) -> Result<Impl> {
     }
 
     for signal in message.signals() {
+
+        if *signal.multiplexer_indicator() != MultiplexIndicator::Plain {
+            warn!("Multiplexed signals are currently not supported, the message `{}` signal `{}` will be skipped", message.message_name(), signal.name());
+            continue;
+        }
+
         msg_impl.push_fn(signal_fn_raw(dbc, signal, message.message_id())?);
 
         // Check if this signal can be turned into an enum
