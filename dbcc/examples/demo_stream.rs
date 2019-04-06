@@ -17,22 +17,21 @@ use tokio;
 fn main() -> io::Result<()> {
     let ival = Duration::from_secs(0);
 
-    let f = j1939::Oel::stream("vcan0", &ival, &ival)?
-        .for_each(|oel| {
-            // Signal indicates the selected position of the operator's hazard light switch.
-            match oel.hazardlightswitch() {
-                j1939::HazardLightSwitch2365443326::HazardLampsToBeFlashing => {
-                    println!("Hazard Lamps To Be Flashing")
-                }
-                j1939::HazardLightSwitch2365443326::HazardLampsToBeOff => {
-                    println!("Hazard Lamps To Be Off")
-                }
-                j1939::HazardLightSwitch2365443326::NotAvailable => println!("Not available"),
-                j1939::HazardLightSwitch2365443326::Error => println!("Error"),
-                j1939::HazardLightSwitch2365443326::XValue(_) => unreachable!(),
+    let f = j1939::Oel::stream("vcan0", &ival, &ival)?.for_each(|oel| {
+        // Signal indicates the selected position of the operator's hazard light switch.
+        match oel.hazardlightswitch() {
+            j1939::HazardLightSwitch2365443326::HazardLampsToBeFlashing => {
+                println!("Hazard Lamps To Be Flashing")
             }
-            Ok(())
-        });
+            j1939::HazardLightSwitch2365443326::HazardLampsToBeOff => {
+                println!("Hazard Lamps To Be Off")
+            }
+            j1939::HazardLightSwitch2365443326::NotAvailable => println!("Not available"),
+            j1939::HazardLightSwitch2365443326::Error => println!("Error"),
+            j1939::HazardLightSwitch2365443326::XValue(_) => unreachable!(),
+        }
+        Ok(())
+    });
 
     tokio::run(f.map_err(|_| ()));
 
