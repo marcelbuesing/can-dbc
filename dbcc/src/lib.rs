@@ -368,7 +368,23 @@ fn message_stream(message: &Message) -> Function {
     stream_fn
 }
 
-pub fn can_reader(opt: &DbccOpt, dbc: &DBC) -> Result<Scope> {
+/// Genérate code for reading CAN signals
+///
+/// Example:
+/// ```
+/// use dbcc::{can_code_gen, DbccOpt};
+/// use std::fs::File;
+/// use std::io::prelude::*;
+/// use std::path::PathBuf;
+/// let mut f = File::open("./examples/j1939.dbc").expect("Failed to open input file");
+/// let mut buffer = Vec::new();
+/// f.read_to_end(&mut buffer).expect("Failed to read file");
+/// let dbc_content = can_dbc::DBC::from_slice(&buffer).expect("Failed to parse DBC file");
+/// let opt = DbccOpt { with_tokio: true };
+/// let code = can_code_gen(&opt, &dbc_content).expect("Failed to generate rust code");
+/// println!("{}", code.to_string());
+///```
+pub fn can_code_gen(opt: &DbccOpt, dbc: &DBC) -> Result<Scope> {
     let mut scope = Scope::new();
     scope.import("byteorder", "{ByteOrder, LE, BE}");
 

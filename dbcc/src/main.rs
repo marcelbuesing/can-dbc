@@ -1,4 +1,4 @@
-use dbcc::{can_reader, DbccOpt};
+use dbcc::{can_code_gen, DbccOpt};
 use nom;
 use nom::verbose_errors;
 
@@ -33,7 +33,7 @@ fn main() {
     match can_dbc::DBC::from_slice(&buffer) {
         Ok(dbc_content) => {
             let opt = DbccOpt { with_tokio: opt.with_tokio };
-            let code = can_reader(&opt, &dbc_content).expect("Failed to generate rust code");
+            let code = can_code_gen(&opt, &dbc_content).expect("Failed to generate rust code");
             println!("{}", code.to_string());
         },
         Err(e) => {
