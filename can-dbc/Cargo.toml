@@ -1,6 +1,6 @@
 [package]
 name = "can-dbc"
-version = "1.1.0"
+version = "2.0.0"
 license = "MIT"
 description = "A parser for the DBC format. The DBC format is used to exchange CAN network data."
 homepage = "https://github.com/marcelbuesing/can-dbc"
@@ -19,11 +19,11 @@ serde = { version = "1.0", optional = true }
 serde_derive = { version = "1.0", optional = true }
 
 [dependencies.nom]
-version = "4.1"
+version = "4.2"
 features = ["verbose-errors"]
 
 [dev-dependencies]
-clap = "2.32"
+clap = "2.33"
 codegen = "0.1.0"
 
 [features]
