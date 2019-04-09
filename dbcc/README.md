@@ -12,12 +12,14 @@ Furthermore it provides a convenient way to use [SocketCAN BCM Sockets](https://
 - [x] Generate tokio streams for CAN messages
 - [ ] Generate message, signal encoders
 
-## Install
+## Option 1 - Run CLI
+
+Install
 ```
 cargo install dbcc
 ```
 
-## Run
+Generate code using the CLI.
 ```
 dbcc --input dbcc j1939.dbc > j1939.rs
 ```
@@ -26,6 +28,50 @@ For warnings during the generation run with:
 
 ```
 RUST_LOG=info dbcc j1939.dbc > j1939.rs
+```
+
+## Option 2 - build.rs
+
+Generate code at build time. Add the following to your [build.rs](https://doc.rust-lang.org/cargo/reference/build-scripts.html).
+Adapt the dbc input path and target path according to your needs.
+
+
+```Rust
+use dbcc::{DbccOpt, can_code_gen};
+use can_dbc;
+
+use std::fs::File;
+use std::io::prelude::*;
+use std::path::Path;
+
+fn main() -> std::io::Result<()> {
+    let dbcs = &[
+        ("./dbcs/j1939.dbc", "./src/lib.rs"),
+    ];
+    generate_code_for_dbc(dbcs)?;
+    Ok(())
+}
+
+fn generate_code_for_dbc<P: AsRef<Path>>(input_output: &[(P, P)]) -> std::io::Result<()> {
+
+    for (input_path, output_path) in input_output {
+        let mut f = File::open(input_path).expect("Failed to open input file");
+        let mut buffer = Vec::new();
+        f.read_to_end(&mut buffer).expect("Failed to read file");
+
+        let opt = DbccOpt {
+            with_tokio: true,
+        };
+
+        let dbc_content = can_dbc::DBC::from_slice(&buffer).expect("Failed to read DBC file");
+        let code = can_code_gen(&opt, &dbc_content).expect("Failed to generate rust code");
+
+        let mut f = File::create(output_path)?;
+        f.write_all(&code.to_string().into_bytes())?;
+    }
+
+    Ok(())
+}
 ```
 
 ## Include
