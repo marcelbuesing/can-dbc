@@ -352,8 +352,8 @@ fn message_stream(message: &Message) -> Function {
     stream_fn.line("let socket = BCMSocket::open_nb(&can_interface)?;");
 
     let message_id = match message.message_id().0 & EFF_MASK {
-            0...SFF_MASK => format!("let message_id = CANMessageId::SFF({} as u16);", (message.message_id().0 & EFF_MASK).to_string()),
-            SFF_MASK...EFF_MASK => format!("let message_id = CANMessageId::EFF({});", (message.message_id().0 & SFF_MASK).to_string()),
+            0...SFF_MASK => format!("let message_id = CANMessageId::SFF({} as u16);", (message.message_id().0 & SFF_MASK).to_string()),
+            SFF_MASK...EFF_MASK => format!("let message_id = CANMessageId::EFF({});", (message.message_id().0 & EFF_MASK).to_string()),
             _ => unreachable!(),
     };
     stream_fn.line(message_id);
