@@ -24,7 +24,7 @@ features = ["verbose-errors"]
 
 [dev-dependencies]
 clap = "2.33"
-codegen = "0.1.0"
+codegen = "0.1.1"
 
 [features]
 with-serde = ["serde", "serde_derive"]

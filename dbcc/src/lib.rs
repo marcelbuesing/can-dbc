@@ -344,7 +344,7 @@ fn message_stream(message: &Message) -> Function {
     stream_fn.arg("ival2", codegen::Type::new("&std::time::Duration"));
 
     let ret = format!(
-        "std::io::Result<Box<Stream<Item = {}, Error = std::io::Error> + Sync + Send>>",
+        "std::io::Result<impl Stream<Item = Result<{}, std::io::Error>>>",
         message.message_name().to_camel_case()
     );
     stream_fn.ret(ret);
@@ -358,12 +358,12 @@ fn message_stream(message: &Message) -> Function {
     };
     stream_fn.line(message_id);
 
-    stream_fn.line("let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;");
+    stream_fn.line("let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();");
     stream_fn.line(format!(
-        "let f = frame_stream.map(|frame| {}::new(frame.data().to_vec()));",
+        "let f = frame_stream.map(|frame| frame.map(|frame| {}::new(frame.data().to_vec())));",
         message.message_name().to_camel_case()
     ));
-    stream_fn.line("Ok(Box::new(f))");
+    stream_fn.line("Ok(f)");
 
     stream_fn
 }
@@ -390,7 +390,9 @@ pub fn can_code_gen(opt: &DbccOpt, dbc: &DBC) -> Result<Scope> {
 
     if opt.with_tokio {
         scope.import("tokio_socketcan_bcm", "{CANMessageId, BCMSocket}");
-        scope.import("futures", "Stream");
+        scope.import("futures::stream", "Stream");
+        scope.import("futures_util::compat", "Stream01CompatExt");
+        scope.import("futures_util::stream", "StreamExt");
     }
 
     for message in dbc.messages() {

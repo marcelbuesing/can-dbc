@@ -34,6 +34,7 @@ features = ["verbose-errors"]
 
 [dev-dependencies]
 byteorder = "1.3"
-futures = "0.1"
+futures-preview = { version = "0.3.0-alpha.15", features = ["compat"] }
+futures-util-preview =  { version = "0.3.0-alpha.13", features = ["compat"] }
 tokio = "0.1"
 tokio-socketcan-bcm = "0.2"
