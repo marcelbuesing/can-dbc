@@ -1,6 +1,8 @@
 use byteorder::{ByteOrder, LE, BE};
 use tokio_socketcan_bcm::{CANMessageId, BCMSocket};
-use futures::Stream;
+use futures::stream::Stream;
+use futures_util::compat::Stream01CompatExt;
+use futures_util::stream::StreamExt;
 
 #[allow(dead_code)]
 pub const MESSAGE_ID_DISP1: u32 = 2561212158;
@@ -30398,12 +30400,12 @@ impl Disp1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Disp1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Disp1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Disp1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(413728510);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Disp1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read TextDisplayIndex signal from can frame
@@ -30441,12 +30443,12 @@ impl Drc {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Drc, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Drc, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Drc::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419262718);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Drc::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read MovementStatusOfRamp3 signal from can frame
@@ -30573,12 +30575,12 @@ impl Ec2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ec2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ec2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ec2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419266558);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ec2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The number of cranking cycles that will be performed before ending the start attempt.
@@ -30604,12 +30606,12 @@ impl Eec7 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Eec7, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Eec7, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Eec7::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419271934);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Eec7::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The position of the second exhaust gas recirculation valve expressed as a percentage of full travel.
@@ -30644,12 +30646,12 @@ impl Eec8 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Eec8, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Eec8, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Eec8::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419262462);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Eec8::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Desired percentage of maximum Exhaust Gas Recirculation (EGR) valve opening for valve 2.
@@ -30676,12 +30678,12 @@ impl EflP5 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = EflP5, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<EflP5, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| EflP5::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419268862);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| EflP5::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The gage pressure of the oil in the hydraulic accumulator that powers the engine intake valve for cylinder #4.
@@ -30732,12 +30734,12 @@ impl EflP6 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = EflP6, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<EflP6, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| EflP6::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419268606);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| EflP6::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The gage pressure of the oil in the hydraulic accumulator that powers the engine intake valve for cylinder #8.
@@ -30788,12 +30790,12 @@ impl EflP7 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = EflP7, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<EflP7, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| EflP7::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419268350);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| EflP7::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The gage pressure of the oil in the hydraulic accumulator that powers the engine intake valve for cylinder #12.
@@ -30844,12 +30846,12 @@ impl EflP8 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = EflP8, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<EflP8, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| EflP8::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419268094);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| EflP8::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The gage pressure of the oil in the hydraulic accumulator that powers the engine intake valve for cylinder #16.
@@ -30900,12 +30902,12 @@ impl EflP9 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = EflP9, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<EflP9, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| EflP9::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419267838);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| EflP9::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The gage pressure of the oil in the hydraulic accumulator that powers the engine intake valve for cylinder #20.
@@ -30956,12 +30958,12 @@ impl Egrbv {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Egrbv, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Egrbv, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Egrbv::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(352158206);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Egrbv::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read EGRCoolerBypassActuatorPostion signal from can frame
@@ -30988,12 +30990,12 @@ impl Esv1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Esv1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Esv1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Esv1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419264510);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Esv1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read EngSparkPlug4 signal from can frame
@@ -31044,12 +31046,12 @@ impl Esv2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Esv2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Esv2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Esv2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419264254);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Esv2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read EngSparkPlug8 signal from can frame
@@ -31100,12 +31102,12 @@ impl Esv3 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Esv3, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Esv3, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Esv3::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419263998);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Esv3::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read EngSparkPlug12 signal from can frame
@@ -31156,12 +31158,12 @@ impl Esv4 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Esv4, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Esv4, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Esv4::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419263742);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Esv4::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read EngSparkPlug16 signal from can frame
@@ -31212,12 +31214,12 @@ impl Esv5 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Esv5, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Esv5, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Esv5::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419263486);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Esv5::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read EngSparkPlug20 signal from can frame
@@ -31268,12 +31270,12 @@ impl Esv6 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Esv6, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Esv6, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Esv6::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419263230);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Esv6::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read EngSparkPlug24 signal from can frame
@@ -31324,12 +31326,12 @@ impl Flic {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Flic, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Flic, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Flic::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(413794046);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Flic::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read LaneDepartureWarningEnableCmd signal from can frame
@@ -31360,12 +31362,12 @@ impl J2012 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = J2012, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<J2012, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| J2012::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486378238);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| J2012::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Number of occurrences of the respective SAE J2012 DTC being conveyed.
@@ -31410,12 +31412,12 @@ impl Ptc1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ptc1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ptc1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ptc1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419265790);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ptc1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read PrtcltTrpActvRgnrtnInhbtdDTVhclS signal from can frame
@@ -31578,12 +31580,12 @@ impl Sas {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Sas, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Sas, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Sas::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(418389502);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Sas::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The message checksum is used to verify the signal path from the demanding device to the steering controller .
@@ -31676,12 +31678,12 @@ impl Scr1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Scr1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Scr1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Scr1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419262206);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Scr1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read CmdedCatalystReagentConsumption signal from can frame
@@ -31716,12 +31718,12 @@ impl Tci {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tci, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tci, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tci::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419267582);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tci::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// This parameter describes the feedback from the transfer case controller .
@@ -31752,12 +31754,12 @@ impl Trf2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Trf2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Trf2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Trf2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419272190);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Trf2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// This switch indicates whether transmission oil level is full or empty.
@@ -31800,12 +31802,12 @@ impl Vds2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Vds2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Vds2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Vds2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419269118);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Vds2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// This parameter indicates the roll in degrees from level.
@@ -31832,12 +31834,12 @@ impl Lf {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Lf, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Lf, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Lf::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486455294);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Lf::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Total time that the engine has operated in the cruise hold state, excluding time in accelerator override, over the life of the engine.
@@ -31896,12 +31898,12 @@ impl Ld {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ld, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ld, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ld::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419315966);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ld::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// This parameter provides measured data from the implement rear work lamps.
@@ -32292,12 +32294,12 @@ impl Lc {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Lc, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Lc, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Lc::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(217989630);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Lc::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Command to activate or de-activate implement rear work lights.
@@ -32700,12 +32702,12 @@ impl Lbc {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Lbc, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Lbc, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Lbc::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(218002174);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Lbc::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Allows the user to select the type of blade control for the land leveling system.
@@ -32744,12 +32746,12 @@ impl It6 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = It6, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<It6, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| It6::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486443006);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| It6::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The actual ignition timing at the current engine conditions.
@@ -32800,12 +32802,12 @@ impl It5 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = It5, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<It5, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| It5::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486442750);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| It5::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The ignition timing of the cylinder.
@@ -32856,12 +32858,12 @@ impl It4 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = It4, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<It4, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| It4::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486442494);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| It4::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The ignition timing of the cylinder.
@@ -32912,12 +32914,12 @@ impl It3 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = It3, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<It3, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| It3::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486442238);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| It3::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The ignition timing of the cylinder.
@@ -32968,12 +32970,12 @@ impl It2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = It2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<It2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| It2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486441982);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| It2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The ignition timing of the cylinder.
@@ -33024,12 +33026,12 @@ impl It1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = It1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<It1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| It1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486441726);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| It1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The ignition timing of the cylinder.
@@ -33080,12 +33082,12 @@ impl Iso3 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Iso3, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Iso3, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Iso3::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486443774);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Iso3::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// This parameter indicates the relative intensity of the secondary output voltage of the ignition transformer.
@@ -33136,12 +33138,12 @@ impl Iso2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Iso2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Iso2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Iso2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486443518);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Iso2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// This parameter indicates the relative intensity of the secondary output voltage of the ignition transformer.
@@ -33224,12 +33226,12 @@ impl Iso1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Iso1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Iso1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Iso1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486443262);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Iso1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// This parameter indicates the relative intensity of the secondary output voltage of the ignition transformer.
@@ -33312,12 +33314,12 @@ impl Iscs {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Iscs, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Iscs, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Iscs::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419285246);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Iscs::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// 13 preprogrammed intermediate speed control settings are availible for the contolling ECM to select.
@@ -33348,12 +33350,12 @@ impl Isc {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Isc, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Isc, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Isc::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419285758);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Isc::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Allows the operator to select one of 13 preprogrammed Intermediate Speed Control settings.
@@ -33384,12 +33386,12 @@ impl Io {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Io, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Io, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Io::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419355902);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Io::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Accumulated time of operation of the engine while under idle conditions.
@@ -33424,12 +33426,12 @@ impl Imt2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Imt2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Imt2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Imt2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486450686);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Imt2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Temperature of pre-combustion air found in intake manifold number 6 of engine air supply system.
@@ -33488,12 +33490,12 @@ impl Imt1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Imt1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Imt1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Imt1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419342078);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Imt1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Gage pressure of air measured downstream of the compressor discharge side of the turbocharger.
@@ -33544,12 +33546,12 @@ impl Ic2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ic2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ic2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ic2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419287294);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ic2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read EngAirFilter4DiffPress signal from can frame
@@ -33608,12 +33610,12 @@ impl Ic1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ic1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ic1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ic1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419362558);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ic1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read EngCoolantFilterDiffPress signal from can frame
@@ -33688,12 +33690,12 @@ impl Htr {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Htr, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Htr, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Htr::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419327486);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Htr::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Parameter indicating whether the cab zone is being heated.
@@ -33796,12 +33798,12 @@ impl Hrw {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Hrw, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Hrw, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Hrw::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(150892286);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Hrw::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// High resolution measurement of the speed of the right wheel on the rear axle.
@@ -33852,12 +33854,12 @@ impl Hpg {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Hpg, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Hpg, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Hpg::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(418384126);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Hpg::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read FireApparatusPumpEngagement signal from can frame
@@ -33920,12 +33922,12 @@ impl Hours {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Hours, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Hours, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Hours::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419358206);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Hours::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Accumulated number of revolutions of engine crankshaft during its operation.
@@ -33960,12 +33962,12 @@ impl Hbs {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Hbs, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Hbs, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Hbs::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(217966334);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Hbs::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Signal which indicates whether the hydraulic fluid level in the reservoir(s) is sufficient.
@@ -34072,12 +34074,12 @@ impl Gtfi {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gtfi, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gtfi, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gtfi::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486455550);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gtfi::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read TripDriveFuelEconomy signal from can frame
@@ -34144,12 +34146,12 @@ impl Gfp {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gfp, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gfp, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gfp::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486444030);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gfp::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Absolute Pressure of gas on outlet side of the first or only fuel system control valve.
@@ -34200,12 +34202,12 @@ impl Gfi2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gfi2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gfi2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gfi2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486441470);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gfi2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The rate at which the fuel is flowing through a fuel valve.
@@ -34272,12 +34274,12 @@ impl Gfi1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gfi1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gfi1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gfi1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486454014);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gfi1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// This parameter conveys the specific gravity of the gaseous fuel being used by the engine.
@@ -34319,12 +34321,12 @@ impl Gfd {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gfd, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gfd, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gfd::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419321342);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gfd::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The specific heat ratio of the fuel.
@@ -34350,12 +34352,12 @@ impl Gfc {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gfc, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gfc, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gfc::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486453246);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gfc::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Total fuel consumed (trip drive fuel + trip PTO moving fuel + trip PTO non-moving fuel + trip idle fuel) over the life of the engine.
@@ -34390,12 +34392,12 @@ impl Sep2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Sep2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Sep2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Sep2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419273982);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Sep2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read SensorSupplyVoltage6 signal from can frame
@@ -34430,12 +34432,12 @@ impl Sep1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Sep1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Sep1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Sep1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419274238);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Sep1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read SensorSupplyVoltage4 signal from can frame
@@ -34486,12 +34488,12 @@ impl Ptode {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ptode, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ptode, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ptode::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419276030);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ptode::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Reports if this specific PTO drive is engaged.
@@ -34654,12 +34656,12 @@ impl Gfi3 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gfi3, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gfi3, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gfi3::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(285057790);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gfi3::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Absolute pressure of gas on outlet side of the second fuel system control valve.
@@ -34710,12 +34712,12 @@ impl EflP4 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = EflP4, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<EflP4, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| EflP4::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419277566);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| EflP4::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The speed of a rotating (centrifugal) engine oil filter.
@@ -34790,12 +34792,12 @@ impl Eec6 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Eec6, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Eec6, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Eec6::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(285058046);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Eec6::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Actuator that controls the variable geometry turbocharger geometry.
@@ -34843,12 +34845,12 @@ impl Dc2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dc2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dc2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dc2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419276286);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dc2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Enable status of bus door 10.
@@ -35227,12 +35229,12 @@ impl Cri1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Cri1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Cri1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Cri1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419273726);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Cri1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// This parameter indicates what reagent is in the tank.
@@ -35301,12 +35303,12 @@ impl Ahi2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ahi2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ahi2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ahi2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419273214);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ahi2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Total amount of time that Aftertreatment device 2 has been in passive regeneration over the lifetime of the device.
@@ -35389,12 +35391,12 @@ impl Afc2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Afc2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Afc2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Afc2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419275006);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Afc2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read Aftrtratment2FuelEnableActuator signal from can frame
@@ -35473,12 +35475,12 @@ impl Afc1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Afc1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Afc1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Afc1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419275262);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Afc1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read Aftrtratment1FuelEnableActuator signal from can frame
@@ -35557,12 +35559,12 @@ impl Aac2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Aac2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Aac2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Aac2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419274494);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Aac2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read Aftrtreatment2AirEnableActuator signal from can frame
@@ -35661,12 +35663,12 @@ impl Aac1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Aac1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Aac1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Aac1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419274750);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Aac1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read Aftrtreatment1AirEnableActuator signal from can frame
@@ -35765,12 +35767,12 @@ impl Ahi1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ahi1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ahi1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ahi1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419272958);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ahi1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Total number of active regenerations by after treatment device 1 over the lifetime of the device.
@@ -35821,12 +35823,12 @@ impl Rgaaq {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Rgaaq, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Rgaaq, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Rgaaq::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(217062654);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Rgaaq::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The requested average AC RMS voltage to be delivered by the generator.
@@ -35853,12 +35855,12 @@ impl Tfac {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tfac, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tfac, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tfac::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(284171006);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tfac::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read EngThrottleActuator2CtrlCmd signal from can frame
@@ -35909,12 +35911,12 @@ impl Kl3 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Kl3, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Kl3, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Kl3::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(217061886);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Kl3::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Used to indicate the level of knock for engine cylinder 24.
@@ -35997,12 +35999,12 @@ impl Kl2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Kl2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Kl2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Kl2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(217061630);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Kl2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Used to indicate the level of knock for engine cylinder 15.
@@ -36085,12 +36087,12 @@ impl Kl1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Kl1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Kl1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Kl1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(217061374);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Kl1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Used to indicate the level of knock for engine cylinder 8.
@@ -36173,12 +36175,12 @@ impl Ccs {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ccs, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ccs, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ccs::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(217061118);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ccs::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read EngCyl9CombustionStatus signal from can frame
@@ -36485,12 +36487,12 @@ impl Rgtarp {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Rgtarp, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Rgtarp, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Rgtarp::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(217060862);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Rgtarp::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The requested lead/lag status for the generator average AC power factor
@@ -36536,12 +36538,12 @@ impl Bi {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Bi, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Bi, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Bi::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(217060606);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Bi::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Figure of merit for blade rotation measurement.
@@ -36608,12 +36610,12 @@ impl Ebs11 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ebs11, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ebs11, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ebs11::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(201522942);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ebs11::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The demanded value of the retarder on the towed vehicle(s) as a percentage of the absolute peak torque of retarder.
@@ -36728,12 +36730,12 @@ impl Ebs12 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ebs12, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ebs12, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ebs12::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419351038);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ebs12::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Estimated value of the current road curvature for use by the adaptive cruise control system.
@@ -36808,12 +36810,12 @@ impl Ebs21 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ebs21, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ebs21, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ebs21::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(402915070);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ebs21::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Difference between the wheel speed at the right side and and the left side of the main axle.
@@ -36928,12 +36930,12 @@ impl Ebs22 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ebs22, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ebs22, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ebs22::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419349758);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ebs22::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// This parameter is the 100% reference value for all defined indicated retarder torque parameters.
@@ -37136,12 +37138,12 @@ impl Ebs23 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ebs23, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ebs23, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ebs23::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(218023678);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ebs23::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Actual supply pressure of the reservoir of the braking system.
@@ -37314,12 +37316,12 @@ impl Gpm11 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gpm11, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gpm11, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gpm11::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(417529598);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gpm11::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Command signal to switch on or off the obstacle detection device (ODD).
@@ -37374,12 +37376,12 @@ impl Gpm12 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gpm12, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gpm12, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gpm12::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419323390);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gpm12::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Maximum vehicle velocity allowed.
@@ -37422,12 +37424,12 @@ impl Gpm13 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gpm13, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gpm13, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gpm13::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(217997310);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gpm13::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// State signal which indicates which engine torque mode is currently generating, limiting, or controlling the torque
@@ -37523,12 +37525,12 @@ impl Gpm14 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gpm14, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gpm14, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gpm14::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419324414);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gpm14::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Signal which indicates the current state of the clutch independent power take off.
@@ -37686,12 +37688,12 @@ impl Gpm15 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gpm15, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gpm15, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gpm15::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419324926);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gpm15::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The 100 % reference value for all defined indicated engine torque parameters.
@@ -37778,12 +37780,12 @@ impl Gpm16 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gpm16, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gpm16, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gpm16::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419325438);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gpm16::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Temperature of air surrounding vehicle.
@@ -37812,12 +37814,12 @@ impl Gpm21 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gpm21, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gpm21, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gpm21::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(417464062);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gpm21::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Information to identify a dolly axle within the road train.
@@ -37850,12 +37852,12 @@ impl Gpm22 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gpm22, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gpm22, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gpm22::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419350782);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gpm22::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The actual pressure in a body on the towed vehicle.
@@ -37930,12 +37932,12 @@ impl Gpm23 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gpm23, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gpm23, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gpm23::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(217997566);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gpm23::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The requested engine speed which is not to be exceeded.
@@ -37994,12 +37996,12 @@ impl Gpm24 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gpm24, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gpm24, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gpm24::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419324670);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gpm24::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Signal which indicates the state of the second engine mounted power take off switch.
@@ -38146,12 +38148,12 @@ impl Gpm25 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gpm25, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gpm25, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gpm25::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419325182);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gpm25::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// This signal indicates the state of the trailer left-hand side marker light(s).
@@ -38434,12 +38436,12 @@ impl Iso15765Funct {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Iso15765Funct, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Iso15765Funct, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Iso15765Funct::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(417070846);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Iso15765Funct::new(frame.data().to_vec())));
+        Ok(f)
     }
 }
 
@@ -38458,12 +38460,12 @@ impl Iso15765Phys {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Iso15765Phys, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Iso15765Phys, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Iso15765Phys::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(417005310);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Iso15765Phys::new(frame.data().to_vec())));
+        Ok(f)
     }
 }
 
@@ -38482,12 +38484,12 @@ impl Network {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Network, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Network, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Network::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(418250494);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Network::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read ControlByte signal from can frame
@@ -38546,12 +38548,12 @@ impl Rge11 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Rge11, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Rge11, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Rge11::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(417660670);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Rge11::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The pneumatic pressure in the circuit or reservoir for the parking brake and the trailer supply.
@@ -38728,12 +38730,12 @@ impl Rge21 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Rge21, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Rge21, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Rge21::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(417726206);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Rge21::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Signal which indicates that the automatic level control is enabled or disabled.
@@ -38924,12 +38926,12 @@ impl Rge22 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Rge22, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Rge22, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Rge22::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419323134);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Rge22::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Actual relative vehicle body height.
@@ -38964,12 +38966,12 @@ impl Rge23 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Rge23, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Rge23, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Rge23::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419323646);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Rge23::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Signal indicating the pressure level of the tyre.
@@ -39052,12 +39054,12 @@ impl Dm26 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dm26, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dm26, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dm26::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419281150);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dm26::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read MisfireMonitoringComplete signal from can frame
@@ -39379,12 +39381,12 @@ impl Dm18 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dm18, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dm18, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dm18::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(416612094);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dm18::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read SecurityEntityLengthHigh signal from can frame
@@ -39431,12 +39433,12 @@ impl Xbr {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Xbr, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Xbr, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Xbr::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(201654014);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Xbr::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read XBRMessageChecksum signal from can frame
@@ -39513,12 +39515,12 @@ impl Wfi {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Wfi, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Wfi, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Wfi::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419364862);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Wfi::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Signal which indicates the presence of water in the fuel.
@@ -39549,12 +39551,12 @@ impl Vw {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Vw, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Vw, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Vw::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419359486);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Vw::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The mass of freight carried.
@@ -39604,12 +39606,12 @@ impl Vep3 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Vep3, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Vep3, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Vep3::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419320574);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Vep3::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Net flow of electrical current into/out-of the battery or batteries.
@@ -39644,12 +39646,12 @@ impl Vep2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Vep2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Vep2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Vep2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486444542);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Vep2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The voltage for isolated battery #2.
@@ -39708,12 +39710,12 @@ impl Vp {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Vp, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Vp, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Vp::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419361790);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Vp::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Longitude position of the vehicle.
@@ -39748,12 +39750,12 @@ impl Vi {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Vi, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Vi, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Vi::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419359998);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Vi::new(frame.data().to_vec())));
+        Ok(f)
     }
 }
 
@@ -39772,12 +39774,12 @@ impl Vh {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Vh, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Vh, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Vh::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419358718);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Vh::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Accumulated time of operation of power takeoff device.
@@ -39812,12 +39814,12 @@ impl Vf {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Vf, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Vf, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Vf::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419326206);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Vf::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read WinchOilPressSwitch signal from can frame
@@ -39876,12 +39878,12 @@ impl Vds {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Vds, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Vds, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Vds::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419358974);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Vds::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Altitude of the vehicle referenced to sea level at standard atmospheric pressure and temperature.
@@ -39932,12 +39934,12 @@ impl Vdhr {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Vdhr, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Vdhr, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Vdhr::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419348990);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Vdhr::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Distance traveled during all or part of a journey.
@@ -39972,12 +39974,12 @@ impl Vdc2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Vdc2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Vdc2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Vdc2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(418384382);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Vdc2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Indicates the longitudinal acceleration of the vehicle.
@@ -40048,12 +40050,12 @@ impl Vdc1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Vdc1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Vdc1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Vdc1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419319806);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Vdc1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// State signal which indicates that Yaw Control (YC) has activated brake control.
@@ -40156,12 +40158,12 @@ impl Vd {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Vd, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Vd, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Vd::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419356926);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Vd::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Accumulated distance traveled by vehicle during its operation.
@@ -40196,12 +40198,12 @@ impl Tvi {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tvi, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tvi, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tvi::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486455038);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tvi::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read TripCruiseDistance signal from can frame
@@ -40236,12 +40238,12 @@ impl Tti2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tti2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tti2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tti2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486453502);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tti2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Total time that the air compressor is on and compressing air since the last trip reset.
@@ -40300,12 +40302,12 @@ impl Tti1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tti1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tti1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tti1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486454526);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tti1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Total time accumulated when the engine final fueling has been derated due to an engine protection algorithm, since the last reset.
@@ -40356,12 +40358,12 @@ impl Tsi {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tsi, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tsi, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tsi::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486454782);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tsi::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read TripSuddenDecelerations signal from can frame
@@ -40412,12 +40414,12 @@ impl Tsc1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tsc1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tsc1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tsc1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(201391870);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tsc1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// State signal which indicates which control mode the sending device is using to generate the TSC1 command.
@@ -40512,12 +40514,12 @@ impl Tr7 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tr7, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tr7, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tr7::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419283198);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tr7::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Status of the run switch for the vehicle.
@@ -40591,12 +40593,12 @@ impl Tr6 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tr6, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tr6, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tr6::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419281662);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tr6::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Indicates the nature of the farebox alarm condition.
@@ -40639,12 +40641,12 @@ impl Tr5 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tr5, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tr5, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tr5::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419281918);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tr5::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Indicates that a transfer was sold or issued on this transaction including its type and/or restrictions.
@@ -40765,12 +40767,12 @@ impl Tr4 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tr4, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tr4, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tr4::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419282174);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tr4::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Security code for the farebox, numerical only.
@@ -40885,12 +40887,12 @@ impl Tr3 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tr3, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tr3, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tr3::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419282430);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tr3::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Numerical designation of the vehicle.
@@ -40989,12 +40991,12 @@ impl Tr2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tr2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tr2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tr2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419282942);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tr2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read NmbrOfBytsInMlpstIdentification signal from can frame
@@ -41020,12 +41022,12 @@ impl Tr1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tr1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tr1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tr1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419282686);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tr1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read Agency signal from can frame
@@ -41072,12 +41074,12 @@ impl Tprs {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tprs, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tprs, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tprs::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(414121726);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tprs::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read ReferenceTirePressSetting signal from can frame
@@ -41111,12 +41113,12 @@ impl Tpri {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tpri, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tpri, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tpri::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419281406);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tpri::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read ReferenceTirePress signal from can frame
@@ -41150,12 +41152,12 @@ impl Tp3 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tp3, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tp3, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tp3::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486439678);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tp3::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The latest gage pressure reading of the steer group of tires, as opposed to the pressure in each tire.
@@ -41198,12 +41200,12 @@ impl Tp2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tp2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tp2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tp2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486439422);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tp2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The tire pressure control system�s target gage pressure for the steer group of tires.
@@ -41246,12 +41248,12 @@ impl Tp1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tp1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tp1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tp1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486439166);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tp1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Current state of the supply solenoid used to implement a tire pressure control system in its pneumatic control unit (PCU).
@@ -41398,12 +41400,12 @@ impl Tire {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tire, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tire, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tire::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419362046);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tire::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Signal indicating the pressure level of the tire.
@@ -41501,12 +41503,12 @@ impl Ti1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ti1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ti1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ti1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419321598);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ti1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Temperature of the reagent in the storage tank.
@@ -41556,12 +41558,12 @@ impl Tfi {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tfi, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tfi, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tfi::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486456318);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tfi::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Total time the fan has been on due to manual activation by the operator (i.
@@ -41612,12 +41614,12 @@ impl Tdi {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tdi, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tdi, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tdi::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486456062);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tdi::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Total distance accumulated while the vehicle has operated in top gear for a calibrated minimum time since the last trip reset.
@@ -41660,12 +41662,12 @@ impl Tda {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tda, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tda, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tda::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(416677630);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tda::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read AdjustLocalHourOffset signal from can frame
@@ -41748,12 +41750,12 @@ impl Td {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Td, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Td, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Td::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419358462);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Td::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read LocalHourOffset signal from can frame
@@ -41836,12 +41838,12 @@ impl Tcw {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tcw, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tcw, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tcw::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419337982);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tcw::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Gage pressure of the air used to control the actuator which opens and closes the wastegate valve.
@@ -41900,12 +41902,12 @@ impl Tco1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tco1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tco1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tco1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(218000638);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tco1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Speed of the vehicle registered by the tachograph.
@@ -42084,12 +42086,12 @@ impl Tci6 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tci6, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tci6, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tci6::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419288062);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tci6::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read EngTurbo4CompressorOutletTemp signal from can frame
@@ -42140,12 +42142,12 @@ impl Tci5 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tci5, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tci5, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tci5::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419338238);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tci5::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Temperature of the combustion by-products exiting the turbine side of the turbocharger.
@@ -42196,12 +42198,12 @@ impl Tci4 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tci4, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tci4, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tci4::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419338494);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tci4::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Temperature of the combustion by-products entering the turbine side of the turbocharger.
@@ -42252,12 +42254,12 @@ impl Tci3 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tci3, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tci3, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tci3::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419338750);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tci3::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Gage pressure of the air entering the compressor side of the turbocharger.
@@ -42308,12 +42310,12 @@ impl Tci2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tci2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tci2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tci2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419339006);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tci2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Temperature of the air entering the compressor side of the turbocharger.
@@ -42364,12 +42366,12 @@ impl Tci1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tci1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tci1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tci1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486448126);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tci1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Rotational velocity of rotor in the turbocharger.
@@ -42420,12 +42422,12 @@ impl Tcfg2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tcfg2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tcfg2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tcfg2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419318782);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tcfg2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read TransTorqueLimit signal from can frame
@@ -42452,12 +42454,12 @@ impl Tcfg {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tcfg, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tcfg, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tcfg::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419357438);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tcfg::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read TransGearRatio signal from can frame
@@ -42497,12 +42499,12 @@ impl Tc1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tc1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tc1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tc1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(201457406);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tc1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Status of the operator�s switch used to �toggle� through multiple display modes of a shift selector display.
@@ -42721,12 +42723,12 @@ impl Tc {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tc, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tc, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tc::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419356158);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tc::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read EngTurboOilLevelSwitch signal from can frame
@@ -42768,12 +42770,12 @@ impl Tavg {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tavg, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tavg, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tavg::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486428158);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tavg::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read EngTotalAverageFuelEconomy signal from can frame
@@ -42808,12 +42810,12 @@ impl Spr {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Spr, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Spr, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Spr::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419291902);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Spr::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Command signal to influence the pneumatic pressure in the circuit for the electronically controlled air suspension system.
@@ -42880,12 +42882,12 @@ impl Sp2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Sp2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Sp2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Sp2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419336190);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Sp2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Pressure of the air used to shut off the fuel supply to the engine.
@@ -42912,12 +42914,12 @@ impl Soft {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Soft, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Soft, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Soft::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419355390);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Soft::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Number of software identification designators represented in the software identification parameter group.
@@ -42944,12 +42946,12 @@ impl Shutdow {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Shutdow, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Shutdow, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Shutdow::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419357950);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Shutdow::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The engine overspeed test signal as measured by the reporting ECM.
@@ -43184,12 +43186,12 @@ impl Serv {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Serv, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Serv, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Serv::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419348734);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Serv::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Identification of component needing service.
@@ -43256,12 +43258,12 @@ impl S2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = S2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<S2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| S2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486444798);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| S2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The vehicle operation time since the last service was performed.
@@ -43296,12 +43298,12 @@ impl Rtc1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Rtc1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Rtc1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Rtc1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419320830);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Rtc1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Applied limit for maximum continuous retarder torque.
@@ -43384,12 +43386,12 @@ impl Rf {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Rf, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Rf, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Rf::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419363838);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Rf::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Temperature of oil found in a hydraulic retarder.
@@ -43424,12 +43426,12 @@ impl Reset {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Reset, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Reset, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Reset::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(484376318);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Reset::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Command signal used to reset the engine rebuild hours.
@@ -43492,12 +43494,12 @@ impl Rc {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Rc, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Rc, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Rc::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419357182);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Rc::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read PercentTorqueAtPeakTorquePoint5 signal from can frame
@@ -43636,12 +43638,12 @@ impl Rbi {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Rbi, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Rbi, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Rbi::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486446590);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Rbi::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The time in engine operation since the last engine rebuild.
@@ -43668,12 +43670,12 @@ impl Pto {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Pto, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Pto, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Pto::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419361022);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Pto::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Measured state of the operator PTO memory select switch.
@@ -43836,12 +43838,12 @@ impl Oww {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Oww, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Oww, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Oww::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419286526);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Oww::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// State of operation selected by operator switch for the rear washer.
@@ -43956,12 +43958,12 @@ impl Ohecs {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ohecs, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ohecs, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ohecs::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419286014);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ohecs::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read EngAltDroopAuxInputSelect signal from can frame
@@ -44076,12 +44078,12 @@ impl Ohcss {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ohcss, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ohcss, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ohcss::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419284990);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ohcss::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read EngAltDroopAuxInputSelectState signal from can frame
@@ -44196,12 +44198,12 @@ impl Oel {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Oel, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Oel, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Oel::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(217959678);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Oel::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// A 16 bit parameter to be associated with Delayed Off position (1000 binary) of the Main Light Switch.
@@ -44296,12 +44298,12 @@ impl Mvs {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Mvs, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Mvs, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Mvs::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419292670);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Mvs::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The vehicle speed limit in effect.
@@ -44384,12 +44386,12 @@ impl Ml {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ml, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ml, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ml::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419319038);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ml::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Operators Selection of lamp intensity in black out mode.
@@ -44500,12 +44502,12 @@ impl Mci {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Mci, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Mci, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Mci::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419290366);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Mci::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The status of the Slow Vessel Mode.
@@ -44560,12 +44562,12 @@ impl Mbt3 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Mbt3, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Mbt3, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Mbt3::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419339518);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Mbt3::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Temperature of the main bearing which supports the crankshaft of the engine.
@@ -44608,12 +44610,12 @@ impl Mbt2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Mbt2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Mbt2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Mbt2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419339774);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Mbt2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Temperature of the main bearing which supports the crankshaft of the engine.
@@ -44664,12 +44666,12 @@ impl Mbt1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Mbt1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Mbt1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Mbt1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419340030);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Mbt1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Temperature of the main bearing which supports the crankshaft of the engine.
@@ -44720,12 +44722,12 @@ impl Lvdd {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Lvdd, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Lvdd, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Lvdd::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(285112062);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Lvdd::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Sets Display Deadbands mode.
@@ -44804,12 +44806,12 @@ impl Lvd {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Lvd, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Lvd, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Lvd::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(218002942);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Lvd::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Laser Strike location on the survey type laser receiver.
@@ -44864,12 +44866,12 @@ impl Ltp {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ltp, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ltp, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ltp::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(218001918);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ltp::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Provides the status of the laser tracer to the operator.
@@ -44936,12 +44938,12 @@ impl Ltfi {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ltfi, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ltfi, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ltfi::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486455806);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ltfi::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read TripDriveFuelEconomy signal from can frame
@@ -45008,12 +45010,12 @@ impl Lsp {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Lsp, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Lsp, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Lsp::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(218002686);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Lsp::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// High resolution for the laser guided blade set point.
@@ -45048,12 +45050,12 @@ impl Loi {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Loi, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Loi, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Loi::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(217058814);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Loi::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// This parameter indicates the side-shift blade control mode operator control state the user has set for the land leveling system.
@@ -45180,12 +45182,12 @@ impl Lmp {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Lmp, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Lmp, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Lmp::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(218002430);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Lmp::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Used to monitor the position of the sensor attached to the land leveling mast.
@@ -45212,12 +45214,12 @@ impl Lfi {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Lfi, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Lfi, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Lfi::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486454270);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Lfi::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Average fuel rate, equal to trip fuel divided by trip time while the engine speed is above zero, since the last trip reset.
@@ -45252,12 +45254,12 @@ impl Lfe {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Lfe, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Lfe, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Lfe::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419361534);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Lfe::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Average of instantaneous fuel economy for that segment of vehicle operation of interest.
@@ -45316,12 +45318,12 @@ impl Lfc {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Lfc, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Lfc, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Lfc::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419359230);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Lfc::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Accumulated amount of fuel used during vehicle operation.
@@ -45356,12 +45358,12 @@ impl Fwd {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Fwd, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Fwd, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Fwd::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486399998);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Fwd::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Feedback on the front wheel drive actuator.
@@ -45392,12 +45394,12 @@ impl Fms {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Fms, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Fms, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Fms::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486396414);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Fms::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Information that identifies which issue level of the FMS-standard document the software included in the FMS gateway supports.
@@ -45447,12 +45449,12 @@ impl Fli2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Fli2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Fli2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Fli2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419322878);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Fli2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Indicates whether lane departure indication is active.
@@ -45507,12 +45509,12 @@ impl Fli1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Fli1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Fli1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Fli1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(284166142);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Fli1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Indicates departure imminent on left side of lane.
@@ -45555,12 +45557,12 @@ impl Fl {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Fl, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Fl, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Fl::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486445566);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Fl::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Status signal which indicates fuel leakage in the fuel rail of the engine.
@@ -45603,12 +45605,12 @@ impl Fd {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Fd, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Fd, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Fd::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419347966);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Fd::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The speed of the fan associated with engine coolant system.
@@ -45655,12 +45657,12 @@ impl Eth {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Eth, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Eth, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Eth::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419336446);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Eth::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Limit applied to the engine output torque based on the maximum allowable axle input torque.
@@ -45836,12 +45838,12 @@ impl Etc8 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Etc8, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Etc8, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Etc8::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(217058558);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Etc8::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Ratio of the transmissions torque converter output torque to torque converter input torque at current speed.
@@ -45867,12 +45869,12 @@ impl Etc7 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Etc7, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Etc7, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Etc7::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419318526);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Etc7::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read TransRqedGearFeedback signal from can frame
@@ -46018,12 +46020,12 @@ impl Etc6 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Etc6, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Etc6, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Etc6::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486452222);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Etc6::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Signal which indicates the actual clutch life remaining in percent.
@@ -46071,12 +46073,12 @@ impl Etc5 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Etc5, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Etc5, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Etc5::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486458366);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Etc5::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Identifies the status of the switch that indicates forward direction.
@@ -46155,12 +46157,12 @@ impl Etc4 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Etc4, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Etc4, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Etc4::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486458878);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Etc4::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The current modulated value for the air supply to the synchronizer brake.
@@ -46195,12 +46197,12 @@ impl Etc3 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Etc3, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Etc3, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Etc3::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486459390);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Etc3::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Identifies the status of the actuator that controls the inertia brake.
@@ -46415,12 +46417,12 @@ impl Etc2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Etc2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Etc2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Etc2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(418383358);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Etc2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Range currently being commanded by the transmission control system.
@@ -46474,12 +46476,12 @@ impl Etc1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Etc1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Etc1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Etc1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(217055998);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Etc1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The source address of the SAE J1939 device currently controlling the transmission.
@@ -46589,12 +46591,12 @@ impl Et3 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Et3, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Et3, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Et3::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419326462);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Et3::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Temperature of combustion air after it exits from the Charge Air Cooler but before any mixing of Recirculated Exhaust Gas.
@@ -46645,12 +46647,12 @@ impl Et2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Et2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Et2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Et2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419341566);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Et2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read EngExhaustGasRecirculationTemp signal from can frame
@@ -46701,12 +46703,12 @@ impl Et1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Et1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Et1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Et1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419360510);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Et1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The current position of the thermostat used to regulate the temperature of the engine intercooler.
@@ -46773,12 +46775,12 @@ impl Et {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Et, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Et, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Et::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419301374);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Et::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Temperature of combustion byproducts within the left engine exhaust manifold.
@@ -46813,12 +46815,12 @@ impl Esc1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Esc1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Esc1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Esc1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(418384894);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Esc1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// A signal which indicates if lowering of lifted axle is allowed or inhibited.
@@ -46912,12 +46914,12 @@ impl Erc2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Erc2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Erc2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Erc2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486458110);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Erc2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Identifies the status of the transmission output retarder.
@@ -46948,12 +46950,12 @@ impl Erc1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Erc1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Erc1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Erc1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(418382078);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Erc1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read RetarderSelectionNonEng signal from can frame
@@ -47069,12 +47071,12 @@ impl Ept5 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ept5, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ept5, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ept5::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486449150);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ept5::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Temperature at the cylinder exhaust port of the engine.
@@ -47125,12 +47127,12 @@ impl Ept4 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ept4, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ept4, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ept4::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419340542);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ept4::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Temperature at the cylinder exhaust port of the engine.
@@ -47181,12 +47183,12 @@ impl Ept3 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ept3, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ept3, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ept3::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486449662);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ept3::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Temperature at the cylinder exhaust port of the engine.
@@ -47237,12 +47239,12 @@ impl Ept2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ept2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ept2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ept2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486449918);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ept2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Temperature at the cylinder exhaust port of the engine.
@@ -47293,12 +47295,12 @@ impl Ept1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ept1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ept1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ept1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486450174);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ept1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Temperature at the cylinder exhaust port of the engine.
@@ -47349,12 +47351,12 @@ impl Epd {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Epd, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Epd, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Epd::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419292414);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Epd::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The current payload of the equipment, reported as a percentage of the equipment's rated payload limit.
@@ -47381,12 +47383,12 @@ impl Ep {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ep, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ep, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ep::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419287806);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ep::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The used storage capacity of the data buffer memory internal to an ECU, such as a data logger.
@@ -47421,12 +47423,12 @@ impl Eoac {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Eoac, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Eoac, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Eoac::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419292158);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Eoac::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read TravelVelocityCtrlPos signal from can frame
@@ -47453,12 +47455,12 @@ impl Eo1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Eo1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Eo1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Eo1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486451710);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Eo1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Indicates whether the engine is using the Exhaust Gas Oxygen sensor to control the air/fuel ratio.
@@ -47521,12 +47523,12 @@ impl Ejm3 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ejm3, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ejm3, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ejm3::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(217963518);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ejm3::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Reports when the current joystick grip position is in the detent position for that axis of travel.
@@ -47713,12 +47715,12 @@ impl Ejm2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ejm2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ejm2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ejm2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(217963006);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ejm2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Reports when the current joystick grip position is in the detent position for that axis of travel.
@@ -47905,12 +47907,12 @@ impl Ejm1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ejm1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ejm1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ejm1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(217962494);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ejm1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Reports when the current joystick grip position is in the detent position for that axis of travel.
@@ -48097,12 +48099,12 @@ impl Ei {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ei, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ei, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ei::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486445822);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ei::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Measured position of the engine fuel rack.
@@ -48161,12 +48163,12 @@ impl Eh {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Eh, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Eh, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Eh::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486453758);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Eh::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Total time accumulated over the life of the ECU, from ignition switch ON to ignition switch OFF.
@@ -48201,12 +48203,12 @@ impl Egf1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Egf1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Egf1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Egf1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(217058046);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Egf1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Mass flow rate of fresh air entering the engine air intake, before any EGR mixer, if used.
@@ -48241,12 +48243,12 @@ impl Efs {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Efs, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Efs, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Efs::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419326718);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Efs::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Differential pressure measured across the fuel filter located between the fuel tank and the supply pump.
@@ -48370,12 +48372,12 @@ impl EflP3 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = EflP3, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<EflP3, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| EflP3::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419283454);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| EflP3::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// EGR inlet gage pressure is measured after the EGR cooler and before the EGR valve.
@@ -48410,12 +48412,12 @@ impl EflP2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = EflP2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<EflP2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| EflP2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419355646);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| EflP2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The gage pressure of fuel in the metering rail #2 as delivered from the supply pump to the injector metering inlet.
@@ -48466,12 +48468,12 @@ impl EflP1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = EflP1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<EflP1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| EflP1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419360766);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| EflP1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Ratio of volume of liquid found in engine cooling system to total cooling system volume.
@@ -48546,12 +48548,12 @@ impl Ees {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ees, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ees, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ees::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486446078);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ees::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Status signal which indicates that the turning gear is engaged.
@@ -48602,12 +48604,12 @@ impl Eec5 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Eec5, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Eec5, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Eec5::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419288574);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Eec5::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Sensor that measures the position of the variable geometry turbocharger actuator.
@@ -48670,12 +48672,12 @@ impl Eec4 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Eec4, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Eec4, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Eec4::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486457086);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Eec4::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Direction of engine rotation, as reported by the engine.
@@ -48729,12 +48731,12 @@ impl Eec3 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Eec3, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Eec3, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Eec3::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419356670);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Eec3::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Measured/calculated exhaust gas mass upstream of the after-treatment system.
@@ -48806,12 +48808,12 @@ impl Eec2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Eec2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Eec2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Eec2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(217056254);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Eec2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// This is the maximum amount of torque that the engine can immediately deliver as a percentage of the reference engine torque.
@@ -48930,12 +48932,12 @@ impl Eec1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Eec1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Eec1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Eec1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(217056510);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Eec1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read EngDemandPercentTorque signal from can frame
@@ -49017,12 +49019,12 @@ impl Ecuid {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ecuid, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ecuid, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ecuid::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419284478);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ecuid::new(frame.data().to_vec())));
+        Ok(f)
     }
 }
 
@@ -49041,12 +49043,12 @@ impl Ect1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ect1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ect1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ect1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419321086);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ect1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read EngMinContinuousTorque signal from can frame
@@ -49129,12 +49131,12 @@ impl Ec1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ec1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ec1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ec1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419357694);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ec1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// This parameter indicates which TSC1 control purposes are supported in group 4 of 4.
@@ -49389,12 +49391,12 @@ impl Ebc5 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ebc5, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ebc5, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ebc5::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419284222);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ebc5::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// This parameter indicates if the temperature in the service brakes exceeds a certain value.
@@ -49493,12 +49495,12 @@ impl Ebc4 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ebc4, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ebc4, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ebc4::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486452478);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ebc4::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The percentage of brake lining which can still be measured for the right wheel on the rear axle #3.
@@ -49581,12 +49583,12 @@ impl Ebc3 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ebc3, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ebc3, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ebc3::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419343870);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ebc3::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The brake application pressure for the right wheel on the rear axle #3.
@@ -49669,12 +49671,12 @@ impl Ebc2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ebc2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ebc2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ebc2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419348478);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ebc2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The speed of the rear axle #2, right wheel relative to the front axle speed, SPN 904.
@@ -49749,12 +49751,12 @@ impl Ebc1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ebc1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ebc1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ebc1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(418382334);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ebc1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The source address of the SAE J1939 device currently controlling the brake system.
@@ -50024,12 +50026,12 @@ impl Eac1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Eac1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Eac1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Eac1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(418383614);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Eac1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read RearAxleGroupEngagementStatus signal from can frame
@@ -50163,12 +50165,12 @@ impl Eac {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Eac, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Eac, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Eac::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419337470);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Eac::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Gauge pressure of liquid found at outlet of sea water pump in sea water cooling system.
@@ -50211,12 +50213,12 @@ impl Di {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Di, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Di, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Di::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419326974);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Di::new(frame.data().to_vec())));
+        Ok(f)
     }
 }
 
@@ -50235,12 +50237,12 @@ impl Dd {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dd, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dd, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dd::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419364094);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dd::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Temperature of air inside vehicle container used to accommodate cargo.
@@ -50299,12 +50301,12 @@ impl Csa {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Csa, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Csa, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Csa::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419284734);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Csa::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The start enable device installed for start enable device 2.
@@ -50371,12 +50373,12 @@ impl Cvw {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Cvw, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Cvw, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Cvw::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419328254);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Cvw::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Total mass imposed by the tires of the powered vehicle on the road surface.
@@ -50411,12 +50413,12 @@ impl Ctl {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ctl, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ctl, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ctl::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(416284414);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ctl::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read MxCntnuousRetarderTorqueLimitRq signal from can frame
@@ -50499,12 +50501,12 @@ impl Ct6 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ct6, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ct6, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ct6::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486441214);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ct6::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The average combustion time of all cylinders of an engine.
@@ -50539,12 +50541,12 @@ impl Ct5 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ct5, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ct5, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ct5::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486440958);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ct5::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The amount of time from when the ignition of the fuel is initiated to when the fuel is completely ignited (i.
@@ -50595,12 +50597,12 @@ impl Ct4 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ct4, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ct4, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ct4::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486440702);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ct4::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The amount of time from when the ignition of the fuel is initiated to when the fuel is completely ignited (i.
@@ -50651,12 +50653,12 @@ impl Ct3 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ct3, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ct3, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ct3::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486440446);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ct3::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The amount of time from when the ignition of the fuel is initiated to when the fuel is completely ignited (i.
@@ -50707,12 +50709,12 @@ impl Ct2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ct2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ct2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ct2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486440190);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ct2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The amount of time from when the ignition of the fuel is initiated to when the fuel is completely ignited (i.
@@ -50763,12 +50765,12 @@ impl Ct1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ct1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ct1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ct1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486439934);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ct1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The amount of time from when the ignition of the fuel is initiated to when the fuel is completely ignited (i.
@@ -50819,12 +50821,12 @@ impl Cmi {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Cmi, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Cmi, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Cmi::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486394366);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Cmi::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Total number of times changes have been made to any of the configurable parameters.
@@ -50851,12 +50853,12 @@ impl Cm3 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Cm3, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Cm3, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Cm3::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419288318);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Cm3::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Conveys operator or vehicle system desire for a transmission oil level reading to be taken.
@@ -50923,12 +50925,12 @@ impl Cm1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Cm1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Cm1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Cm1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(417398526);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Cm1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read SelectedMaxVehicleSpeedLimit signal from can frame
@@ -51089,12 +51091,12 @@ impl Cl {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Cl, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Cl, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Cl::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(416349950);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Cl::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read IlluminationBrightnessPercent signal from can frame
@@ -51121,12 +51123,12 @@ impl Ci {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ci, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ci, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ci::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419359742);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ci::new(frame.data().to_vec())));
+        Ok(f)
     }
 }
 
@@ -51145,12 +51147,12 @@ impl Ccvs {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ccvs, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ccvs, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ccvs::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419361278);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ccvs::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read ParkBrakeReleaseInhibitRq signal from can frame
@@ -51391,12 +51393,12 @@ impl Ccss {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ccss, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ccss, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ccss::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419360254);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ccss::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read CruiseCtrlLowSetLimitSpeed signal from can frame
@@ -51439,12 +51441,12 @@ impl Ccc {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ccc, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ccc, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ccc::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419325950);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ccc::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The maximum output power of the auxiliary heater.
@@ -51471,12 +51473,12 @@ impl Cbi {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Cbi, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Cbi, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Cbi::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486456574);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Cbi::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Total number of times the service brakes have been activated since the last trip reset.
@@ -51526,12 +51528,12 @@ impl Caci {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Caci, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Caci, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Caci::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419291646);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Caci::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// This is the gage pressure at the compressor outlet in the cab air conditioning system.
@@ -51558,12 +51560,12 @@ impl Bt1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Bt1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Bt1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Bt1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419320062);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Bt1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Temperature of the battery 2.
@@ -51598,12 +51600,12 @@ impl Bm {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Bm, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Bm, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Bm::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419325694);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Bm::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Parameter indicating whether the battery main switch is held due to an external request or not.
@@ -51634,12 +51636,12 @@ impl Bjm3 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Bjm3, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Bjm3, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Bjm3::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(217963262);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Bjm3::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Reports when the current joystick position is in the detent position for that axis of travel.
@@ -51914,12 +51916,12 @@ impl Bjm2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Bjm2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Bjm2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Bjm2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(217962750);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Bjm2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Reports when the current joystick position is in the detent position for that axis of travel.
@@ -52194,12 +52196,12 @@ impl Bjm1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Bjm1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Bjm1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Bjm1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(217962238);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Bjm1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Reports when the current joystick position is in the detent position for that axis of travel.
@@ -52474,12 +52476,12 @@ impl B {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = B, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<B, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| B::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419363582);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| B::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// This parameter commands the Parking Brake red optical warning signal.
@@ -52558,12 +52560,12 @@ impl Awpp {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Awpp, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Awpp, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Awpp::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419364606);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Awpp::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Gage pressure of auxiliary water pump driven as a PTO device.
@@ -52590,12 +52592,12 @@ impl Ats {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ats, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ats, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ats::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(484245246);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ats::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// A seven byte random numeric code provided by the component in response to an anti-theft request.
@@ -52669,12 +52671,12 @@ impl Atr {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Atr, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Atr, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Atr::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(484310782);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Atr::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// This parameter is the seven byte numeric code (i.
@@ -52736,12 +52738,12 @@ impl At {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = At, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<At, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| At::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486451198);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| At::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Temperature of the windings inside the alternator.
@@ -52800,12 +52802,12 @@ impl Asc6 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Asc6, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Asc6, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Asc6::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(215088894);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Asc6::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Set value for nominal level 'preset level' at the right side of the rear axle.
@@ -52856,12 +52858,12 @@ impl Asc5 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Asc5, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Asc5, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Asc5::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(217995262);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Asc5::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Signal which indicates the current mode of operation of the electronic shock absorber control at the lift/tag axle.
@@ -52940,12 +52942,12 @@ impl Asc4 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Asc4, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Asc4, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Asc4::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419322110);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Asc4::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read BellowPressRearAxleRight signal from can frame
@@ -52996,12 +52998,12 @@ impl Asc3 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Asc3, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Asc3, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Asc3::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419322366);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Asc3::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Information of the height at the left side of the rear axle referred to normal level 1.
@@ -53052,12 +53054,12 @@ impl Asc2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Asc2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Asc2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Asc2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(215154430);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Asc2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// This parameter contains an external request to prohibit all air suspension control.
@@ -53244,12 +53246,12 @@ impl Asc1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Asc1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Asc1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Asc1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(217996030);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Asc1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Signal which indicates that the air suspension control cannot perform a request due to the operating conditions.
@@ -53532,12 +53534,12 @@ impl As {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = As, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<As, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| As::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419354110);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| As::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Alternator 4 operating status.
@@ -53612,12 +53614,12 @@ impl Ap {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ap, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ap, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ap::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486438910);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ap::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Identifies the current absolute pressure (relative to 0 pressure) that is configured uniquely per application.
@@ -53660,12 +53662,12 @@ impl Amb2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Amb2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Amb2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Amb2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419291390);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Amb2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// This is the maximum value which can be reported by the sensor for the solar intensity.
@@ -53700,12 +53702,12 @@ impl Wsmem {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Wsmem, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Wsmem, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Wsmem::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486411518);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Wsmem::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read ArbitraryAddressCapable signal from can frame
@@ -53800,12 +53802,12 @@ impl Dm8 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dm8, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dm8, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dm8::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419352830);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dm8::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The threshold which the test value must be above to pass the test.
@@ -53859,12 +53861,12 @@ impl Dm7 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dm7, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dm7, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dm7::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(417595134);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dm7::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Designates the test to be run.
@@ -53890,12 +53892,12 @@ impl Dm6 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dm6, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dm6, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dm6::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419352574);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dm6::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// SPN #5 (Conversion Version 4)
@@ -54212,12 +54214,12 @@ impl Dm5 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dm5, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dm5, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dm5::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419352318);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dm5::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read MisfireMonitoringSupport signal from can frame
@@ -54550,12 +54552,12 @@ impl Dm4 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dm4, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dm4, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dm4::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419352062);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dm4::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The 7 bit occurence count field contains the number of times a fault has gone from active to previously active.
@@ -54675,12 +54677,12 @@ impl Dm3 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dm3, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dm3, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dm3::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419351806);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dm3::new(frame.data().to_vec())));
+        Ok(f)
     }
 }
 
@@ -54699,12 +54701,12 @@ impl Dm25 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dm25, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dm25, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dm25::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419280894);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dm25::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The 7 bit occurence count field contains the number of times a fault has gone from active to previously active.
@@ -54772,12 +54774,12 @@ impl Dm24 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dm24, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dm24, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dm24::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419280638);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dm24::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// This parameter defines the SPN(s) that is/are supported for the freeze frame and/or data stream information.
@@ -54967,12 +54969,12 @@ impl Dm23 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dm23, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dm23, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dm23::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(408092414);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dm23::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// This parameter provides the capability to flash the RSL (SPN 3039).
@@ -55289,12 +55291,12 @@ impl Dm22 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dm22, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dm22, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dm22::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(415497982);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dm22::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read IndividualDTCClearControlByte signal from can frame
@@ -55353,12 +55355,12 @@ impl Dm21 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dm21, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dm21, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dm21::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(415366910);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dm21::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Time accumulated since DTCs were cleared (via an external test equipment or possibly, a battery disconnect) (SPN=?).
@@ -55409,12 +55411,12 @@ impl Dm20 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dm20, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dm20, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dm20::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(415432446);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dm20::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The number of times a vehicle has been operated that constitutes a driving cycle where this Applicable System Monitor could be operated per regulatory requirements (SPN 3068).
@@ -55468,12 +55470,12 @@ impl Dm2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dm2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dm2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dm2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419351550);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dm2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// SPN #5 (Conversion Version 4)
@@ -55790,12 +55792,12 @@ impl Dm19 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dm19, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dm19, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dm19::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(416546558);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dm19::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read CalibrationID4 signal from can frame
@@ -55849,12 +55851,12 @@ impl Dm17 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dm17, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dm17, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dm17::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(416743166);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dm17::new(frame.data().to_vec())));
+        Ok(f)
     }
 }
 
@@ -55873,12 +55875,12 @@ impl Dm16 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dm16, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dm16, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dm16::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(416808702);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dm16::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Number of occurance of raw binary data
@@ -55904,12 +55906,12 @@ impl Dm15 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dm15, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dm15, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dm15::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(416874238);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dm15::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read NumberAllowed signal from can frame
@@ -55990,12 +55992,12 @@ impl Dm14 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dm14, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dm14, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dm14::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(416939774);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dm14::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Key/User Level
@@ -56083,12 +56085,12 @@ impl Dm13 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dm13, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dm13, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dm13::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(417332990);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dm13::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Indicator to all nodes that the communication ports that have been acted upon by the 'Stop start broadcast'
@@ -56248,12 +56250,12 @@ impl Dm12 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dm12, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dm12, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dm12::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419353854);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dm12::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// SPN #5 (Conversion Version 4)
@@ -56570,12 +56572,12 @@ impl Dm11 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dm11, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dm11, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dm11::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419353598);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dm11::new(frame.data().to_vec())));
+        Ok(f)
     }
 }
 
@@ -56594,12 +56596,12 @@ impl Dm10 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dm10, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dm10, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dm10::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419353342);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dm10::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Indicates the test identifiers that the controller supports.
@@ -56625,12 +56627,12 @@ impl Dm1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dm1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dm1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dm1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419351294);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dm1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// SPN #5 (Conversion Version 4)
@@ -56947,12 +56949,12 @@ impl Utacr {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Utacr, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Utacr, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Utacr::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419297278);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Utacr::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Lead/lag status for utility incomer average power factor.
@@ -56993,12 +56995,12 @@ impl Utacp {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Utacp, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Utacp, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Utacp::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419297534);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Utacp::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The total apparent power delivered by the utility incomer.
@@ -57033,12 +57035,12 @@ impl Utace {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Utace, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Utace, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Utace::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419294718);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Utace::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The total kilowatt-hours that have been imported by the utility incomer.
@@ -57073,12 +57075,12 @@ impl Upcacr {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Upcacr, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Upcacr, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Upcacr::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419294974);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Upcacr::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Lead/lag status for utility incomer phase C power factor.
@@ -57119,12 +57121,12 @@ impl Upcacp {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Upcacp, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Upcacp, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Upcacp::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419295230);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Upcacp::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The apparent power delivered by phase C of the utility incomer.
@@ -57159,12 +57161,12 @@ impl Upcac {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Upcac, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Upcac, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Upcac::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419295486);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Upcac::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// RMS current measured at the utility incomer phase C.
@@ -57215,12 +57217,12 @@ impl Upbacr {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Upbacr, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Upbacr, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Upbacr::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419295742);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Upbacr::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Lead/lag status for utility incomer phase B power factor.
@@ -57261,12 +57263,12 @@ impl Upbacp {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Upbacp, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Upbacp, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Upbacp::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419295998);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Upbacp::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The apparent power delivered by phase B of the utility incomer.
@@ -57301,12 +57303,12 @@ impl Upbac {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Upbac, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Upbac, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Upbac::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419296254);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Upbac::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// RMS current measured at the utility incomer phase B.
@@ -57357,12 +57359,12 @@ impl Upaccr {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Upaccr, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Upaccr, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Upaccr::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419296510);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Upaccr::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Lead/lag status for utility incomer phase A power factor.
@@ -57403,12 +57405,12 @@ impl Upaacp {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Upaacp, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Upaacp, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Upaacp::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419296766);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Upaacp::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The apparent power delivered by phase A of the utility incomer.
@@ -57443,12 +57445,12 @@ impl Upaac {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Upaac, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Upaac, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Upaac::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419297022);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Upaac::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// RMS current measured at the utility incomer phase A.
@@ -57499,12 +57501,12 @@ impl Uaac {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Uaac, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Uaac, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Uaac::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419297790);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Uaac::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Average RMS current measured at the utility incomer.
@@ -57555,12 +57557,12 @@ impl Gtacr {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gtacr, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gtacr, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gtacr::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419300606);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gtacr::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Lead/lag status for generator average power factor.
@@ -57601,12 +57603,12 @@ impl Gtacp {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gtacp, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gtacp, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gtacp::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419300862);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gtacp::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The total apparent power delivered by the generator.
@@ -57641,12 +57643,12 @@ impl Gtace {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gtace, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gtace, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gtace::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419298046);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gtace::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The total kilowatt-hours that have been imported by the generator.
@@ -57681,12 +57683,12 @@ impl Gpcacr {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gpcacr, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gpcacr, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gpcacr::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419298302);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gpcacr::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Lead/lag status for generator phase C power factor.
@@ -57727,12 +57729,12 @@ impl Gpcacp {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gpcacp, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gpcacp, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gpcacp::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419298558);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gpcacp::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The apparent power delivered by phase C of the generator.
@@ -57767,12 +57769,12 @@ impl Gpcac {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gpcac, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gpcac, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gpcac::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419298814);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gpcac::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// RMS current measured at the generator phase C output.
@@ -57823,12 +57825,12 @@ impl Gpbacrp {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gpbacrp, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gpbacrp, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gpbacrp::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419299070);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gpbacrp::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Lead/lag status for generator phase B power factor.
@@ -57869,12 +57871,12 @@ impl Gpbacp {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gpbacp, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gpbacp, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gpbacp::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419299326);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gpbacp::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The apparent power delivered by phase B of the generator.
@@ -57909,12 +57911,12 @@ impl Gpbac {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gpbac, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gpbac, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gpbac::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419299582);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gpbac::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// RMS current measured at the generator phase B output.
@@ -57965,12 +57967,12 @@ impl Gpaacr {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gpaacr, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gpaacr, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gpaacr::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419299838);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gpaacr::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Lead/lag status for generator phase A power factor.
@@ -58011,12 +58013,12 @@ impl Gpaacp {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gpaacp, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gpaacp, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gpaacp::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419300094);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gpaacp::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The apparent power delivered by phase A of the generator.
@@ -58051,12 +58053,12 @@ impl Gpaac {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gpaac, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gpaac, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gpaac::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419300350);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gpaac::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// RMS current measured at the generator phase A output.
@@ -58107,12 +58109,12 @@ impl Gaac {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Gaac, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Gaac, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Gaac::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419301118);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Gaac::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Average RMS current measured at the generator output.
@@ -58163,12 +58165,12 @@ impl Busc {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Busc, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Busc, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Busc::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419293182);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Busc::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The phase difference between the Bus #1 voltage and Utility voltage.
@@ -58230,12 +58232,12 @@ impl Bpcac {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Bpcac, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Bpcac, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Bpcac::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419293694);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Bpcac::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// AC frequency measured at bus #1 phase C.
@@ -58278,12 +58280,12 @@ impl Bpbac {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Bpbac, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Bpbac, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Bpbac::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419293950);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Bpbac::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// AC frequency measured at bus #1 phase B.
@@ -58326,12 +58328,12 @@ impl Bpaac {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Bpaac, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Bpaac, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Bpaac::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419294206);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Bpaac::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// AC frequency measured at bus #1 phase A.
@@ -58374,12 +58376,12 @@ impl Bgsc {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Bgsc, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Bgsc, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Bgsc::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419293438);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Bgsc::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The phase difference between the Bus #1 voltage and Generator voltage.
@@ -58441,12 +58443,12 @@ impl Baac {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Baac, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Baac, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Baac::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419294462);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Baac::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Average AC frequency measured at bus #1.
@@ -58489,12 +58491,12 @@ impl Wsmstr {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Wsmstr, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Wsmstr, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Wsmstr::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486411774);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Wsmstr::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read NumberOfMembers signal from can frame
@@ -58520,12 +58522,12 @@ impl Ca {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ca, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ca, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ca::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419354878);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ca::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read ArbitraryAddressCapable signal from can frame
@@ -58627,12 +58629,12 @@ impl Acl {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Acl, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Acl, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Acl::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(418316030);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Acl::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read ArbitraryAddressCapable signal from can frame
@@ -58727,12 +58729,12 @@ impl Xfer {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Xfer, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Xfer, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Xfer::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(415956734);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Xfer::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Short name of reporting device of the requested PGN via the Transfer PGN.
@@ -58773,12 +58775,12 @@ impl Tpdt {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tpdt, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tpdt, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tpdt::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(418119422);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tpdt::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read SequenceNumber signal from can frame
@@ -58804,12 +58806,12 @@ impl Tpcm {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Tpcm, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Tpcm, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Tpcm::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(418184958);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Tpcm::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read PGNumber signal from can frame
@@ -58840,12 +58842,12 @@ impl Rqst2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Rqst2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Rqst2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Rqst2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(415891198);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Rqst2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Requester is to respond via the Transfer PGN
@@ -58883,12 +58885,12 @@ impl Rqst {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Rqst, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Rqst, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Rqst::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(418053886);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Rqst::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// PGN which is requested by Request2 message
@@ -58914,12 +58916,12 @@ impl Dm29 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dm29, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dm29, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dm29::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(413073150);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dm29::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Identifies the current number of permanent DTCs
@@ -58973,12 +58975,12 @@ impl Dm28 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dm28, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dm28, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dm28::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419266814);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dm28::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// SPN #5 (Conversion Version 4)
@@ -59295,12 +59297,12 @@ impl Dm27 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dm27, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dm27, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dm27::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419267326);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dm27::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// SPN #5 (Conversion Version 4)
@@ -59617,12 +59619,12 @@ impl Ati2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ati2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ati2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ati2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419264766);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ati2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Total amount of time that aftertreatment device 2 has been in passive regeneration during the current trip period.
@@ -59705,12 +59707,12 @@ impl Ati1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ati1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ati1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ati1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419265022);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ati1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Total amount of time that aftertreatment device 1 has been in passive regeneration during the current trip period.
@@ -59793,12 +59795,12 @@ impl Aac3 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Aac3, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Aac3, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Aac3::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419261950);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Aac3::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read Aftertreatment1SecondAirPress signal from can frame
@@ -59849,12 +59851,12 @@ impl Aac4 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Aac4, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Aac4, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Aac4::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419261694);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Aac4::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read Aftertreatment2SecondAirPress signal from can frame
@@ -59905,12 +59907,12 @@ impl Aetc {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Aetc, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Aetc, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Aetc::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419270910);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Aetc::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Indicates the number of speed / torque data points contained in the Advertised Engine Torque Curve broadcast (AETC).
@@ -59948,12 +59950,12 @@ impl Afss {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Afss, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Afss, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Afss::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419266302);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Afss::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// This parameter indicates what kind of light distribution is set by the AFS system for the right headlamp.
@@ -60020,12 +60022,12 @@ impl At1i1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = At1i1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<At1i1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| At1i1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(418385662);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| At1i1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read Aftrtrtmnt1IntkOxygnSnsrPrlmnryF signal from can frame
@@ -60136,12 +60138,12 @@ impl At1i2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = At1i2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<At1i2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| At1i2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419280126);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| At1i2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read Aftrtrtmnt1PrtcltTrpIntkGsTmpPrl signal from can frame
@@ -60190,12 +60192,12 @@ impl At1o1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = At1o1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<At1o1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| At1o1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(418385918);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| At1o1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read Aftrtrtmnt1OtltOxygnSnsrPrlmnryF signal from can frame
@@ -60311,12 +60313,12 @@ impl At1o2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = At1o2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<At1o2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| At1o2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419279870);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| At1o2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read Aftrtrtmnt1PrtcltTrpOtltExhstGsT signal from can frame
@@ -60365,12 +60367,12 @@ impl At2i1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = At2i1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<At2i1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| At2i1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(418386174);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| At2i1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read Aftrtrtmnt2IntkOxygnSnsrPrlmnryF signal from can frame
@@ -60486,12 +60488,12 @@ impl At2i2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = At2i2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<At2i2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| At2i2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419279358);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| At2i2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read Aftrtrtmnt2PrtcltTrpIntkGsTmpPrl signal from can frame
@@ -60540,12 +60542,12 @@ impl At2o1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = At2o1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<At2o1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| At2o1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(418386430);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| At2o1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read Aftrtrtmnt2OtltOxygnSnsrPrlmnryF signal from can frame
@@ -60661,12 +60663,12 @@ impl At2o2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = At2o2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<At2o2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| At2o2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419279102);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| At2o2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read Aftrtrtmnt2PrtcltTrpExhstGsTmpPr signal from can frame
@@ -60715,12 +60717,12 @@ impl Atgp1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Atgp1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Atgp1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Atgp1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419269886);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Atgp1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read ParticulateTrapOutletPress1 signal from can frame
@@ -60755,12 +60757,12 @@ impl Atgp2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Atgp2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Atgp2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Atgp2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419269630);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Atgp2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read ParticulateTrapOutletPress2 signal from can frame
@@ -60795,12 +60797,12 @@ impl Atm2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Atm2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Atm2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Atm2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419278846);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Atm2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read Aftrtrtmnt2PrtcltTrpDltPrssPrlmn signal from can frame
@@ -60857,12 +60859,12 @@ impl Ats1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ats1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ats1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ats1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419265534);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ats1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Indicates the time since the last active regeneration event of particulate trap 1.
@@ -60915,12 +60917,12 @@ impl Ats2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ats2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ats2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ats2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419265278);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ats2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Indicates the time since the last active regeneration event of particulate trap 2.
@@ -60973,12 +60975,12 @@ impl Auxio1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Auxio1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Auxio1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Auxio1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419355134);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Auxio1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Auxiliary channel of data (16 bit) read by the ECU.
@@ -61013,12 +61015,12 @@ impl Auxio2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Auxio2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Auxio2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Auxio2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(413662974);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Auxio2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Identifies the current status of auxiliary input/output functions that are configured uniquely per application.
@@ -61421,12 +61423,12 @@ impl Auxio3 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Auxio3, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Auxio3, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Auxio3::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(413597438);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Auxio3::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Identifies the current status of auxiliary input/output functions that are configured uniquely per application.
@@ -61829,12 +61831,12 @@ impl Auxio4 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Auxio4, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Auxio4, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Auxio4::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(413531902);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Auxio4::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Identifies the current status of auxiliary input/output functions that are configured uniquely per application.
@@ -62237,12 +62239,12 @@ impl Bsa {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Bsa, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Bsa, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Bsa::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419262974);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Bsa::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Brake stroke status for right brake actuator on trailer axle 5.
@@ -62501,12 +62503,12 @@ impl Amb {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Amb, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Amb, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Amb::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419362302);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Amb::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Indicated temperature of road surface over which vehicle is operating.
@@ -62565,12 +62567,12 @@ impl Air2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Air2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Air2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Air2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419356414);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Air2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read EngAirStartPress signal from can frame
@@ -62597,12 +62599,12 @@ impl Air1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Air1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Air1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Air1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419344126);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Air1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Indicates whether the air compressor is actively compressing air.
@@ -62681,12 +62683,12 @@ impl Ai {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ai, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ai, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ai::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419363326);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ai::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The steering axle lubricant pressure.
@@ -62752,12 +62754,12 @@ impl Af2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Af2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Af2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Af2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486451966);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Af2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The position of the turbocharger wastegate valve (not the electronic wastegate control valve).
@@ -62808,12 +62810,12 @@ impl Acc2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Acc2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Acc2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Acc2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419320318);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Acc2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The Requested Distance Control Mode to the ACC system from the operators interface.
@@ -62844,12 +62846,12 @@ impl Acc1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Acc1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Acc1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Acc1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(285110270);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Acc1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Signal to indicate to the operator that the ACC system is not able to maintain the distance to the target.
@@ -62960,12 +62962,12 @@ impl Ac {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ac, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ac, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ac::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486451454);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ac::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Angle of deflection of an articulated transit vehicle.
@@ -62992,12 +62994,12 @@ impl Aai {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Aai, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Aai, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1278);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Aai::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486444286);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Aai::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Level measured by a sensor.
@@ -63056,12 +63058,12 @@ impl A1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = A1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<A1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1534);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| A1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419364350);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| A1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Relative position of the blower bypass valve.
@@ -63096,12 +63098,12 @@ impl Ackm {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ackm, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ackm, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ackm::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(417922814);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ackm::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// PGN which is requested by Request2 message
@@ -63134,12 +63136,12 @@ impl Atm1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Atm1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Atm1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Atm1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419279614);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Atm1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read PrtcltTrpIntrmdtGsTmpPrlmnryFMI signal from can frame
@@ -63203,12 +63205,12 @@ impl Dc1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Dc1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Dc1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Dc1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419319550);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Dc1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Composite indication of all bus door statuses.
@@ -63263,12 +63265,12 @@ impl Fwss1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Fwss1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Fwss1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(766);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Fwss1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(418386686);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Fwss1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Indicates to the vehicle operator that the roll moment has exceeded a preset limit.
@@ -63323,12 +63325,12 @@ impl Fwss2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Fwss2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Fwss2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Fwss2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419278590);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Fwss2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Indicates to vehicle operator that the fifth wheel slider is in position and locked.
@@ -63403,12 +63405,12 @@ impl Ssi {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Ssi, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Ssi, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1022);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Ssi::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(217060350);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Ssi::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// The estimated measurement latency of the measurement.
@@ -63507,12 +63509,12 @@ impl Trf1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Trf1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Trf1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Trf1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419363070);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Trf1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read TransOilLevelMeasurementStatus signal from can frame
@@ -63603,12 +63605,12 @@ impl Vep1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Vep1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Vep1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Vep1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419362814);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Vep1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Electrical potential measured at the input of the electronic control unit supplied through a switching device.
@@ -63667,12 +63669,12 @@ impl Wcm2 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Wcm2, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Wcm2, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(254);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Wcm2::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419277054);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Wcm2::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read WrlessCommunicationNetworkType2 signal from can frame
@@ -63747,12 +63749,12 @@ impl Wcm1 {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Wcm1, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Wcm1, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(510);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Wcm1::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(419277310);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Wcm1::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read WrlessCommunicationNetworkType1 signal from can frame
@@ -63827,12 +63829,12 @@ impl Vrom {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Vrom, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Vrom, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(2046);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Vrom::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(486385662);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Vrom::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// State signal indicating the Voltage regulator enabled.
@@ -63911,12 +63913,12 @@ impl Vrep {
     }
 
     #[allow(dead_code)]
-    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<Box<Stream<Item = Vrep, Error = std::io::Error> + Sync + Send>> {
+    pub fn stream(can_interface: &str, ival1: &std::time::Duration, ival2: &std::time::Duration) -> std::io::Result<impl Stream<Item = Result<Vrep, std::io::Error>>> {
         let socket = BCMSocket::open_nb(&can_interface)?;
-        let message_id = CANMessageId::EFF(1790);
-        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?;
-        let f = frame_stream.map(|frame| Vrep::new(frame.data().to_vec()));
-        Ok(Box::new(f))
+        let message_id = CANMessageId::EFF(217949950);
+        let frame_stream = socket.filter_id_incoming_frames(message_id, ival1.clone(), ival2.clone())?.compat();
+        let f = frame_stream.map(|frame| frame.map(|frame| Vrep::new(frame.data().to_vec())));
+        Ok(f)
     }
 
     /// Read GnrtrOtputVoltageBiasPercentage signal from can frame
