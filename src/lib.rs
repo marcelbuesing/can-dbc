@@ -42,8 +42,8 @@ extern crate serde;
 extern crate serde_derive;
 
 use derive_getters::Getters;
-use nom::*;
 use nom::types::CompleteByteSlice;
+use nom::*;
 
 pub mod parser;
 
@@ -53,10 +53,7 @@ mod tests {
     use super::*;
     use std::str;
 
-    #[test]
-    fn dbc_definition_test() {
-        let sample_dbc =
-        b"
+    const SAMPLE_DBC: &'static [u8] = b"
 VERSION \"0.1\"
 NS_ :
     NS_DESC_
@@ -104,7 +101,8 @@ EV_ Environment1: 0 [0|220] \"\" 0 6 DUMMY_NODE_VECTOR0 DUMMY_NODE_VECTOR2;
 EV_ Environment2: 0 [0|177] \"\" 0 7 DUMMY_NODE_VECTOR1 DUMMY_NODE_VECTOR2;
 ENVVAR_DATA_ SomeEnvVarData: 399;
 
-CM_ SG_ 4 TestSigLittleUnsigned1 \"asaklfjlsdfjlsdfgls
+CM_ BO_ 1840 \"Some Message comment\";
+CM_ SG_ 1840 Signal_4 \"asaklfjlsdfjlsdfgls
 HH?=(%)/&KKDKFSDKFKDFKSDFKSDFNKCnvsdcvsvxkcv\";
 CM_ SG_ 5 TestSigLittleUnsigned1 \"asaklfjlsdfjlsdfgls
 =0943503450KFSDKFKDFKSDFKSDFNKCnvsdcvsvxkcv\";
@@ -113,24 +111,94 @@ BA_DEF_DEF_ \"BusType\" \"AS\";
 
 BA_ \"Attr\" BO_ 4358435 283;
 BA_ \"Attr\" BO_ 56949545 344;
+
+VAL_ 2000 Signal_3 255 \"NOP\";
 ";
-        match DBC::from_slice(sample_dbc) {
+
+    #[test]
+    fn dbc_definition_test() {
+        match DBC::from_slice(SAMPLE_DBC) {
             Ok(dbc_content) => println!("DBC Content{:#?}", dbc_content),
             Err(e) => {
                 match e {
-                    Error::NomError(nom::Err::Incomplete(needed)) => eprintln!("Error incomplete input, needed: {:?}", needed),
-                    Error::NomError(nom::Err::Error(ctx)) => {
-                        match ctx {
-                            verbose_errors::Context::Code(i, kind) => eprintln!("Error Kind: {:?}, Code: {:?}", kind, str::from_utf8(i.as_bytes())),
-                            verbose_errors::Context::List(l)=> eprintln!("Error List: {:?}", l),
-                        }
+                    Error::NomError(nom::Err::Incomplete(needed)) => {
+                        eprintln!("Error incomplete input, needed: {:?}", needed)
                     }
+                    Error::NomError(nom::Err::Error(ctx)) => match ctx {
+                        verbose_errors::Context::Code(i, kind) => eprintln!(
+                            "Error Kind: {:?}, Code: {:?}",
+                            kind,
+                            str::from_utf8(i.as_bytes())
+                        ),
+                        verbose_errors::Context::List(l) => eprintln!("Error List: {:?}", l),
+                    },
                     Error::NomError(nom::Err::Failure(ctx)) => eprintln!("Failure {:?}", ctx),
-                    Error::Incomplete(dbc, remaining) => eprintln!("Not all data in buffer was read {:#?}, remaining unparsed: {}", dbc, String::from_utf8(remaining).unwrap())
+                    Error::Incomplete(dbc, remaining) => eprintln!(
+                        "Not all data in buffer was read {:#?}, remaining unparsed: {}",
+                        dbc,
+                        String::from_utf8(remaining).unwrap()
+                    ),
                 }
                 panic!("Failed to read DBC");
             }
         }
+    }
+
+    #[test]
+    fn lookup_signal_comment() {
+        let dbc_content = DBC::from_slice(SAMPLE_DBC).expect("Failed to parse DBC");
+        let comment = dbc_content
+            .signal_comment(&MessageId(1840), "Signal_4")
+            .expect("Signal comment missing");
+        assert_eq!(
+            "asaklfjlsdfjlsdfgls\nHH?=(%)/&KKDKFSDKFKDFKSDFKSDFNKCnvsdcvsvxkcv",
+            comment
+        );
+    }
+
+    #[test]
+    fn lookup_signal_comment_none_when_missing() {
+        let dbc_content = DBC::from_slice(SAMPLE_DBC).expect("Failed to parse DBC");
+        let comment = dbc_content.signal_comment(&MessageId(1840), "Signal_2");
+        assert_eq!(None, comment);
+    }
+
+    #[test]
+    fn lookup_message_comment() {
+        let dbc_content = DBC::from_slice(SAMPLE_DBC).expect("Failed to parse DBC");
+        let comment = dbc_content
+            .message_comment(&MessageId(1840))
+            .expect("Message comment missing");
+        assert_eq!("Some Message comment", comment);
+    }
+
+    #[test]
+    fn lookup_message_comment_none_when_missing() {
+        let dbc_content = DBC::from_slice(SAMPLE_DBC).expect("Failed to parse DBC");
+        let comment = dbc_content.message_comment(&MessageId(2000));
+        assert_eq!(None, comment);
+    }
+
+    #[test]
+    fn lookup_value_descriptions_for_signal() {
+        let dbc_content = DBC::from_slice(SAMPLE_DBC).expect("Failed to parse DBC");
+        let val_descriptions = dbc_content
+            .value_descriptions_for_signal(&MessageId(2000), "Signal_3")
+            .expect("Message comment missing");
+
+        let exp = vec![ValDescription {
+            a: 255.0,
+            b: "NOP".to_string(),
+        }];
+        assert_eq!(exp, val_descriptions);
+    }
+
+    #[test]
+    fn lookup_value_descriptions_for_signal_none_when_missing() {
+        let dbc_content = DBC::from_slice(SAMPLE_DBC).expect("Failed to parse DBC");
+        let val_descriptions =
+            dbc_content.value_descriptions_for_signal(&MessageId(2000), "Signal_2");
+        assert_eq!(None, val_descriptions);
     }
 }
 
@@ -141,7 +209,7 @@ pub enum Error<'a> {
     /// Occurs when e.g. an unexpected symbol occurs.
     Incomplete(DBC, Vec<u8>),
     /// Parser failed
-    NomError(nom::Err<nom::types::CompleteByteSlice<'a>, u32>)
+    NomError(nom::Err<nom::types::CompleteByteSlice<'a>, u32>),
 }
 
 /// Baudrate of network in kbit/s
@@ -181,7 +249,7 @@ pub enum Transmitter {
     /// node transmitting the message
     NodeName(String),
     /// message has no sender
-    VectorXXX
+    VectorXXX,
 }
 
 #[derive(Clone, Debug, PartialEq, Getters)]
@@ -320,18 +388,33 @@ pub enum AttributeValue {
 #[cfg_attr(feature = "serde", derive(Serialize))]
 pub struct ValueTable {
     value_table_name: String,
-    value_descriptions: Vec<ValDescription>
+    value_descriptions: Vec<ValDescription>,
 }
 
 /// Object comments
 #[derive(Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "serde", derive(Serialize))]
 pub enum Comment {
-    Node { node_name: String, comment: String },
-    Message { message_id: MessageId, comment: String },
-    Signal { message_id: MessageId, signal_name: String, comment: String },
-    EnvVar { env_var_name: String, comment: String },
-    Plain { comment: String },
+    Node {
+        node_name: String,
+        comment: String,
+    },
+    Message {
+        message_id: MessageId,
+        comment: String,
+    },
+    Signal {
+        message_id: MessageId,
+        signal_name: String,
+        comment: String,
+    },
+    EnvVar {
+        env_var_name: String,
+        comment: String,
+    },
+    Plain {
+        comment: String,
+    },
 }
 
 /// CAN message (frame) details including signal details
@@ -344,7 +427,7 @@ pub struct Message {
     message_name: String,
     message_size: u64,
     transmitter: Transmitter,
-    signals: Vec<Signal>
+    signals: Vec<Signal>,
 }
 
 #[derive(Clone, Debug, PartialEq, Getters)]
@@ -373,14 +456,14 @@ pub struct EnvironmentVariableData {
 #[cfg_attr(feature = "serde", derive(Serialize))]
 pub struct Node(Vec<String>);
 
-#[derive(Clone,Debug, PartialEq, Getters)]
+#[derive(Clone, Debug, PartialEq, Getters)]
 #[cfg_attr(feature = "serde", derive(Serialize))]
 pub struct AttributeDefault {
     attribute_name: String,
     attribute_value: AttributeValue,
 }
 
-#[derive(Clone,Debug, PartialEq, Getters)]
+#[derive(Clone, Debug, PartialEq, Getters)]
 #[cfg_attr(feature = "serde", derive(Serialize))]
 pub struct AttributeValueForObject {
     attribute_name: String,
@@ -408,11 +491,11 @@ pub enum ValueDescription {
     Signal {
         message_id: MessageId,
         signal_name: String,
-        value_descriptions: Vec<ValDescription>
+        value_descriptions: Vec<ValDescription>,
     },
     EnvironmentVariable {
         env_var_name: String,
-        value_descriptions: Vec<ValDescription>
+        value_descriptions: Vec<ValDescription>,
     },
 }
 
@@ -447,7 +530,7 @@ pub enum SignalExtendedValueType {
 pub struct SignalExtendedValueTypeList {
     message_id: MessageId,
     signal_name: String,
-    signal_extended_value_type: SignalExtendedValueType
+    signal_extended_value_type: SignalExtendedValueType,
 }
 
 #[derive(Clone, Debug, PartialEq, Getters)]
@@ -490,7 +573,6 @@ pub struct DBC {
 }
 
 impl DBC {
-
     /// Read a DBC from a buffer
     pub fn from_slice(buffer: &[u8]) -> Result<DBC, Error> {
         match parser::dbc(CompleteByteSlice(buffer)) {
@@ -499,62 +581,74 @@ impl DBC {
                     return Err(Error::Incomplete(dbc, remaining.as_bytes().to_vec()));
                 }
                 Ok(dbc)
-            },
-            Err(e) => Err(Error::NomError(e))
+            }
+            Err(e) => Err(Error::NomError(e)),
         }
     }
 
     /// Lookup a message comment
     pub fn message_comment(&self, message_id: &MessageId) -> Option<&str> {
         self.comments
-        .iter()
-        .filter_map(|x| {
-            match x {
-                Comment::Message { message_id: ref x_message_id, ref comment } => {
+            .iter()
+            .filter_map(|x| match x {
+                Comment::Message {
+                    message_id: ref x_message_id,
+                    ref comment,
+                } => {
                     if x_message_id == message_id {
                         Some(comment.as_str())
                     } else {
                         None
                     }
-                },
-                _ => None
-            }
-        }).next()
+                }
+                _ => None,
+            })
+            .next()
     }
 
     /// Lookup a signal comment
     pub fn signal_comment(&self, message_id: &MessageId, signal_name: &str) -> Option<&str> {
         self.comments
-        .iter()
-        .filter_map(|x| {
-            match x {
-                Comment::Signal { message_id: ref x_message_id, signal_name: ref x_signal_name, comment } => {
+            .iter()
+            .filter_map(|x| match x {
+                Comment::Signal {
+                    message_id: ref x_message_id,
+                    signal_name: ref x_signal_name,
+                    comment,
+                } => {
                     if x_message_id == message_id && x_signal_name == signal_name {
                         Some(comment.as_str())
                     } else {
                         None
                     }
-                },
-                _ => None
-            }
-        }).next()
+                }
+                _ => None,
+            })
+            .next()
     }
 
     /// Lookup value descriptions for signal
-    pub fn value_descriptions_for_signal(&self, message_id: &MessageId, signal_name: &str) -> Option<&[ValDescription]> {
+    pub fn value_descriptions_for_signal(
+        &self,
+        message_id: &MessageId,
+        signal_name: &str,
+    ) -> Option<&[ValDescription]> {
         self.value_descriptions
             .iter()
-            .filter_map(|x| {
-                match x {
-                    ValueDescription::Signal { message_id: ref x_message_id, signal_name: ref x_signal_name, ref value_descriptions} => {
-                        if x_message_id == message_id && x_signal_name == signal_name {
-                            Some(value_descriptions.as_slice())
-                        } else {
-                            None
-                        }
-                    },
-                    _ => None
+            .filter_map(|x| match x {
+                ValueDescription::Signal {
+                    message_id: ref x_message_id,
+                    signal_name: ref x_signal_name,
+                    ref value_descriptions,
+                } => {
+                    if x_message_id == message_id && x_signal_name == signal_name {
+                        Some(value_descriptions.as_slice())
+                    } else {
+                        None
+                    }
                 }
-            }).next()
+                _ => None,
+            })
+            .next()
     }
 }
