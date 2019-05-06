@@ -392,6 +392,37 @@ mod tests {
         let (_, transmitter) = message_transmitter(def).unwrap();
         assert_eq!(exp, transmitter);
     }
+
+    #[test]
+    fn value_description_test() {
+        let def = CompleteByteSlice(b"2 \"ABC\"\n");
+        let exp = ValDescription {
+                    a: 2f64,
+                    b: "ABC".to_string(),
+                };
+        let (_, val_desc) = value_description(def).unwrap();
+        assert_eq!(exp, val_desc);
+    }
+
+    #[test]
+    fn val_table_test() {
+        let def = CompleteByteSlice(b"VAL_TABLE_ Tst 2 \"ABC\" 1 \"Test A\" ;\n");
+        let exp = ValueTable {
+            value_table_name: "Tst".to_string(),
+            value_descriptions: vec!(
+                ValDescription {
+                    a: 2f64,
+                    b: "ABC".to_string(),
+                },
+                 ValDescription {
+                    a: 1f64,
+                    b: "Test A".to_string(),
+                }
+            )
+        };
+        let (_, val_table) = value_table(def).unwrap();
+        assert_eq!(exp, val_table);
+    }
 }
 
 fn is_semi_colon(chr: char) -> bool {
@@ -1111,7 +1142,6 @@ named!(pub value_table<CompleteByteSlice, ValueTable>,
                             tag!("VAL_TABLE_")      >>
                             ms                      >>
         value_table_name:   c_ident                 >>
-                            ms                      >>
         value_descriptions: many_till!(preceded!(ms, value_description), preceded!(ms, semi_colon)) >>
         eol >>
         (ValueTable {
