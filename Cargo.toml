@@ -11,7 +11,7 @@ edition = "2018"
 
 [badges]
 travis-ci = { repository = "marcelbuesing/can-dbc", branch = "dev" }
-coveralls = { repository = "marcelbuesing/can-dbc", branch = "dev", service = "github" }
+codecov = { repository = "marcelbuesing/can-dbc", branch = "dev", service = "github" }
 
 [dependencies]
 derive-getters = "0.0.7"
