@@ -208,15 +208,18 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
         let dbc_content = DBC::from_slice(SAMPLE_DBC).expect("Failed to parse DBC");
         let extended_value_type =
             dbc_content.extended_value_type_for_signal(&MessageId(2000), "Signal_8");
-        assert_eq!(extended_value_type, Some(&SignalExtendedValueType::IEEEfloat32Bit));
+        assert_eq!(
+            extended_value_type,
+            Some(&SignalExtendedValueType::IEEEfloat32Bit)
+        );
     }
 
-     #[test]
+    #[test]
     fn lookup_extended_value_type_for_signal_none_when_missing() {
         let dbc_content = DBC::from_slice(SAMPLE_DBC).expect("Failed to parse DBC");
         let extended_value_type =
             dbc_content.extended_value_type_for_signal(&MessageId(2000), "Signal_1");
-        assert_eq!(extended_value_type , None);
+        assert_eq!(extended_value_type, None);
     }
 }
 

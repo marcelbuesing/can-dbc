@@ -1,27 +1,27 @@
-
 extern crate clap;
 
-use clap::{Arg, App};
 use can_dbc;
+use clap::{App, Arg};
 use nom;
 use nom::verbose_errors;
 
+use std::cmp;
 use std::fs::File;
 use std::io;
 use std::io::prelude::*;
-use std::cmp;
 
 fn main() -> io::Result<()> {
-
     let matches = App::new("DBC Parser")
-                          .version("1.0")
-                          .arg(Arg::with_name("input")
-                               .short("i")
-                               .long("input")
-                               .value_name("FILE")
-                               .help("DBC file path")
-                               .takes_value(true))
-                          .get_matches();
+        .version("1.0")
+        .arg(
+            Arg::with_name("input")
+                .short("i")
+                .long("input")
+                .value_name("FILE")
+                .help("DBC file path")
+                .takes_value(true),
+        )
+        .get_matches();
     let path = matches.value_of("input").unwrap_or("./examples/sample.dbc");
 
     let mut f = File::open(path)?;

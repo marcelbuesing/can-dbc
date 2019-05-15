@@ -57,22 +57,27 @@ mod tests {
 
     #[test]
     fn byte_order_test() {
-        let (_, big_endian) = byte_order(CompleteByteSlice(b"0")).expect("Failed to parse big endian");
+        let (_, big_endian) =
+            byte_order(CompleteByteSlice(b"0")).expect("Failed to parse big endian");
         assert_eq!(ByteOrder::BigEndian, big_endian);
 
-        let (_, little_endian) = byte_order(CompleteByteSlice(b"1")).expect("Failed to parse little endian");
+        let (_, little_endian) =
+            byte_order(CompleteByteSlice(b"1")).expect("Failed to parse little endian");
         assert_eq!(ByteOrder::LittleEndian, little_endian);
     }
 
     #[test]
     fn multiplexer_indicator_test() {
-        let (_, multiplexer) = multiplexer_indicator(CompleteByteSlice(b" m34920 ")).expect("Failed to parse multiplexer");
+        let (_, multiplexer) = multiplexer_indicator(CompleteByteSlice(b" m34920 "))
+            .expect("Failed to parse multiplexer");
         assert_eq!(MultiplexIndicator::MultiplexedSignal(34920), multiplexer);
 
-        let (_, multiplexor) = multiplexer_indicator(CompleteByteSlice(b" M ")).expect("Failed to parse multiplexor");
+        let (_, multiplexor) =
+            multiplexer_indicator(CompleteByteSlice(b" M ")).expect("Failed to parse multiplexor");
         assert_eq!(MultiplexIndicator::Multiplexor, multiplexor);
 
-        let (_, plain) = multiplexer_indicator(CompleteByteSlice(b" ")).expect("Failed to parse plain");
+        let (_, plain) =
+            multiplexer_indicator(CompleteByteSlice(b" ")).expect("Failed to parse plain");
         assert_eq!(MultiplexIndicator::Plain, plain);
     }
 
@@ -88,7 +93,10 @@ mod tests {
     #[test]
     fn message_definition_test() {
         let def = CompleteByteSlice(b"BO_ 1 MCA_A1: 6 MFA\r\nSG_ ABC_1 : 9|2@1+ (1,0) [0|0] \"x\" XYZ_OUS\r\nSG_ BasL2 : 3|2@0- (1,0) [0|0] \"x\" DFA_FUS\r\n x");
-        signal(CompleteByteSlice(b"\r\n\r\nSG_ BasL2 : 3|2@0- (1,0) [0|0] \"x\" DFA_FUS\r\n")).expect("Faield");
+        signal(CompleteByteSlice(
+            b"\r\n\r\nSG_ BasL2 : 3|2@0- (1,0) [0|0] \"x\" DFA_FUS\r\n",
+        ))
+        .expect("Faield");
         let (_, _message_def) = message(def).expect("Failed to parse message definition");
     }
 
@@ -125,8 +133,7 @@ mod tests {
             node_name: "network_node".to_string(),
             comment: "Some network node comment".to_string(),
         };
-        let (_, comment1_def) =
-            comment(def1).expect("Failed to parse node comment definition");
+        let (_, comment1_def) = comment(def1).expect("Failed to parse node comment definition");
         assert_eq!(comment1, comment1_def);
     }
 
@@ -137,8 +144,7 @@ mod tests {
             env_var_name: "ENVXYZ".to_string(),
             comment: "Some env var name comment".to_string(),
         };
-        let (_, comment1_def) =
-            comment(def1).expect("Failed to parse env var comment definition");
+        let (_, comment1_def) = comment(def1).expect("Failed to parse env var comment definition");
         assert_eq!(comment1, comment1_def);
     }
 
@@ -151,12 +157,11 @@ mod tests {
             a: 255.0,
             b: "NOP".to_string(),
         }];
-        let value_description_for_signal1 =
-            ValueDescription::Signal {
-                message_id,
-                signal_name,
-                value_descriptions: val_descriptions
-            };
+        let value_description_for_signal1 = ValueDescription::Signal {
+            message_id,
+            signal_name,
+            value_descriptions: val_descriptions,
+        };
         let (_, value_signal_def) =
             value_descriptions(def1).expect("Failed to parse value desc for signal");
         assert_eq!(value_description_for_signal1, value_signal_def);
@@ -172,7 +177,7 @@ mod tests {
         }];
         let value_env_var1 = ValueDescription::EnvironmentVariable {
             env_var_name,
-            value_descriptions: val_descriptions
+            value_descriptions: val_descriptions,
         };
         let (_, value_env_var) =
             value_descriptions(def1).expect("Failed to parse value desc for env var");
@@ -181,7 +186,8 @@ mod tests {
 
     #[test]
     fn environment_variable_test() {
-        let def1 = CompleteByteSlice(b"EV_ IUV: 0 [-22|20] \"mm\" 3 7 DUMMY_NODE_VECTOR0 VECTOR_XXX;\n");
+        let def1 =
+            CompleteByteSlice(b"EV_ IUV: 0 [-22|20] \"mm\" 3 7 DUMMY_NODE_VECTOR0 VECTOR_XXX;\n");
         let env_var1 = EnvironmentVariable {
             env_var_name: "IUV".to_string(),
             env_var_type: EnvType::EnvTypeFloat,
@@ -201,10 +207,13 @@ mod tests {
     #[test]
     fn network_node_attribute_value_test() {
         let def = CompleteByteSlice(b"BA_ \"AttrName\" BU_ NodeName 12;\n");
-        let attribute_value = AttributeValuedForObjectType::NetworkNodeAttributeValue("NodeName".to_string(), AttributeValue::AttributeValueF64(12.0));
-        let attr_val_exp= AttributeValueForObject {
+        let attribute_value = AttributeValuedForObjectType::NetworkNodeAttributeValue(
+            "NodeName".to_string(),
+            AttributeValue::AttributeValueF64(12.0),
+        );
+        let attr_val_exp = AttributeValueForObject {
             attribute_name: "AttrName".to_string(),
-            attribute_value
+            attribute_value,
         };
         let (_, attr_val) = attribute_value_for_object(def).unwrap();
         assert_eq!(attr_val_exp, attr_val);
@@ -213,10 +222,13 @@ mod tests {
     #[test]
     fn message_definition_attribute_value_test() {
         let def = CompleteByteSlice(b"BA_ \"AttrName\" BO_ 298 13;\n");
-        let attribute_value = AttributeValuedForObjectType::MessageDefinitionAttributeValue(MessageId(298), Some(AttributeValue::AttributeValueF64(13.0)));
-        let attr_val_exp= AttributeValueForObject {
+        let attribute_value = AttributeValuedForObjectType::MessageDefinitionAttributeValue(
+            MessageId(298),
+            Some(AttributeValue::AttributeValueF64(13.0)),
+        );
+        let attr_val_exp = AttributeValueForObject {
             attribute_name: "AttrName".to_string(),
-            attribute_value
+            attribute_value,
         };
         let (_, attr_val) = attribute_value_for_object(def).unwrap();
         assert_eq!(attr_val_exp, attr_val);
@@ -225,10 +237,14 @@ mod tests {
     #[test]
     fn signal_attribute_value_test() {
         let def = CompleteByteSlice(b"BA_ \"AttrName\" SG_ 198 SGName 13;\n");
-        let attribute_value = AttributeValuedForObjectType::SignalAttributeValue(MessageId(198), "SGName".to_string(), AttributeValue::AttributeValueF64(13.0));
-        let attr_val_exp= AttributeValueForObject {
+        let attribute_value = AttributeValuedForObjectType::SignalAttributeValue(
+            MessageId(198),
+            "SGName".to_string(),
+            AttributeValue::AttributeValueF64(13.0),
+        );
+        let attr_val_exp = AttributeValueForObject {
             attribute_name: "AttrName".to_string(),
-            attribute_value
+            attribute_value,
         };
         let (_, attr_val) = attribute_value_for_object(def).unwrap();
         assert_eq!(attr_val_exp, attr_val);
@@ -237,10 +253,13 @@ mod tests {
     #[test]
     fn env_var_attribute_value_test() {
         let def = CompleteByteSlice(b"BA_ \"AttrName\" EV_ EvName \"CharStr\";\n");
-        let attribute_value = AttributeValuedForObjectType::EnvVariableAttributeValue("EvName".to_string(), AttributeValue::AttributeValueCharString("CharStr".to_string()));
-        let attr_val_exp= AttributeValueForObject {
+        let attribute_value = AttributeValuedForObjectType::EnvVariableAttributeValue(
+            "EvName".to_string(),
+            AttributeValue::AttributeValueCharString("CharStr".to_string()),
+        );
+        let attr_val_exp = AttributeValueForObject {
             attribute_name: "AttrName".to_string(),
-            attribute_value
+            attribute_value,
         };
         let (_, attr_val) = attribute_value_for_object(def).unwrap();
         assert_eq!(attr_val_exp, attr_val);
@@ -249,10 +268,12 @@ mod tests {
     #[test]
     fn raw_attribute_value_test() {
         let def = CompleteByteSlice(b"BA_ \"AttrName\" \"RAW\";\n");
-        let attribute_value = AttributeValuedForObjectType::RawAttributeValue(AttributeValue::AttributeValueCharString("RAW".to_string()));
-        let attr_val_exp= AttributeValueForObject {
+        let attribute_value = AttributeValuedForObjectType::RawAttributeValue(
+            AttributeValue::AttributeValueCharString("RAW".to_string()),
+        );
+        let attr_val_exp = AttributeValueForObject {
             attribute_name: "AttrName".to_string(),
-            attribute_value
+            attribute_value,
         };
         let (_, attr_val) = attribute_value_for_object(def).unwrap();
         assert_eq!(attr_val_exp, attr_val);
@@ -260,14 +281,19 @@ mod tests {
 
     #[test]
     fn new_symbols_test() {
-        let def =
-            CompleteByteSlice(b"NS_ :
+        let def = CompleteByteSlice(
+            b"NS_ :
                 NS_DESC_
                 CM_
                 BA_DEF_
 
-            ");
-        let symbols_exp = vec!(Symbol("NS_DESC_".to_string()), Symbol("CM_".to_string()), Symbol("BA_DEF_".to_string()));
+            ",
+        );
+        let symbols_exp = vec![
+            Symbol("NS_DESC_".to_string()),
+            Symbol("CM_".to_string()),
+            Symbol("BA_DEF_".to_string()),
+        ];
         let (_, symbols) = new_symbols(def).unwrap();
         assert_eq!(symbols_exp, symbols);
     }
@@ -275,19 +301,24 @@ mod tests {
     #[test]
     fn network_node_test() {
         let def = CompleteByteSlice(b"BU_: ZU XYZ ABC OIU\n");
-        let nodes = vec!("ZU".to_string(), "XYZ".to_string(), "ABC".to_string(), "OIU".to_string());
+        let nodes = vec![
+            "ZU".to_string(),
+            "XYZ".to_string(),
+            "ABC".to_string(),
+            "OIU".to_string(),
+        ];
         let (_, node) = node(def).unwrap();
         let node_exp = Node(nodes);
         assert_eq!(node_exp, node);
     }
 
-     #[test]
+    #[test]
     fn envvar_data_test() {
         let def = CompleteByteSlice(b"ENVVAR_DATA_ SomeEnvVarData: 399;\n");
         let (_, envvar_data) = environment_variable_data(def).unwrap();
         let envvar_data_exp = EnvironmentVariableData {
             env_var_name: "SomeEnvVarData".to_string(),
-            data_size: 399
+            data_size: 399,
         };
         assert_eq!(envvar_data_exp, envvar_data);
     }
@@ -295,8 +326,8 @@ mod tests {
     #[test]
     fn signal_type_test() {
         let def = CompleteByteSlice(
-            b"SGTYPE_ signal_type_name: 1024@1+ (5,2) [1|3] \"unit\" 2.0 val_table;\n"
-            );
+            b"SGTYPE_ signal_type_name: 1024@1+ (5,2) [1|3] \"unit\" 2.0 val_table;\n",
+        );
 
         let exp = SignalType {
             signal_type_name: "signal_type_name".to_string(),
@@ -318,15 +349,13 @@ mod tests {
 
     #[test]
     fn signal_groups_test() {
-        let def = CompleteByteSlice(
-            b"SIG_GROUP_ 23 X_3290 1 : A_b XY_Z;\n"
-        );
+        let def = CompleteByteSlice(b"SIG_GROUP_ 23 X_3290 1 : A_b XY_Z;\n");
 
         let exp = SignalGroups {
             message_id: MessageId(23),
             signal_group_name: "X_3290".to_string(),
             repetitions: 1,
-            signal_names: vec!("A_b".to_string(), "XY_Z".to_string()),
+            signal_names: vec!["A_b".to_string(), "XY_Z".to_string()],
         };
 
         let (_, signal_groups) = signal_groups(def).unwrap();
@@ -339,7 +368,7 @@ mod tests {
         let (_, attr_default) = attribute_default(def).unwrap();
         let attr_default_exp = AttributeDefault {
             attribute_name: "ZUV".to_string(),
-            attribute_value: AttributeValue::AttributeValueCharString("OAL".to_string())
+            attribute_value: AttributeValue::AttributeValueCharString("OAL".to_string()),
         };
         assert_eq!(attr_default_exp, attr_default);
     }
@@ -370,14 +399,18 @@ mod tests {
 
         let def_env_var = CompleteByteSlice(b"BA_DEF_ EV_ \"EvDef1BO\" INT 0 1000000;\n");
         let (_, env_var_def) = attribute_definition(def_env_var).unwrap();
-        let env_var_def_exp = AttributeDefinition::EnvironmentVariable("\"EvDef1BO\" INT 0 1000000".to_string());
+        let env_var_def_exp =
+            AttributeDefinition::EnvironmentVariable("\"EvDef1BO\" INT 0 1000000".to_string());
         assert_eq!(env_var_def_exp, env_var_def);
     }
 
     #[test]
     fn version_test() {
-        let def = CompleteByteSlice(b"VERSION \"HNPBNNNYNNNNNNNNNNNNNNNNNNNNNNNNYNYYYYYYYY>4>%%%/4>'%**4YYY///\"\n");
-        let version_exp = Version("HNPBNNNYNNNNNNNNNNNNNNNNNNNNNNNNYNYYYYYYYY>4>%%%/4>'%**4YYY///".to_string());
+        let def = CompleteByteSlice(
+            b"VERSION \"HNPBNNNYNNNNNNNNNNNNNNNNNNNNNNNNYNYYYYYYYY>4>%%%/4>'%**4YYY///\"\n",
+        );
+        let version_exp =
+            Version("HNPBNNNYNNNNNNNNNNNNNNNNNNNNNNNNYNYYYYYYYY>4>%%%/4>'%**4YYY///".to_string());
         let (_, version) = version(def).unwrap();
         assert_eq!(version_exp, version);
     }
@@ -387,7 +420,10 @@ mod tests {
         let def = CompleteByteSlice(b"BO_TX_BU_ 12345 : XZY,ABC;\n");
         let exp = MessageTransmitter {
             message_id: MessageId(12345),
-            transmitter: vec!(Transmitter::NodeName("XZY".to_string()), Transmitter::NodeName("ABC".to_string()))
+            transmitter: vec![
+                Transmitter::NodeName("XZY".to_string()),
+                Transmitter::NodeName("ABC".to_string()),
+            ],
         };
         let (_, transmitter) = message_transmitter(def).unwrap();
         assert_eq!(exp, transmitter);
@@ -397,9 +433,9 @@ mod tests {
     fn value_description_test() {
         let def = CompleteByteSlice(b"2 \"ABC\"\n");
         let exp = ValDescription {
-                    a: 2f64,
-                    b: "ABC".to_string(),
-                };
+            a: 2f64,
+            b: "ABC".to_string(),
+        };
         let (_, val_desc) = value_description(def).unwrap();
         assert_eq!(exp, val_desc);
     }
@@ -409,16 +445,16 @@ mod tests {
         let def = CompleteByteSlice(b"VAL_TABLE_ Tst 2 \"ABC\" 1 \"Test A\" ;\n");
         let exp = ValueTable {
             value_table_name: "Tst".to_string(),
-            value_descriptions: vec!(
+            value_descriptions: vec![
                 ValDescription {
                     a: 2f64,
                     b: "ABC".to_string(),
                 },
-                 ValDescription {
+                ValDescription {
                     a: 1f64,
                     b: "Test A".to_string(),
-                }
-            )
+                },
+            ],
         };
         let (_, val_table) = value_table(def).unwrap();
         assert_eq!(exp, val_table);
@@ -447,7 +483,7 @@ fn is_c_string_char(chr: char) -> bool {
 }
 
 fn is_c_ident_head(chr: char) -> bool {
-   chr.is_alphabetic() || chr == '_'
+    chr.is_alphabetic() || chr == '_'
 }
 
 fn is_quote(chr: char) -> bool {
