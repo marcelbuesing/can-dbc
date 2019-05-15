@@ -113,6 +113,8 @@ BA_ \"Attr\" BO_ 4358435 283;
 BA_ \"Attr\" BO_ 56949545 344;
 
 VAL_ 2000 Signal_3 255 \"NOP\";
+
+SIG_VALTYPE_ 2000 Signal_8 : 1;
 ";
 
     #[test]
@@ -199,6 +201,22 @@ VAL_ 2000 Signal_3 255 \"NOP\";
         let val_descriptions =
             dbc_content.value_descriptions_for_signal(&MessageId(2000), "Signal_2");
         assert_eq!(None, val_descriptions);
+    }
+
+    #[test]
+    fn lookup_extended_value_type_for_signal() {
+        let dbc_content = DBC::from_slice(SAMPLE_DBC).expect("Failed to parse DBC");
+        let extended_value_type =
+            dbc_content.extended_value_type_for_signal(&MessageId(2000), "Signal_8");
+        assert_eq!(extended_value_type, Some(&SignalExtendedValueType::IEEEfloat32Bit));
+    }
+
+     #[test]
+    fn lookup_extended_value_type_for_signal_none_when_missing() {
+        let dbc_content = DBC::from_slice(SAMPLE_DBC).expect("Failed to parse DBC");
+        let extended_value_type =
+            dbc_content.extended_value_type_for_signal(&MessageId(2000), "Signal_1");
+        assert_eq!(extended_value_type , None);
     }
 }
 
@@ -569,7 +587,7 @@ pub struct DBC {
     signal_type_refs: Vec<SignalTypeRef>,
     /// Signal groups define a group of signals within a message
     signal_groups: Vec<SignalGroups>,
-    signal_extended_value_type_list: Option<SignalExtendedValueTypeList>,
+    signal_extended_value_type_list: Vec<SignalExtendedValueTypeList>,
 }
 
 impl DBC {
@@ -643,6 +661,30 @@ impl DBC {
                 } => {
                     if x_message_id == message_id && x_signal_name == signal_name {
                         Some(value_descriptions.as_slice())
+                    } else {
+                        None
+                    }
+                }
+                _ => None,
+            })
+            .next()
+    }
+
+    pub fn extended_value_type_for_signal(
+        &self,
+        message_id: &MessageId,
+        signal_name: &str,
+    ) -> Option<&SignalExtendedValueType> {
+        self.signal_extended_value_type_list
+            .iter()
+            .filter_map(|x| match x {
+                SignalExtendedValueTypeList {
+                    message_id: ref x_message_id,
+                    signal_name: ref x_signal_name,
+                    ref signal_extended_value_type,
+                } => {
+                    if x_message_id == message_id && x_signal_name == signal_name {
+                        Some(signal_extended_value_type)
                     } else {
                         None
                     }

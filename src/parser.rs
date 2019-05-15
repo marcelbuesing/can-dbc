@@ -423,6 +423,19 @@ mod tests {
         let (_, val_table) = value_table(def).unwrap();
         assert_eq!(exp, val_table);
     }
+
+    #[test]
+    fn sig_val_type_test() {
+        let def = CompleteByteSlice(b"SIG_VALTYPE_ 2000 Signal_8 : 1;\n");
+        let exp = SignalExtendedValueTypeList {
+            message_id: MessageId(2000),
+            signal_name: "Signal_8".to_string(),
+            signal_extended_value_type: SignalExtendedValueType::IEEEfloat32Bit,
+        };
+
+        let (_, extended_value_type_list) = signal_extended_value_type_list(def).unwrap();
+        assert_eq!(extended_value_type_list, exp);
+    }
 }
 
 fn is_semi_colon(chr: char) -> bool {
@@ -1172,6 +1185,8 @@ named!(pub signal_extended_value_type_list<CompleteByteSlice, SignalExtendedValu
         ms                                                     >>
         signal_name: c_ident                                   >>
         ms                                                     >>
+        opt!(colon)                                            >>
+        ms                                                     >>
         signal_extended_value_type: signal_extended_value_type >>
         semi_colon                                             >>
         eol                                                    >>
@@ -1254,7 +1269,7 @@ named!(pub dbc<CompleteByteSlice, DBC>,
         value_descriptions:              many0!(value_descriptions)            >>
         signal_type_refs:                many0!(signal_type_ref)               >>
         signal_groups:                   many0!(signal_groups)                 >>
-        signal_extended_value_type_list: opt!(signal_extended_value_type_list) >>
+        signal_extended_value_type_list: many0!(signal_extended_value_type_list) >>
         (DBC {
             version: version,
             new_symbols: new_symbols,
