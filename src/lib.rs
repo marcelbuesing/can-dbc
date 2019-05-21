@@ -221,6 +221,22 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
             dbc_content.extended_value_type_for_signal(&MessageId(2000), "Signal_1");
         assert_eq!(extended_value_type, None);
     }
+
+    #[test]
+    fn lookup_signal_by_name() {
+        let dbc_content = DBC::from_slice(SAMPLE_DBC).expect("Failed to parse DBC");
+        let signal =
+            dbc_content.signal_by_name(MessageId(2000), "Signal_8");
+        assert!(signal.is_some());
+    }
+
+    #[test]
+    fn lookup_signal_by_name_none_when_missing() {
+        let dbc_content = DBC::from_slice(SAMPLE_DBC).expect("Failed to parse DBC");
+        let signal =
+            dbc_content.signal_by_name(MessageId(2000), "Signal_25");
+        assert_eq!(signal, None);
+    }
 }
 
 /// Possible error cases for `can-dbc`
@@ -605,6 +621,18 @@ impl DBC {
             }
             Err(e) => Err(Error::NomError(e)),
         }
+    }
+
+    pub fn signal_by_name(&self, message_id: MessageId, signal_name: &str) -> Option<&Signal> {
+        let message = self.messages
+            .iter()
+            .find(|message| message.message_id == message_id);
+
+        if let Some(message) = message {
+            return message.signals.iter()
+            .find(|signal| signal.name == *signal_name);
+        }
+        None
     }
 
     /// Lookup a message comment
