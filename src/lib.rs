@@ -97,6 +97,15 @@ BO_ 1840 WebData_1840: 4 PC
     SG_ Signal_2 : 8|8@1+ (1,0) [0|255] \"\" Vector__XXX
     SG_ Signal_1 : 0|8@1+ (1,0) [0|0] \"\" Vector__XXX
 
+BO_ 3040 WebData_3040: 8 Vector__XXX
+    SG_ Signal_6 m2 : 0|4@1+ (1,0) [0|15] \"\" Vector__XXX
+    SG_ Signal_5 m3 : 16|8@1+ (1,0) [0|255] \"kmh\" Vector__XXX
+    SG_ Signal_4 m3 : 8|8@1+ (1,0) [0|255] \"\" Vector__XXX
+    SG_ Signal_3 m3 : 0|4@1+ (1,0) [0|3] \"\" Vector__XXX
+    SG_ Signal_2 m1 : 3|12@0+ (1,0) [0|4095] \"Byte\" Vector__XXX
+    SG_ Signal_1 m0 : 0|4@1+ (1,0) [0|7] \"Byte\" Vector__XXX
+    SG_ Switch M : 4|4@1+ (1,0) [0|3] \"\" Vector__XXX
+
 EV_ Environment1: 0 [0|220] \"\" 0 6 DUMMY_NODE_VECTOR0 DUMMY_NODE_VECTOR2;
 EV_ Environment2: 0 [0|177] \"\" 0 7 DUMMY_NODE_VECTOR1 DUMMY_NODE_VECTOR2;
 ENVVAR_DATA_ SomeEnvVarData: 399;
@@ -237,6 +246,24 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
             dbc_content.signal_by_name(MessageId(2000), "Signal_25");
         assert_eq!(signal, None);
     }
+
+    #[test]
+    fn lookup_multiplex_indicator_switch() {
+        let dbc_content = DBC::from_slice(SAMPLE_DBC).expect("Failed to parse DBC");
+        let multiplexor_switch =
+            dbc_content.message_multiplexor_switch(MessageId(3040));
+        assert!(multiplexor_switch.is_some());
+        assert_eq!(multiplexor_switch.unwrap().name(), "Switch");
+    }
+
+    #[test]
+    fn lookup_multiplex_indicator_switch_none_when_missing() {
+        let dbc_content = DBC::from_slice(SAMPLE_DBC).expect("Failed to parse DBC");
+        let multiplexor_switch =
+            dbc_content.message_multiplexor_switch(MessageId(1840));
+        assert!(multiplexor_switch.is_none());
+    }
+
 }
 
 /// Possible error cases for `can-dbc`
@@ -701,6 +728,7 @@ impl DBC {
             .next()
     }
 
+    /// Lookup the extended value for a given signal
     pub fn extended_value_type_for_signal(
         &self,
         message_id: &MessageId,
@@ -720,8 +748,23 @@ impl DBC {
                         None
                     }
                 }
-                _ => None,
             })
             .next()
+    }
+
+    /// Lookup the message multiplexor switch signal for a given message
+    pub fn message_multiplexor_switch(
+        &self,
+        message_id: MessageId
+    ) -> Option<&Signal> {
+        let message = self.messages
+            .iter()
+            .find(|message| message.message_id == message_id);
+
+        if let Some(message) = message {
+            return message.signals.iter()
+            .find(|signal| signal.multiplexer_indicator == MultiplexIndicator::Multiplexor);
+        }
+        None
     }
 }
