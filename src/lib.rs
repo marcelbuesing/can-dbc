@@ -159,7 +159,7 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
     fn lookup_signal_comment() {
         let dbc_content = DBC::from_slice(SAMPLE_DBC).expect("Failed to parse DBC");
         let comment = dbc_content
-            .signal_comment(&MessageId(1840), "Signal_4")
+            .signal_comment(MessageId(1840), "Signal_4")
             .expect("Signal comment missing");
         assert_eq!(
             "asaklfjlsdfjlsdfgls\nHH?=(%)/&KKDKFSDKFKDFKSDFKSDFNKCnvsdcvsvxkcv",
@@ -170,7 +170,7 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
     #[test]
     fn lookup_signal_comment_none_when_missing() {
         let dbc_content = DBC::from_slice(SAMPLE_DBC).expect("Failed to parse DBC");
-        let comment = dbc_content.signal_comment(&MessageId(1840), "Signal_2");
+        let comment = dbc_content.signal_comment(MessageId(1840), "Signal_2");
         assert_eq!(None, comment);
     }
 
@@ -178,7 +178,7 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
     fn lookup_message_comment() {
         let dbc_content = DBC::from_slice(SAMPLE_DBC).expect("Failed to parse DBC");
         let comment = dbc_content
-            .message_comment(&MessageId(1840))
+            .message_comment(MessageId(1840))
             .expect("Message comment missing");
         assert_eq!("Some Message comment", comment);
     }
@@ -186,7 +186,7 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
     #[test]
     fn lookup_message_comment_none_when_missing() {
         let dbc_content = DBC::from_slice(SAMPLE_DBC).expect("Failed to parse DBC");
-        let comment = dbc_content.message_comment(&MessageId(2000));
+        let comment = dbc_content.message_comment(MessageId(2000));
         assert_eq!(None, comment);
     }
 
@@ -194,7 +194,7 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
     fn lookup_value_descriptions_for_signal() {
         let dbc_content = DBC::from_slice(SAMPLE_DBC).expect("Failed to parse DBC");
         let val_descriptions = dbc_content
-            .value_descriptions_for_signal(&MessageId(2000), "Signal_3")
+            .value_descriptions_for_signal(MessageId(2000), "Signal_3")
             .expect("Message comment missing");
 
         let exp = vec![ValDescription {
@@ -208,7 +208,7 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
     fn lookup_value_descriptions_for_signal_none_when_missing() {
         let dbc_content = DBC::from_slice(SAMPLE_DBC).expect("Failed to parse DBC");
         let val_descriptions =
-            dbc_content.value_descriptions_for_signal(&MessageId(2000), "Signal_2");
+            dbc_content.value_descriptions_for_signal(MessageId(2000), "Signal_2");
         assert_eq!(None, val_descriptions);
     }
 
@@ -216,7 +216,7 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
     fn lookup_extended_value_type_for_signal() {
         let dbc_content = DBC::from_slice(SAMPLE_DBC).expect("Failed to parse DBC");
         let extended_value_type =
-            dbc_content.extended_value_type_for_signal(&MessageId(2000), "Signal_8");
+            dbc_content.extended_value_type_for_signal(MessageId(2000), "Signal_8");
         assert_eq!(
             extended_value_type,
             Some(&SignalExtendedValueType::IEEEfloat32Bit)
@@ -227,31 +227,28 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
     fn lookup_extended_value_type_for_signal_none_when_missing() {
         let dbc_content = DBC::from_slice(SAMPLE_DBC).expect("Failed to parse DBC");
         let extended_value_type =
-            dbc_content.extended_value_type_for_signal(&MessageId(2000), "Signal_1");
+            dbc_content.extended_value_type_for_signal(MessageId(2000), "Signal_1");
         assert_eq!(extended_value_type, None);
     }
 
     #[test]
     fn lookup_signal_by_name() {
         let dbc_content = DBC::from_slice(SAMPLE_DBC).expect("Failed to parse DBC");
-        let signal =
-            dbc_content.signal_by_name(MessageId(2000), "Signal_8");
+        let signal = dbc_content.signal_by_name(MessageId(2000), "Signal_8");
         assert!(signal.is_some());
     }
 
     #[test]
     fn lookup_signal_by_name_none_when_missing() {
         let dbc_content = DBC::from_slice(SAMPLE_DBC).expect("Failed to parse DBC");
-        let signal =
-            dbc_content.signal_by_name(MessageId(2000), "Signal_25");
+        let signal = dbc_content.signal_by_name(MessageId(2000), "Signal_25");
         assert_eq!(signal, None);
     }
 
     #[test]
     fn lookup_multiplex_indicator_switch() {
         let dbc_content = DBC::from_slice(SAMPLE_DBC).expect("Failed to parse DBC");
-        let multiplexor_switch =
-            dbc_content.message_multiplexor_switch(MessageId(3040));
+        let multiplexor_switch = dbc_content.message_multiplexor_switch(MessageId(3040));
         assert!(multiplexor_switch.is_some());
         assert_eq!(multiplexor_switch.unwrap().name(), "Switch");
     }
@@ -259,11 +256,9 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
     #[test]
     fn lookup_multiplex_indicator_switch_none_when_missing() {
         let dbc_content = DBC::from_slice(SAMPLE_DBC).expect("Failed to parse DBC");
-        let multiplexor_switch =
-            dbc_content.message_multiplexor_switch(MessageId(1840));
+        let multiplexor_switch = dbc_content.message_multiplexor_switch(MessageId(1840));
         assert!(multiplexor_switch.is_none());
     }
-
 }
 
 /// Possible error cases for `can-dbc`
@@ -651,19 +646,22 @@ impl DBC {
     }
 
     pub fn signal_by_name(&self, message_id: MessageId, signal_name: &str) -> Option<&Signal> {
-        let message = self.messages
+        let message = self
+            .messages
             .iter()
             .find(|message| message.message_id == message_id);
 
         if let Some(message) = message {
-            return message.signals.iter()
-            .find(|signal| signal.name == *signal_name);
+            return message
+                .signals
+                .iter()
+                .find(|signal| signal.name == *signal_name);
         }
         None
     }
 
     /// Lookup a message comment
-    pub fn message_comment(&self, message_id: &MessageId) -> Option<&str> {
+    pub fn message_comment(&self, message_id: MessageId) -> Option<&str> {
         self.comments
             .iter()
             .filter_map(|x| match x {
@@ -671,7 +669,7 @@ impl DBC {
                     message_id: ref x_message_id,
                     ref comment,
                 } => {
-                    if x_message_id == message_id {
+                    if *x_message_id == message_id {
                         Some(comment.as_str())
                     } else {
                         None
@@ -683,7 +681,7 @@ impl DBC {
     }
 
     /// Lookup a signal comment
-    pub fn signal_comment(&self, message_id: &MessageId, signal_name: &str) -> Option<&str> {
+    pub fn signal_comment(&self, message_id: MessageId, signal_name: &str) -> Option<&str> {
         self.comments
             .iter()
             .filter_map(|x| match x {
@@ -692,7 +690,7 @@ impl DBC {
                     signal_name: ref x_signal_name,
                     comment,
                 } => {
-                    if x_message_id == message_id && x_signal_name == signal_name {
+                    if *x_message_id == message_id && x_signal_name == signal_name {
                         Some(comment.as_str())
                     } else {
                         None
@@ -706,7 +704,7 @@ impl DBC {
     /// Lookup value descriptions for signal
     pub fn value_descriptions_for_signal(
         &self,
-        message_id: &MessageId,
+        message_id: MessageId,
         signal_name: &str,
     ) -> Option<&[ValDescription]> {
         self.value_descriptions
@@ -717,7 +715,7 @@ impl DBC {
                     signal_name: ref x_signal_name,
                     ref value_descriptions,
                 } => {
-                    if x_message_id == message_id && x_signal_name == signal_name {
+                    if *x_message_id == message_id && x_signal_name == signal_name {
                         Some(value_descriptions.as_slice())
                     } else {
                         None
@@ -731,7 +729,7 @@ impl DBC {
     /// Lookup the extended value for a given signal
     pub fn extended_value_type_for_signal(
         &self,
-        message_id: &MessageId,
+        message_id: MessageId,
         signal_name: &str,
     ) -> Option<&SignalExtendedValueType> {
         self.signal_extended_value_type_list
@@ -742,7 +740,7 @@ impl DBC {
                     signal_name: ref x_signal_name,
                     ref signal_extended_value_type,
                 } => {
-                    if x_message_id == message_id && x_signal_name == signal_name {
+                    if *x_message_id == message_id && x_signal_name == signal_name {
                         Some(signal_extended_value_type)
                     } else {
                         None
@@ -753,17 +751,17 @@ impl DBC {
     }
 
     /// Lookup the message multiplexor switch signal for a given message
-    pub fn message_multiplexor_switch(
-        &self,
-        message_id: MessageId
-    ) -> Option<&Signal> {
-        let message = self.messages
+    pub fn message_multiplexor_switch(&self, message_id: MessageId) -> Option<&Signal> {
+        let message = self
+            .messages
             .iter()
             .find(|message| message.message_id == message_id);
 
         if let Some(message) = message {
-            return message.signals.iter()
-            .find(|signal| signal.multiplexer_indicator == MultiplexIndicator::Multiplexor);
+            return message
+                .signals
+                .iter()
+                .find(|signal| signal.multiplexer_indicator == MultiplexIndicator::Multiplexor);
         }
         None
     }

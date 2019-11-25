@@ -490,42 +490,42 @@ fn is_quote(chr: char) -> bool {
     chr == '"'
 }
 
-/// Multi space
+// Multi space
 named!(multispace1<CompleteByteSlice, Vec<char>>, many1!(char!(' ')));
 
-/// Abreviation for multispace1
+// Abreviation for multispace1
 named!(ms<CompleteByteSlice, Vec<char>>, many1!(char!(' ')));
 
-/// Colon
+// Colon
 named!(colon<CompleteByteSlice, char>, char!(':'));
 
-/// Comma aka ','
+// Comma aka ','
 named!(comma<CompleteByteSlice, char>, char!(','));
 
-/// Comma aka ';'
+// Comma aka ';'
 named!(semi_colon<CompleteByteSlice, char>, char!(';'));
 
-/// Quote aka '"'
+// Quote aka '"'
 named!(quote<CompleteByteSlice, char>, char!('"'));
 
 named!(pipe<CompleteByteSlice, char>, char!('|'));
 
 named!(at<CompleteByteSlice, char>, char!('@'));
 
-/// brace open aka '('
+// brace open aka '('
 named!(brc_open<CompleteByteSlice, char>, char!('('));
 
-/// brace close aka '('
+// brace close aka '('
 named!(brc_close<CompleteByteSlice, char>, char!(')'));
 
-/// bracket open aka '['
+// bracket open aka '['
 named!(brk_open<CompleteByteSlice, char>, char!('['));
 
-/// bracket close aka ']'
+// bracket close aka ']'
 named!(brk_close<CompleteByteSlice, char>, char!(']'));
 
-/// A valid C_identifier. C_identifiers start with a  alphacharacter or an underscore
-/// and may further consist of alpha­numeric, characters and underscore
+// A valid C_identifier. C_identifiers start with a  alphacharacter or an underscore
+// and may further consist of alpha­numeric, characters and underscore
 named!(c_ident<CompleteByteSlice, String>,
     map_res!(
         recognize!(
@@ -560,7 +560,7 @@ named!(i64_digit<CompleteByteSlice, i64>,
 named!(char_string<CompleteByteSlice, String>,
     do_parse!(
             quote                                 >>
-        s:  take_till_s!(|c| is_quote(c as char)) >>
+        s:  take_till!(|c| is_quote(c as char)) >>
             quote                                 >>
         (String::from_utf8_lossy(s.as_bytes()).to_string())
     )
@@ -622,7 +622,7 @@ named!(pub bit_timing<CompleteByteSlice, Vec<Baudrate>>,
                    multispace0                                                                  >>
                    tag!("BS_:")                                                                 >>
         baudrates: opt!(preceded!(ms,  separated_list!(comma, map!(u64_s, Baudrate)))) >>
-        (baudrates.unwrap_or(Vec::new()))
+        (baudrates.unwrap_or_default())
     )
 );
 
@@ -840,7 +840,7 @@ named!(env_float<CompleteByteSlice, EnvType>, value!(EnvType::EnvTypeFloat, char
 named!(env_int<CompleteByteSlice, EnvType>, value!(EnvType::EnvTypeu64, char!('1')));
 named!(env_data<CompleteByteSlice, EnvType>, value!(EnvType::EnvTypeData, char!('2')));
 
-/// 9 Environment Variable Definitions
+// 9 Environment Variable Definitions
 named!(pub env_var_type<CompleteByteSlice, EnvType>, alt_complete!(env_float | env_int | env_data));
 
 named!(dummy_node_vector_0<CompleteByteSlice, AccessType>, value!(AccessType::DummyNodeVector0, char!('0')));
@@ -848,7 +848,7 @@ named!(dummy_node_vector_1<CompleteByteSlice, AccessType>, value!(AccessType::Du
 named!(dummy_node_vector_2<CompleteByteSlice, AccessType>, value!(AccessType::DummyNodeVector2, char!('2')));
 named!(dummy_node_vector_3<CompleteByteSlice, AccessType>, value!(AccessType::DummyNodeVector3, char!('3')));
 
-/// 9 Environment Variable Definitions
+// 9 Environment Variable Definitions
 named!(pub access_type<CompleteByteSlice, AccessType>,
     do_parse!(
               tag!("DUMMY_NODE_VECTOR") >>
@@ -860,10 +860,10 @@ named!(pub access_type<CompleteByteSlice, AccessType>,
 named!(access_node_vector_xxx<CompleteByteSlice, AccessNode>,  value!(AccessNode::AccessNodeVectorXXX, tag!("VECTOR_XXX")));
 named!(access_node_name<CompleteByteSlice, AccessNode>,  map!(c_ident, |name| AccessNode::AccessNodeName(name)));
 
-/// 9 Environment Variable Definitions
+// 9 Environment Variable Definitions
 named!(pub access_node<CompleteByteSlice, AccessNode>, alt_complete!(access_node_vector_xxx | access_node_name));
 
-/// 9 Environment Variable Definitions
+// 9 Environment Variable Definitions
 named!(pub environment_variable<CompleteByteSlice, EnvironmentVariable>,
     do_parse!(
                        multispace0                                  >>
@@ -1069,7 +1069,7 @@ named!(pub attribute_definition_node<CompleteByteSlice, AttributeDefinition>,
     do_parse!(
            tag!("BU_") >>
            ms          >>
-        x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| String::from_utf8(x.as_bytes().to_vec()).unwrap()) >>
+        x: map!(take_till!(|c |is_semi_colon(c as char)), |x| String::from_utf8(x.as_bytes().to_vec()).unwrap()) >>
         (AttributeDefinition::Node(x))
     )
 );
@@ -1079,7 +1079,7 @@ named!(pub attribute_definition_signal<CompleteByteSlice, AttributeDefinition>,
     do_parse!(
            tag!("SG_") >>
            ms          >>
-        x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| String::from_utf8(x.as_bytes().to_vec()).unwrap()) >>
+        x: map!(take_till!(|c |is_semi_colon(c as char)), |x| String::from_utf8(x.as_bytes().to_vec()).unwrap()) >>
         (AttributeDefinition::Signal(x))
     )
 );
@@ -1089,7 +1089,7 @@ named!(pub attribute_definition_environment_variable<CompleteByteSlice, Attribut
     do_parse!(
            tag!("EV_") >>
            ms          >>
-        x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| String::from_utf8(x.as_bytes().to_vec()).unwrap()) >>
+        x: map!(take_till!(|c |is_semi_colon(c as char)), |x| String::from_utf8(x.as_bytes().to_vec()).unwrap()) >>
         (AttributeDefinition::EnvironmentVariable(x))
     )
 );
@@ -1099,7 +1099,7 @@ named!(pub attribute_definition_message<CompleteByteSlice, AttributeDefinition>,
     do_parse!(
            tag!("BO_") >>
            ms          >>
-        x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| String::from_utf8(x.as_bytes().to_vec()).unwrap()) >>
+        x: map!(take_till!(|c |is_semi_colon(c as char)), |x| String::from_utf8(x.as_bytes().to_vec()).unwrap()) >>
         (AttributeDefinition::Message(x))
     )
 );
@@ -1107,7 +1107,7 @@ named!(pub attribute_definition_message<CompleteByteSlice, AttributeDefinition>,
 // TODO add properties
 named!(pub attribute_definition_plain<CompleteByteSlice, AttributeDefinition>,
     do_parse!(
-        x: map!(take_till_s!(|c |is_semi_colon(c as char)), |x| String::from_utf8(x.as_bytes().to_vec()).unwrap()) >>
+        x: map!(take_till!(|c |is_semi_colon(c as char)), |x| String::from_utf8(x.as_bytes().to_vec()).unwrap()) >>
         (AttributeDefinition::Plain(x))
     )
 );
@@ -1149,9 +1149,9 @@ named!(pub new_symbols<CompleteByteSlice, Vec<Symbol>>,
     )
 );
 
-///
-/// Network node
-///
+//
+// Network node
+//
 named!(pub node<CompleteByteSlice, Node>,
     do_parse!(
             multispace0                           >>
