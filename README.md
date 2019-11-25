@@ -56,7 +56,7 @@ can-dbc is available on crates.io and can be included in your Cargo enabled proj
 
 ```yml
 [dependencies]
-can-dbc = "1.0"
+can-dbc = "3.0"
 ```
 
 # Implemented DBC parts

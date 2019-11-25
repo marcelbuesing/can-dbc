@@ -1,4 +1,8 @@
 # Change Log
+## [3.0.0](https://github.com/marcelbuesing/can-dbc/tree/3.0.0) (2019-11-25)
+- BREAKING: Pass `MessageId`'s by value
+- Cleanup clippy warnings
+
 ## [2.0.0](https://github.com/marcelbuesing/can-dbc/tree/2.0.0) (2019-04-09)
 - Change CAN message id type from `u64` to `u32`.
 - Update dependencies
