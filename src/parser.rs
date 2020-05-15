@@ -313,6 +313,16 @@ mod tests {
     }
 
     #[test]
+    fn empty_network_node_test() {
+        let def = CompleteByteSlice(b"BU_: \n");
+        let nodes = vec![
+        ];
+        let (_, node) = node(def).unwrap();
+        let node_exp = Node(nodes);
+        assert_eq!(node_exp, node);
+    }
+
+    #[test]
     fn envvar_data_test() {
         let def = CompleteByteSlice(b"ENVVAR_DATA_ SomeEnvVarData: 399;\n");
         let (_, envvar_data) = environment_variable_data(def).unwrap();
@@ -1156,10 +1166,9 @@ named!(pub node<CompleteByteSlice, Node>,
     do_parse!(
             multispace0                           >>
             tag!("BU_:")                          >>
-            ms                                    >>
-        li: separated_list!(ms, c_ident) >>
+        li: opt!(preceded!(ms, separated_list!(ms, c_ident))) >>
         eol                                       >>
-        (Node(li))
+        (Node(li.unwrap_or_default()))
     )
 );
 
