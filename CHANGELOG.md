@@ -1,4 +1,8 @@
 # Change Log
+## [3.0.1](https://github.com/marcelbuesing/can-dbc/tree/3.0.1) (2019-05-17)
+- Fix: Allow zero time occurence of BU name
+- Remove Cargo.lock file
+
 ## [3.0.0](https://github.com/marcelbuesing/can-dbc/tree/3.0.0) (2019-11-25)
 - BREAKING: Pass `MessageId`'s by value
 - Cleanup clippy warnings
