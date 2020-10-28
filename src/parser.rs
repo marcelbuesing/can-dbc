@@ -1167,6 +1167,7 @@ named!(pub node<CompleteByteSlice, Node>,
             multispace0                           >>
             tag!("BU_:")                          >>
         li: opt!(preceded!(ms, separated_list!(ms, c_ident))) >>
+        space0                                    >>
         eol                                       >>
         (Node(li.unwrap_or_default()))
     )
@@ -1297,24 +1298,25 @@ named!(pub signal_groups<CompleteByteSlice, SignalGroups>,
 
 named!(pub dbc<CompleteByteSlice, DBC>,
     do_parse!(
-        version:                         version                               >>
-        new_symbols:                     new_symbols                           >>
-        bit_timing:                      opt!(bit_timing)                      >>
-        nodes:                           many0!(node)                          >>
-        value_tables:                    many0!(value_table)                   >>
-        messages:                        many0!(message)                       >>
-        message_transmitters:            many0!(message_transmitter)           >>
-        environment_variables:           many0!(environment_variable)          >>
-        environment_variable_data:       many0!(environment_variable_data)     >>
-        signal_types:                    many0!(signal_type)                   >>
-        comments:                        many0!(comment)                       >>
-        attribute_definitions:           many0!(attribute_definition)          >>
-        attribute_defaults:              many0!(attribute_default)             >>
-        attribute_values:                many0!(attribute_value_for_object)    >>
-        value_descriptions:              many0!(value_descriptions)            >>
-        signal_type_refs:                many0!(signal_type_ref)               >>
-        signal_groups:                   many0!(signal_groups)                 >>
+        version:                         version                                 >>
+        new_symbols:                     new_symbols                             >>
+        bit_timing:                      opt!(bit_timing)                        >>
+        nodes:                           many0!(node)                            >>
+        value_tables:                    many0!(value_table)                     >>
+        messages:                        many0!(message)                         >>
+        message_transmitters:            many0!(message_transmitter)             >>
+        environment_variables:           many0!(environment_variable)            >>
+        environment_variable_data:       many0!(environment_variable_data)       >>
+        signal_types:                    many0!(signal_type)                     >>
+        comments:                        many0!(comment)                         >>
+        attribute_definitions:           many0!(attribute_definition)            >>
+        attribute_defaults:              many0!(attribute_default)               >>
+        attribute_values:                many0!(attribute_value_for_object)      >>
+        value_descriptions:              many0!(value_descriptions)              >>
+        signal_type_refs:                many0!(signal_type_ref)                 >>
+        signal_groups:                   many0!(signal_groups)                   >>
         signal_extended_value_type_list: many0!(signal_extended_value_type_list) >>
+        multispace0                                                              >>
         (DBC {
             version: version,
             new_symbols: new_symbols,
