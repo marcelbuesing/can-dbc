@@ -1,4 +1,7 @@
 # Change Log
+## [3.0.2](https://github.com/marcelbuesing/can-dbc/tree/3.0.1) (2020-10-28)
+- Fix: Allow trailing whitespaces in dbc. Thanks @killercup.
+
 ## [3.0.1](https://github.com/marcelbuesing/can-dbc/tree/3.0.1) (2019-05-17)
 - Fix: Allow zero time occurence of BU name
 - Remove Cargo.lock file
