@@ -315,8 +315,7 @@ mod tests {
     #[test]
     fn empty_network_node_test() {
         let def = CompleteByteSlice(b"BU_: \n");
-        let nodes = vec![
-        ];
+        let nodes = vec![];
         let (_, node) = node(def).unwrap();
         let node_exp = Node(nodes);
         assert_eq!(node_exp, node);
@@ -552,16 +551,16 @@ named!(c_ident<CompleteByteSlice, String>,
 named!(c_ident_vec<CompleteByteSlice, Vec<String>>, separated_list!(comma, c_ident));
 
 named!(u32_s<CompleteByteSlice, u32>, map_res!(
-        digit,
-        |s: CompleteByteSlice| std::str::FromStr::from_str(str::from_utf8(s.as_bytes()).unwrap())
-    )
- );
+       digit,
+       |s: CompleteByteSlice| std::str::FromStr::from_str(str::from_utf8(s.as_bytes()).unwrap())
+   )
+);
 
 named!(u64_s<CompleteByteSlice, u64>, map_res!(
-        digit,
-        |s: CompleteByteSlice| std::str::FromStr::from_str(str::from_utf8(s.as_bytes()).unwrap())
-    )
- );
+       digit,
+       |s: CompleteByteSlice| std::str::FromStr::from_str(str::from_utf8(s.as_bytes()).unwrap())
+   )
+);
 
 named!(i64_digit<CompleteByteSlice, i64>,
     flat_map!(recognize!(tuple!(opt!(alt_complete!(char!('+') | char!('-'))), digit)), parse_to!(i64))
@@ -675,18 +674,18 @@ named!(pub signal<CompleteByteSlice, Signal>,
        receivers:             c_ident_vec           >>
        eol                                          >>
         (Signal {
-            name: name,
-            multiplexer_indicator: multiplexer_indicator,
-            start_bit: start_bit,
-            signal_size: signal_size,
-            byte_order: byte_order,
-            value_type: value_type,
-            factor: factor,
-            offset: offset,
-            min: min,
-            max: max,
-            unit:  unit,
-            receivers: receivers,
+            name,
+            multiplexer_indicator,
+            start_bit,
+            signal_size,
+            byte_order,
+            value_type,
+            factor,
+            offset,
+            min,
+            max,
+            unit,
+            receivers,
         })
     )
 );
@@ -707,7 +706,7 @@ named!(pub message<CompleteByteSlice, Message>,
     signals:      many0!(signal) >>
     (Message {
         message_id,
-        message_name: message_name,
+        message_name,
         message_size,
         transmitter,
         signals
@@ -804,7 +803,7 @@ named!(pub value_description<CompleteByteSlice, ValDescription>,
         a: double      >>
            ms          >>
         b: char_string >>
-        (ValDescription { a: a, b: b })
+        (ValDescription { a, b })
     )
 );
 
@@ -1188,9 +1187,9 @@ named!(pub signal_type_ref<CompleteByteSlice, SignalTypeRef>,
                           semi_colon      >>
                           eol             >>
         (SignalTypeRef {
-            message_id: message_id,
-            signal_name: signal_name,
-            signal_type_name: signal_type_name,
+            message_id,
+            signal_name,
+            signal_type_name,
         })
     )
 );
@@ -1204,7 +1203,7 @@ named!(pub value_table<CompleteByteSlice, ValueTable>,
         value_descriptions: many_till!(preceded!(ms, value_description), preceded!(ms, semi_colon)) >>
         eol >>
         (ValueTable {
-            value_table_name: value_table_name,
+            value_table_name,
             value_descriptions: value_descriptions.0
         })
     )
@@ -1237,9 +1236,9 @@ named!(pub signal_extended_value_type_list<CompleteByteSlice, SignalExtendedValu
         semi_colon                                             >>
         eol                                                    >>
         (SignalExtendedValueTypeList {
-            message_id: message_id,
-            signal_name: signal_name,
-            signal_extended_value_type: signal_extended_value_type,
+            message_id,
+            signal_name,
+            signal_extended_value_type,
         })
     )
 );
@@ -1265,8 +1264,8 @@ named!(pub message_transmitter<CompleteByteSlice, MessageTransmitter>,
                      semi_colon             >>
                      eol >>
         (MessageTransmitter {
-            message_id: message_id,
-            transmitter: transmitter,
+            message_id,
+            transmitter,
         })
     )
 );
@@ -1288,10 +1287,10 @@ named!(pub signal_groups<CompleteByteSlice, SignalGroups>,
         semi_colon                                           >>
         eol                                                  >>
         (SignalGroups{
-            message_id: message_id,
-            signal_group_name: signal_group_name,
-            repetitions: repetitions,
-            signal_names: signal_names,
+            message_id,
+            signal_group_name,
+            repetitions,
+            signal_names,
         })
     )
 );
@@ -1318,24 +1317,24 @@ named!(pub dbc<CompleteByteSlice, DBC>,
         signal_extended_value_type_list: many0!(signal_extended_value_type_list) >>
         multispace0                                                              >>
         (DBC {
-            version: version,
-            new_symbols: new_symbols,
-            bit_timing: bit_timing,
-            nodes: nodes,
-            value_tables: value_tables,
-            messages: messages,
-            message_transmitters: message_transmitters,
-            environment_variables: environment_variables,
-            environment_variable_data: environment_variable_data,
-            signal_types: signal_types,
-            comments: comments,
-            attribute_definitions: attribute_definitions,
-            attribute_defaults: attribute_defaults,
-            attribute_values: attribute_values,
-            value_descriptions: value_descriptions,
-            signal_type_refs: signal_type_refs,
-            signal_groups: signal_groups,
-            signal_extended_value_type_list: signal_extended_value_type_list,
+            version,
+            new_symbols,
+            bit_timing,
+            nodes,
+            value_tables,
+            messages,
+            message_transmitters,
+            environment_variables,
+            environment_variable_data,
+            signal_types,
+            comments,
+            attribute_definitions,
+            attribute_defaults,
+            attribute_values,
+            value_descriptions,
+            signal_type_refs,
+            signal_groups,
+            signal_extended_value_type_list,
         })
     )
 );
