@@ -1,7 +1,7 @@
 # can-dbc
 [![LICENSE](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![VERSION](https://img.shields.io/crates/v/can-dbc.svg)](https://crates.io/crates/can-dbc)
-[![Build Status](https://travis-ci.org/marcelbuesing/can-dbc.svg?branch=dev)](https://travis-ci.org/marcelbuesing/can-dbc)
+[![Actions Status](https://github.com/marcelbuesing/can-dbc/workflows/Continuous%20integration/badge.svg)](https://github.com/marcelbuesing/can-dbc/actions?query=workflow%3A"Continuous+integration")
 [![codecov](https://codecov.io/gh/marcelbuesing/can-dbc/branch/dev/graph/badge.svg)](https://codecov.io/gh/marcelbuesing/can-dbc)
 [![docs](https://docs.rs/can-dbc/badge.svg)](https://docs.rs/can-dbc)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmarcelbuesing%2Fcan-dbc.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmarcelbuesing%2Fcan-dbc?ref=badge_shield)
