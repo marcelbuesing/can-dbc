@@ -734,17 +734,16 @@ impl DBC {
     ) -> Option<&SignalExtendedValueType> {
         self.signal_extended_value_type_list
             .iter()
-            .filter_map(|x| match x {
-                SignalExtendedValueTypeList {
+            .filter_map(|x| {
+                let SignalExtendedValueTypeList {
                     message_id: ref x_message_id,
                     signal_name: ref x_signal_name,
                     ref signal_extended_value_type,
-                } => {
-                    if *x_message_id == message_id && x_signal_name == signal_name {
-                        Some(signal_extended_value_type)
-                    } else {
-                        None
-                    }
+                } = x;
+                if *x_message_id == message_id && x_signal_name == signal_name {
+                    Some(signal_extended_value_type)
+                } else {
+                    None
                 }
             })
             .next()
