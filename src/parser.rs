@@ -470,6 +470,20 @@ mod tests {
     }
 
     #[test]
+    fn val_table_no_space_preceding_comma_test() {
+        let def = CompleteByteSlice(b"VAL_TABLE_ Tst 2 \"ABC\";\n");
+        let exp = ValueTable {
+            value_table_name: "Tst".to_string(),
+            value_descriptions: vec![ValDescription {
+                a: 2f64,
+                b: "ABC".to_string(),
+            }],
+        };
+        let (_, val_table) = value_table(def).unwrap();
+        assert_eq!(exp, val_table);
+    }
+
+    #[test]
     fn sig_val_type_test() {
         let def = CompleteByteSlice(b"SIG_VALTYPE_ 2000 Signal_8 : 1;\n");
         let exp = SignalExtendedValueTypeList {
@@ -504,6 +518,9 @@ named!(multispace1<CompleteByteSlice, Vec<char>>, many1!(char!(' ')));
 
 // Abreviation for multispace1
 named!(ms<CompleteByteSlice, Vec<char>>, many1!(char!(' ')));
+
+// One or multiple spaces
+named!(ms0<CompleteByteSlice, Vec<char>>, many0!(char!(' ')));
 
 // Colon
 named!(colon<CompleteByteSlice, char>, char!(':'));
@@ -1200,7 +1217,7 @@ named!(pub value_table<CompleteByteSlice, ValueTable>,
                             tag!("VAL_TABLE_")      >>
                             ms                      >>
         value_table_name:   c_ident                 >>
-        value_descriptions: many_till!(preceded!(ms, value_description), preceded!(ms, semi_colon)) >>
+        value_descriptions: many_till!(preceded!(ms0, value_description), preceded!(ms0, semi_colon)) >>
         eol >>
         (ValueTable {
             value_table_name,
