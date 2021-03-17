@@ -91,6 +91,8 @@ can-dbc = "3.0"
 # Alternatives
 - [canparse](https://github.com/jmagnuson/canparse)
 
+# Credits
+Test dbcs files were copied from the [cantools](https://github.com/eerimoq/cantools) project.
 
 ## License
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmarcelbuesing%2Fcan-dbc.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmarcelbuesing%2Fcan-dbc?ref=badge_large)
