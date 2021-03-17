@@ -4,7 +4,7 @@
 [![Actions Status](https://github.com/marcelbuesing/can-dbc/workflows/Continuous%20integration/badge.svg)](https://github.com/marcelbuesing/can-dbc/actions?query=workflow%3A"Continuous+integration")
 [![codecov](https://codecov.io/gh/marcelbuesing/can-dbc/branch/dev/graph/badge.svg)](https://codecov.io/gh/marcelbuesing/can-dbc)
 [![docs](https://docs.rs/can-dbc/badge.svg)](https://docs.rs/can-dbc)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmarcelbuesing%2Fcan-dbc.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmarcelbuesing%2Fcan-dbc?ref=badge_shield)
+[![Cargo Deny Status](https://img.shields.io/badge/cargo--deny-license%20checked-green)](https://github.com/marcelbuesing/can-dbc/actions?query=workflow%3A"Continuous+integration")
 
 A CAN-dbc format parser written with Rust's [nom](https://github.com/Geal/nom) parser combinator library.
 
@@ -94,5 +94,11 @@ can-dbc = "3.0"
 # Credits
 Test dbcs files were copied from the [cantools](https://github.com/eerimoq/cantools) project.
 
-## License
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmarcelbuesing%2Fcan-dbc.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmarcelbuesing%2Fcan-dbc?ref=badge_large)
+# License Checks
+
+This project uses [cargo-deny](https://github.com/EmbarkStudios/cargo-deny) for checking the licenses of dependencies. To run the check locally run the following:
+
+```
+cargo install cargo-deny
+cargo deny check
+```
