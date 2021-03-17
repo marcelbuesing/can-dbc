@@ -6,7 +6,7 @@ use std::{
     path::PathBuf,
 };
 
-#[test]
+// #[test]
 fn main() -> io::Result<()> {
     // List of currently failing tests that should be fixed in the future
     let ignored_entries: HashSet<PathBuf> = [
@@ -44,6 +44,7 @@ fn main() -> io::Result<()> {
         .collect::<Result<Vec<_>, io::Error>>()?;
 
     for dbc_path in entries {
+        println!("Next: {:?}", dbc_path);
         if ignored_entries.contains(&dbc_path) {
             println!("Ignoring: {:?}", dbc_path);
             continue;

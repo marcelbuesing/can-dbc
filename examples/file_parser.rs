@@ -1,11 +1,8 @@
 extern crate clap;
 
-use can_dbc;
+use can_dbc::{self};
 use clap::{App, Arg};
-use nom;
-use nom::verbose_errors;
 
-use std::cmp;
 use std::fs::File;
 use std::io;
 use std::io::prelude::*;
@@ -27,20 +24,16 @@ fn main() -> io::Result<()> {
     let mut f = File::open(path)?;
     let mut buffer = Vec::new();
     f.read_to_end(&mut buffer)?;
+    let dbc_in = std::str::from_utf8(&buffer).unwrap();
 
-    match can_dbc::DBC::from_slice(&buffer) {
+    match can_dbc::DBC::from_str(&dbc_in) {
         Ok(dbc_content) => println!("DBC Content{:#?}", dbc_content),
         Err(e) => {
             match e {
-                can_dbc::Error::NomError(nom::Err::Incomplete(needed)) => eprintln!("Error incomplete input, needed: {:?}", needed),
-                can_dbc::Error::NomError(nom::Err::Error(ctx)) => {
-                    match ctx {
-                        verbose_errors::Context::Code(i, kind) => eprintln!("Error Kind: {:?}, Code: {:?}", kind, String::from_utf8(i.to_vec())),
-                        verbose_errors::Context::List(l)=> eprintln!("Error List: {:?}", l),
-                    }
-                }
-                can_dbc::Error::NomError(nom::Err::Failure(ctx)) => eprintln!("Failure {:?}", ctx),
-                can_dbc::Error::Incomplete(dbc, remaining) => eprintln!("Not all data in buffer was read {:#?}, remaining unparsed (length: {}): {}\n...(truncated)", dbc, remaining.len(), String::from_utf8_lossy(&remaining[0..cmp::min(100, remaining.len())]).to_string())
+                can_dbc::Error::Nom(nom::Err::Error(e)) => eprintln!("{:?}", e),
+                can_dbc::Error::Nom(nom::Err::Failure(e)) => eprintln!("{:?}", e),
+                can_dbc::Error::Nom(nom::Err::Incomplete(needed)) => eprintln!("Nom incomplete needed: {:#?}", needed),
+                can_dbc::Error::Incomplete(dbc, remaining) => eprintln!("Not all data in buffer was read {:#?}, remaining unparsed (length: {}): {}\n...(truncated)", dbc, remaining.len(), remaining)
             }
         }
     }
