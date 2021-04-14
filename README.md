@@ -44,6 +44,8 @@ fn main() -> io::Result<()> {
 }
 ```
 
+For a proper implementation for reading or writing CAN frames according to the DBC, I recommend you take a look at [dbc-codegen](https://github.com/technocreatives/dbc-codegen).
+
 # 2. Example
 
 The file parser simply parses a dbc input file and prints the parsed content.
