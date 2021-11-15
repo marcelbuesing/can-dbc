@@ -979,7 +979,7 @@ fn access_node_vector_xxx(s: &str) -> IResult<&str, AccessNode> {
 }
 
 fn access_node_name(s: &str) -> IResult<&str, AccessNode> {
-    map(c_ident, |name| AccessNode::AccessNodeName(name))(s)
+    map(c_ident, AccessNode::AccessNodeName)(s)
 }
 
 fn access_node(s: &str) -> IResult<&str, AccessNode> {
@@ -1377,7 +1377,7 @@ fn transmitter_vector_xxx(s: &str) -> IResult<&str, Transmitter> {
 }
 
 fn transmitter_node_name(s: &str) -> IResult<&str, Transmitter> {
-    map(c_ident, |x| Transmitter::NodeName(x))(s)
+    map(c_ident, Transmitter::NodeName)(s)
 }
 
 fn transmitter(s: &str) -> IResult<&str, Transmitter> {

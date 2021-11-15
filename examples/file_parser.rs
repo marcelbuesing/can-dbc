@@ -3,6 +3,7 @@ extern crate clap;
 use can_dbc::{self};
 use clap::{App, Arg};
 
+use std::convert::TryFrom;
 use std::fs::File;
 use std::io;
 use std::io::prelude::*;
@@ -26,7 +27,7 @@ fn main() -> io::Result<()> {
     f.read_to_end(&mut buffer)?;
     let dbc_in = std::str::from_utf8(&buffer).unwrap();
 
-    match can_dbc::DBC::from_str(&dbc_in) {
+    match can_dbc::DBC::try_from(dbc_in) {
         Ok(dbc_content) => println!("DBC Content{:#?}", dbc_content),
         Err(e) => {
             match e {

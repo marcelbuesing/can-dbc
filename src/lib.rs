@@ -41,6 +41,8 @@ extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 
+use std::convert::TryFrom;
+
 use derive_getters::Getters;
 pub use nom::error::{convert_error, VerboseError};
 
@@ -126,7 +128,7 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
 
     #[test]
     fn dbc_definition_test() {
-        match DBC::from_str(SAMPLE_DBC) {
+        match DBC::try_from(SAMPLE_DBC) {
             Ok(dbc_content) => println!("DBC Content{:#?}", dbc_content),
             Err(e) => {
                 match e {
@@ -149,7 +151,7 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
 
     #[test]
     fn lookup_signal_comment() {
-        let dbc_content = DBC::from_str(SAMPLE_DBC).expect("Failed to parse DBC");
+        let dbc_content = DBC::try_from(SAMPLE_DBC).expect("Failed to parse DBC");
         let comment = dbc_content
             .signal_comment(MessageId(1840), "Signal_4")
             .expect("Signal comment missing");
@@ -161,14 +163,14 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
 
     #[test]
     fn lookup_signal_comment_none_when_missing() {
-        let dbc_content = DBC::from_str(SAMPLE_DBC).expect("Failed to parse DBC");
+        let dbc_content = DBC::try_from(SAMPLE_DBC).expect("Failed to parse DBC");
         let comment = dbc_content.signal_comment(MessageId(1840), "Signal_2");
         assert_eq!(None, comment);
     }
 
     #[test]
     fn lookup_message_comment() {
-        let dbc_content = DBC::from_str(SAMPLE_DBC).expect("Failed to parse DBC");
+        let dbc_content = DBC::try_from(SAMPLE_DBC).expect("Failed to parse DBC");
         let comment = dbc_content
             .message_comment(MessageId(1840))
             .expect("Message comment missing");
@@ -177,14 +179,14 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
 
     #[test]
     fn lookup_message_comment_none_when_missing() {
-        let dbc_content = DBC::from_str(SAMPLE_DBC).expect("Failed to parse DBC");
+        let dbc_content = DBC::try_from(SAMPLE_DBC).expect("Failed to parse DBC");
         let comment = dbc_content.message_comment(MessageId(2000));
         assert_eq!(None, comment);
     }
 
     #[test]
     fn lookup_value_descriptions_for_signal() {
-        let dbc_content = DBC::from_str(SAMPLE_DBC).expect("Failed to parse DBC");
+        let dbc_content = DBC::try_from(SAMPLE_DBC).expect("Failed to parse DBC");
         let val_descriptions = dbc_content
             .value_descriptions_for_signal(MessageId(2000), "Signal_3")
             .expect("Message comment missing");
@@ -198,7 +200,7 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
 
     #[test]
     fn lookup_value_descriptions_for_signal_none_when_missing() {
-        let dbc_content = DBC::from_str(SAMPLE_DBC).expect("Failed to parse DBC");
+        let dbc_content = DBC::try_from(SAMPLE_DBC).expect("Failed to parse DBC");
         let val_descriptions =
             dbc_content.value_descriptions_for_signal(MessageId(2000), "Signal_2");
         assert_eq!(None, val_descriptions);
@@ -206,7 +208,7 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
 
     #[test]
     fn lookup_extended_value_type_for_signal() {
-        let dbc_content = DBC::from_str(SAMPLE_DBC).expect("Failed to parse DBC");
+        let dbc_content = DBC::try_from(SAMPLE_DBC).expect("Failed to parse DBC");
         let extended_value_type =
             dbc_content.extended_value_type_for_signal(MessageId(2000), "Signal_8");
         assert_eq!(
@@ -217,7 +219,7 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
 
     #[test]
     fn lookup_extended_value_type_for_signal_none_when_missing() {
-        let dbc_content = DBC::from_str(SAMPLE_DBC).expect("Failed to parse DBC");
+        let dbc_content = DBC::try_from(SAMPLE_DBC).expect("Failed to parse DBC");
         let extended_value_type =
             dbc_content.extended_value_type_for_signal(MessageId(2000), "Signal_1");
         assert_eq!(extended_value_type, None);
@@ -225,21 +227,21 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
 
     #[test]
     fn lookup_signal_by_name() {
-        let dbc_content = DBC::from_str(SAMPLE_DBC).expect("Failed to parse DBC");
+        let dbc_content = DBC::try_from(SAMPLE_DBC).expect("Failed to parse DBC");
         let signal = dbc_content.signal_by_name(MessageId(2000), "Signal_8");
         assert!(signal.is_some());
     }
 
     #[test]
     fn lookup_signal_by_name_none_when_missing() {
-        let dbc_content = DBC::from_str(SAMPLE_DBC).expect("Failed to parse DBC");
+        let dbc_content = DBC::try_from(SAMPLE_DBC).expect("Failed to parse DBC");
         let signal = dbc_content.signal_by_name(MessageId(2000), "Signal_25");
         assert_eq!(signal, None);
     }
 
     #[test]
     fn lookup_multiplex_indicator_switch() {
-        let dbc_content = DBC::from_str(SAMPLE_DBC).expect("Failed to parse DBC");
+        let dbc_content = DBC::try_from(SAMPLE_DBC).expect("Failed to parse DBC");
         let multiplexor_switch = dbc_content.message_multiplexor_switch(MessageId(3040));
         assert!(multiplexor_switch.is_some());
         assert_eq!(multiplexor_switch.unwrap().name(), "Switch");
@@ -247,7 +249,7 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
 
     #[test]
     fn lookup_multiplex_indicator_switch_none_when_missing() {
-        let dbc_content = DBC::from_str(SAMPLE_DBC).expect("Failed to parse DBC");
+        let dbc_content = DBC::try_from(SAMPLE_DBC).expect("Failed to parse DBC");
         let multiplexor_switch = dbc_content.message_multiplexor_switch(MessageId(1840));
         assert!(multiplexor_switch.is_none());
     }
@@ -627,9 +629,11 @@ impl DBC {
     /// Read a DBC from a buffer
     pub fn from_slice(buffer: &[u8]) -> Result<DBC, Error> {
         let dbc_in = std::str::from_utf8(buffer).unwrap();
-        Self::from_str(dbc_in)
+        Self::try_from(dbc_in)
     }
 
+    #[allow(clippy::should_implement_trait)]
+    #[deprecated(since = "4.0.0", note = "please use `DBC::try_from` instead")]
     pub fn from_str(dbc_in: &str) -> Result<DBC, Error> {
         let (remaining, dbc) = parser::dbc(dbc_in).map_err(Error::Nom)?;
         if !remaining.is_empty() {
@@ -756,5 +760,17 @@ impl DBC {
                 .find(|signal| signal.multiplexer_indicator == MultiplexIndicator::Multiplexor);
         }
         None
+    }
+}
+
+impl<'a> TryFrom<&'a str> for DBC {
+    type Error = Error<'a>;
+
+    fn try_from(dbc_in: &'a str) -> Result<Self, Self::Error> {
+        let (remaining, dbc) = parser::dbc(dbc_in).map_err(Error::Nom)?;
+        if !remaining.is_empty() {
+            return Err(Error::Incomplete(dbc, remaining));
+        }
+        Ok(dbc)
     }
 }
