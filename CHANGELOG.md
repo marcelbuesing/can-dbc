@@ -1,4 +1,11 @@
 # Change Log
+## [4.0.0](https://github.com/marcelbuesing/can-dbc/tree/4.0.0) (2021-11-15)
+- Migrate from nom 4.2 to nom 7.1.
+- Allow "random" order of elements in DBC. They still have to be in a block e.g. all messages or comments.
+- Remove verbose error in returned error
+- Return `&str` of remaining unparsed content instead of `Vec<u8>`.
+- Mark `DBC::from_str` as deprecated and replace it with TryFrom::from_str
+
 ## [3.0.2](https://github.com/marcelbuesing/can-dbc/tree/3.0.1) (2020-10-28)
 - Fix: Allow trailing whitespaces in dbc. Thanks @killercup.
 
