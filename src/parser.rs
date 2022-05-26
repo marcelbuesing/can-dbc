@@ -19,10 +19,10 @@ use nom::{
 use crate::{
     AccessNode, AccessType, AttributeDefault, AttributeDefinition, AttributeValue,
     AttributeValueForObject, AttributeValuedForObjectType, Baudrate, ByteOrder, Comment, EnvType,
-    EnvironmentVariable, EnvironmentVariableData, Message, MessageId, MessageTransmitter,
-    MultiplexIndicator, Node, Signal, SignalExtendedValueType, SignalExtendedValueTypeList,
-    SignalGroups, SignalType, SignalTypeRef, Symbol, Transmitter, ValDescription, ValueDescription,
-    ValueTable, ValueType, Version, DBC,
+    EnvironmentVariable, EnvironmentVariableData, ExtendedMultiplex, ExtendedMultiplexMapping,
+    Message, MessageId, MessageTransmitter, MultiplexIndicator, Node, Signal,
+    SignalExtendedValueType, SignalExtendedValueTypeList, SignalGroups, SignalType, SignalTypeRef,
+    Symbol, Transmitter, ValDescription, ValueDescription, ValueTable, ValueType, Version, DBC,
 };
 
 #[cfg(test)]
@@ -96,6 +96,13 @@ mod tests {
 
         let (_, plain) = multiplexer_indicator(" eol").expect("Failed to parse plain");
         assert_eq!(MultiplexIndicator::Plain, plain);
+
+        let (_, multiplexer) =
+            multiplexer_indicator(" m8M eol").expect("Failed to parse multiplexer");
+        assert_eq!(
+            MultiplexIndicator::MultiplexorAndMultiplexedSignal(8),
+            multiplexer
+        );
     }
 
     #[test]
@@ -491,6 +498,57 @@ mod tests {
     }
 
     #[test]
+    fn extended_multiplex_test() {
+        // simple mapping
+        let def = "SG_MUL_VAL_ 2147483650 muxed_A_1 MUX_A 1-1;\n";
+        let exp = ExtendedMultiplex {
+            message_id: MessageId(2147483650),
+            signal_name: "muxed_A_1".to_string(),
+            multiplexor_signal_name: "MUX_A".to_string(),
+            mappings: vec![ExtendedMultiplexMapping {
+                min_value: 1,
+                max_value: 1,
+            }],
+        };
+        let (_, ext_multiplex) = extended_multiplex(def).unwrap();
+        assert_eq!(exp, ext_multiplex);
+
+        // range mapping
+        let def = "SG_MUL_VAL_ 2147483650 muxed_A_1 MUX_A 1568-2568;\n";
+        let exp = ExtendedMultiplex {
+            message_id: MessageId(2147483650),
+            signal_name: "muxed_A_1".to_string(),
+            multiplexor_signal_name: "MUX_A".to_string(),
+            mappings: vec![ExtendedMultiplexMapping {
+                min_value: 1568,
+                max_value: 2568,
+            }],
+        };
+        let (_, ext_multiplex) = extended_multiplex(def).unwrap();
+        assert_eq!(exp, ext_multiplex);
+
+        // multiple mappings
+        let def = "SG_MUL_VAL_ 2147483650 muxed_B_5 MUX_B 5-5, 16-24;\n";
+        let exp = ExtendedMultiplex {
+            message_id: MessageId(2147483650),
+            signal_name: "muxed_B_5".to_string(),
+            multiplexor_signal_name: "MUX_B".to_string(),
+            mappings: vec![
+                ExtendedMultiplexMapping {
+                    min_value: 5,
+                    max_value: 5,
+                },
+                ExtendedMultiplexMapping {
+                    min_value: 16,
+                    max_value: 24,
+                },
+            ],
+        };
+        let (_, ext_multiplex) = extended_multiplex(def).unwrap();
+        assert_eq!(exp, ext_multiplex);
+    }
+
+    #[test]
     fn sig_val_type_test() {
         let def = "SIG_VALTYPE_ 2000 Signal_8 : 1;\n";
         let exp = SignalExtendedValueTypeList {
@@ -659,13 +717,22 @@ fn multiplexor(s: &str) -> IResult<&str, MultiplexIndicator> {
     Ok((s, MultiplexIndicator::Multiplexor))
 }
 
+fn multiplexor_and_multiplexed(s: &str) -> IResult<&str, MultiplexIndicator> {
+    let (s, _) = ms1(s)?;
+    let (s, _) = char('m')(s)?;
+    let (s, d) = complete::u64(s)?;
+    let (s, _) = char('M')(s)?;
+    let (s, _) = ms1(s)?;
+    Ok((s, MultiplexIndicator::MultiplexorAndMultiplexedSignal(d)))
+}
+
 fn plain(s: &str) -> IResult<&str, MultiplexIndicator> {
     let (s, _) = ms1(s)?;
     Ok((s, MultiplexIndicator::Plain))
 }
 
 fn multiplexer_indicator(s: &str) -> IResult<&str, MultiplexIndicator> {
-    alt((multiplexer, multiplexor, plain))(s)
+    alt((multiplexer, multiplexor, multiplexor_and_multiplexed, plain))(s)
 }
 
 fn version(s: &str) -> IResult<&str, Version> {
@@ -1331,6 +1398,44 @@ fn value_table(s: &str) -> IResult<&str, ValueTable> {
     ))
 }
 
+fn extended_multiplex_mapping(s: &str) -> IResult<&str, ExtendedMultiplexMapping> {
+    let (s, _) = ms0(s)?;
+    let (s, min_value) = complete::u64(s)?;
+    let (s, _) = char('-')(s)?;
+    let (s, max_value) = complete::u64(s)?;
+    Ok((
+        s,
+        ExtendedMultiplexMapping {
+            min_value,
+            max_value,
+        },
+    ))
+}
+
+fn extended_multiplex(s: &str) -> IResult<&str, ExtendedMultiplex> {
+    let (s, _) = multispace0(s)?;
+    let (s, _) = tag("SG_MUL_VAL_")(s)?;
+    let (s, _) = ms1(s)?;
+    let (s, message_id) = message_id(s)?;
+    let (s, _) = ms1(s)?;
+    let (s, signal_name) = c_ident(s)?;
+    let (s, _) = ms1(s)?;
+    let (s, multiplexor_signal_name) = c_ident(s)?;
+    let (s, _) = ms1(s)?;
+    let (s, mappings) = separated_list0(tag(","), extended_multiplex_mapping)(s)?;
+    let (s, _) = semi_colon(s)?;
+    let (s, _) = line_ending(s)?;
+    Ok((
+        s,
+        ExtendedMultiplex {
+            message_id,
+            signal_name,
+            multiplexor_signal_name,
+            mappings,
+        },
+    ))
+}
+
 fn signed_or_unsigned_integer(s: &str) -> IResult<&str, SignalExtendedValueType> {
     value(SignalExtendedValueType::SignedOrUnsignedInteger, tag("0"))(s)
 }
@@ -1456,6 +1561,7 @@ pub fn dbc(s: &str) -> IResult<&str, DBC> {
             signal_type_refs,
             signal_groups,
             signal_extended_value_type_list,
+            extended_multiplex,
         ),
     ) = permutation((
         version,
@@ -1476,6 +1582,7 @@ pub fn dbc(s: &str) -> IResult<&str, DBC> {
         many0(signal_type_ref),
         many0(signal_groups),
         many0(signal_extended_value_type_list),
+        many0(extended_multiplex),
     ))(s)?;
     let (s, _) = multispace0(s)?;
     Ok((
@@ -1499,6 +1606,7 @@ pub fn dbc(s: &str) -> IResult<&str, DBC> {
             signal_type_refs,
             signal_groups,
             signal_extended_value_type_list,
+            extended_multiplex,
         },
     ))
 }
