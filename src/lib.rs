@@ -328,6 +328,8 @@ pub enum MultiplexIndicator {
     Multiplexor,
     /// Signal us being multiplexed by the multiplexer switch.
     MultiplexedSignal(u64),
+    /// Signal us being multiplexed by the multiplexer switch and itself is a multiplexor
+    MultiplexorAndMultiplexedSignal(u64),
     /// Normal signal
     Plain,
 }
@@ -442,6 +444,22 @@ pub enum AttributeValue {
 pub struct ValueTable {
     value_table_name: String,
     value_descriptions: Vec<ValDescription>,
+}
+
+#[derive(Clone, Debug, PartialEq, Getters)]
+#[cfg_attr(feature = "serde", derive(Serialize))]
+pub struct ExtendedMultiplexMapping {
+    min_value: u64,
+    max_value: u64,
+}
+/// Mapping between multiplexors and multiplexed signals
+#[derive(Clone, Debug, PartialEq, Getters)]
+#[cfg_attr(feature = "serde", derive(Serialize))]
+pub struct ExtendedMultiplex {
+    message_id: MessageId,
+    signal_name: String,
+    multiplexor_signal_name: String,
+    mappings: Vec<ExtendedMultiplexMapping>,
 }
 
 /// Object comments
@@ -623,6 +641,8 @@ pub struct DBC {
     /// Signal groups define a group of signals within a message
     signal_groups: Vec<SignalGroups>,
     signal_extended_value_type_list: Vec<SignalExtendedValueTypeList>,
+    /// Extended multiplex attributes
+    extended_multiplex: Vec<ExtendedMultiplex>,
 }
 
 impl DBC {
@@ -747,6 +767,9 @@ impl DBC {
     }
 
     /// Lookup the message multiplexor switch signal for a given message
+    /// ToDo This does not work for extended multiplexed messages.
+    /// We can either return all multiplexors or the multiplexor for a given signal in this message.
+    /// Currently this function panics if extended_multiplex is used
     pub fn message_multiplexor_switch(&self, message_id: MessageId) -> Option<&Signal> {
         let message = self
             .messages
@@ -754,6 +777,16 @@ impl DBC {
             .find(|message| message.message_id == message_id);
 
         if let Some(message) = message {
+            if let Some(_) = self
+                .extended_multiplex
+                .iter()
+                .find(|ext_mp| ext_mp.message_id == message_id)
+            {
+                unimplemented!(
+                    "This message uses extended multiplexed signals and has multiple multiplexors."
+                )
+            }
+
             return message
                 .signals
                 .iter()
