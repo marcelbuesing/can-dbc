@@ -143,6 +143,7 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
                         "Not all data in buffer was read {:#?}, remaining unparsed: {}",
                         dbc, remaining
                     ),
+                    Error::MultipleMultiplexors => eprintln!("Multiple multiplexors defined"),
                 }
                 panic!("Failed to read DBC");
             }
@@ -243,15 +244,16 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
     fn lookup_multiplex_indicator_switch() {
         let dbc_content = DBC::try_from(SAMPLE_DBC).expect("Failed to parse DBC");
         let multiplexor_switch = dbc_content.message_multiplexor_switch(MessageId(3040));
-        assert!(multiplexor_switch.is_some());
-        assert_eq!(multiplexor_switch.unwrap().name(), "Switch");
+        assert!(multiplexor_switch.is_ok());
+        assert!(multiplexor_switch.as_ref().unwrap().is_some());
+        assert_eq!(multiplexor_switch.unwrap().unwrap().name(), "Switch");
     }
 
     #[test]
     fn lookup_multiplex_indicator_switch_none_when_missing() {
         let dbc_content = DBC::try_from(SAMPLE_DBC).expect("Failed to parse DBC");
         let multiplexor_switch = dbc_content.message_multiplexor_switch(MessageId(1840));
-        assert!(multiplexor_switch.is_none());
+        assert!(multiplexor_switch.unwrap().is_none());
     }
 }
 

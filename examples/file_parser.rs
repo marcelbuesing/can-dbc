@@ -34,7 +34,8 @@ fn main() -> io::Result<()> {
                 can_dbc::Error::Nom(nom::Err::Error(e)) => eprintln!("{:?}", e),
                 can_dbc::Error::Nom(nom::Err::Failure(e)) => eprintln!("{:?}", e),
                 can_dbc::Error::Nom(nom::Err::Incomplete(needed)) => eprintln!("Nom incomplete needed: {:#?}", needed),
-                can_dbc::Error::Incomplete(dbc, remaining) => eprintln!("Not all data in buffer was read {:#?}, remaining unparsed (length: {}): {}\n...(truncated)", dbc, remaining.len(), remaining)
+                can_dbc::Error::Incomplete(dbc, remaining) => eprintln!("Not all data in buffer was read {:#?}, remaining unparsed (length: {}): {}\n...(truncated)", dbc, remaining.len(), remaining),
+                can_dbc::Error::MultipleMultiplexors => eprintln!("Multiple multiplexors defined"),
             }
         }
     }
