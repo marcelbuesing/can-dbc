@@ -257,6 +257,7 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
 }
 
 /// Possible error cases for `can-dbc`
+#[allow(clippy::large_enum_variant)]
 #[derive(Debug)]
 pub enum Error<'a> {
     /// Remaining String, the DBC was only read partially.
