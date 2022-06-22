@@ -1,4 +1,10 @@
 # Change Log
+
+## [5.0.0](https://github.com/marcelbuesing/can-dbc/tree/5.0.0) (2022-06-22)
+- Add support for dbcs with [extended multiplex messages](https://cdn.vector.com/cms/content/know-how/_application-notes/AN-ION-1-0521_Extended_Signal_Multiplexing.pdf). Thank you @pbert519!
+- Breaking: `fn message_multiplexor_switch` now returns `Result<Option<&Signal>, Error>` instead of `Option<&Signal>`.
+          This is necessary due to the possibility of a message having multiple multiplexor switches.
+
 ## [4.0.0](https://github.com/marcelbuesing/can-dbc/tree/4.0.0) (2021-11-15)
 - Migrate from nom 4.2 to nom 7.1.
 - Allow "random" order of elements in DBC. They still have to be in a block e.g. all messages or comments.
