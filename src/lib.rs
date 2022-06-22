@@ -263,6 +263,8 @@ pub enum Error<'a> {
     Incomplete(DBC, &'a str),
     /// Parser failed
     Nom(nom::Err<nom::error::Error<&'a str>>),
+    /// Can't Lookup multiplexors because the message uses extended multiplexing.
+    MultipleMultiplexors,
 }
 
 /// Baudrate of network in kbit/s
@@ -767,32 +769,32 @@ impl DBC {
     }
 
     /// Lookup the message multiplexor switch signal for a given message
-    /// ToDo This does not work for extended multiplexed messages.
-    /// We can either return all multiplexors or the multiplexor for a given signal in this message.
-    /// Currently this function panics if extended_multiplex is used
-    pub fn message_multiplexor_switch(&self, message_id: MessageId) -> Option<&Signal> {
+    /// This does not work for extended multiplexed messages, if multiple multiplexors are defined for a message a Error is returned.
+    pub fn message_multiplexor_switch(
+        &self,
+        message_id: MessageId,
+    ) -> Result<Option<&Signal>, Error> {
         let message = self
             .messages
             .iter()
             .find(|message| message.message_id == message_id);
 
         if let Some(message) = message {
-            if let Some(_) = self
+            if self
                 .extended_multiplex
                 .iter()
-                .find(|ext_mp| ext_mp.message_id == message_id)
+                .any(|ext_mp| ext_mp.message_id == message_id)
             {
-                unimplemented!(
-                    "This message uses extended multiplexed signals and has multiple multiplexors."
-                )
+                Err(Error::MultipleMultiplexors)
+            } else {
+                Ok(message
+                    .signals
+                    .iter()
+                    .find(|signal| signal.multiplexer_indicator == MultiplexIndicator::Multiplexor))
             }
-
-            return message
-                .signals
-                .iter()
-                .find(|signal| signal.multiplexer_indicator == MultiplexIndicator::Multiplexor);
+        } else {
+            Ok(None)
         }
-        None
     }
 }
 
