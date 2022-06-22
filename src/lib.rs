@@ -44,7 +44,6 @@ extern crate serde_derive;
 use std::convert::TryFrom;
 
 use derive_getters::Getters;
-pub use nom::error::{convert_error, VerboseError};
 
 pub mod parser;
 
