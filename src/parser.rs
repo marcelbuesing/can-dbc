@@ -808,7 +808,8 @@ fn message(s: &str) -> IResult<&str, Message> {
     let (s, _) = multispace0(s)?;
     let (s, _) = tag("BO_")(s)?;
     let (s, _) = ms1(s)?;
-    let (s, message_id) = message_id(s)?;
+    let (s, MessageId(message_id)) = message_id(s)?;
+    let message_id = MessageId(message_id & 0x1FFFFFFF);
     let (s, _) = ms1(s)?;
     let (s, message_name) = c_ident(s)?;
     let (s, _) = colon(s)?;
