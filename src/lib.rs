@@ -300,6 +300,21 @@ pub struct Signal {
 #[cfg_attr(feature = "serde", derive(Serialize))]
 pub struct MessageId(pub u32);
 
+impl MessageId {
+    pub fn get_ext_id(&self) -> u32 {
+        self.0 & 0x1FFFFFFF
+    }
+    pub fn is_ext(&self) -> bool {
+        self.0 & 0x80000000 != 0 // id & (1 << 31)
+    }
+    pub fn is_std(&self) -> bool {
+        !self.is_ext()
+    }
+    pub fn get_std_id(&self) -> u32 { 
+        self.0
+    }
+}
+
 #[derive(Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "serde", derive(Serialize))]
 pub enum Transmitter {
