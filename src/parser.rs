@@ -689,7 +689,7 @@ fn byte_order(s: &str) -> IResult<&str, ByteOrder> {
 fn message_id(s: &str) -> IResult<&str, MessageId> {
     let (s, parsed_value) = complete::u32(s)?;
 
-    if parsed_value > u16::MAX as u32 {
+    if parsed_value & (1 << 31) != 0 {
         let extended_value = parsed_value & u32::from(u16::MAX);
         Ok((s, MessageId::Extended(extended_value & 0x1FFFFFFF)))
     } else {
