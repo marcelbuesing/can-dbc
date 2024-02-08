@@ -21,7 +21,7 @@ serde_derive = { version = "1.0", optional = true }
 
 [dev-dependencies]
 clap = { version = "4.5.0", features = ["cargo"] }
-codegen = "0.1"
+codegen = "0.2"
 
 [features]
 with-serde = ["serde", "serde_derive"]
