@@ -567,7 +567,7 @@ fn is_semi_colon(chr: char) -> bool {
 }
 
 fn is_c_string_char(chr: char) -> bool {
-    chr.is_digit(10) || chr.is_alphabetic() || chr == '_'
+    chr.is_ascii_digit() || chr.is_alphabetic() || chr == '_'
 }
 
 fn is_c_ident_head(chr: char) -> bool {
@@ -669,7 +669,7 @@ fn c_ident_vec(s: &str) -> IResult<&str, Vec<String>> {
 
 fn char_string(s: &str) -> IResult<&str, &str> {
     let (s, _) = quote(s)?;
-    let (s, char_string_value) = take_till(|c| is_quote(c as char))(s)?;
+    let (s, char_string_value) = take_till(is_quote)(s)?;
     let (s, _) = quote(s)?;
     Ok((s, char_string_value))
 }
@@ -1285,7 +1285,7 @@ fn attribute_value_for_object(s: &str) -> IResult<&str, AttributeValueForObject>
 fn attribute_definition_node(s: &str) -> IResult<&str, AttributeDefinition> {
     let (s, _) = tag("BU_")(s)?;
     let (s, _) = ms1(s)?;
-    let (s, node) = take_till(|c| is_semi_colon(c as char))(s)?;
+    let (s, node) = take_till(is_semi_colon)(s)?;
     Ok((s, AttributeDefinition::Node(node.to_string())))
 }
 
@@ -1293,7 +1293,7 @@ fn attribute_definition_node(s: &str) -> IResult<&str, AttributeDefinition> {
 fn attribute_definition_signal(s: &str) -> IResult<&str, AttributeDefinition> {
     let (s, _) = tag("SG_")(s)?;
     let (s, _) = ms1(s)?;
-    let (s, signal) = take_till(|c| is_semi_colon(c as char))(s)?;
+    let (s, signal) = take_till(is_semi_colon)(s)?;
     Ok((s, AttributeDefinition::Signal(signal.to_string())))
 }
 
@@ -1301,7 +1301,7 @@ fn attribute_definition_signal(s: &str) -> IResult<&str, AttributeDefinition> {
 fn attribute_definition_environment_variable(s: &str) -> IResult<&str, AttributeDefinition> {
     let (s, _) = tag("EV_")(s)?;
     let (s, _) = ms1(s)?;
-    let (s, env_var) = take_till(|c| is_semi_colon(c as char))(s)?;
+    let (s, env_var) = take_till(is_semi_colon)(s)?;
     Ok((
         s,
         AttributeDefinition::EnvironmentVariable(env_var.to_string()),
@@ -1312,13 +1312,13 @@ fn attribute_definition_environment_variable(s: &str) -> IResult<&str, Attribute
 fn attribute_definition_message(s: &str) -> IResult<&str, AttributeDefinition> {
     let (s, _) = tag("BO_")(s)?;
     let (s, _) = ms1(s)?;
-    let (s, message) = take_till(|c| is_semi_colon(c as char))(s)?;
+    let (s, message) = take_till(is_semi_colon)(s)?;
     Ok((s, AttributeDefinition::Message(message.to_string())))
 }
 
 // TODO add properties
 fn attribute_definition_plain(s: &str) -> IResult<&str, AttributeDefinition> {
-    let (s, plain) = take_till(|c| is_semi_colon(c as char))(s)?;
+    let (s, plain) = take_till(is_semi_colon)(s)?;
     Ok((s, AttributeDefinition::Plain(plain.to_string())))
 }
 
