@@ -124,7 +124,7 @@ mod tests {
     #[test]
     fn signal_comment_test() {
         let def1 = "CM_ SG_ 193 KLU_R_X \"This is a signal comment test\";\n";
-        let message_id = MessageId(193);
+        let message_id = MessageId::Standard(193);
         let comment1 = Comment::Signal {
             message_id,
             signal_name: "KLU_R_X".to_string(),
@@ -137,7 +137,7 @@ mod tests {
     #[test]
     fn message_definition_comment_test() {
         let def1 = "CM_ BO_ 34544 \"Some Message comment\";\n";
-        let message_id = MessageId(34544);
+        let message_id = MessageId::Standard(34544);
         let comment1 = Comment::Message {
             message_id,
             comment: "Some Message comment".to_string(),
@@ -172,7 +172,7 @@ mod tests {
     #[test]
     fn value_description_for_signal_test() {
         let def1 = "VAL_ 837 UF_HZ_OI 255 \"NOP\";\n";
-        let message_id = MessageId(837);
+        let message_id = MessageId::Standard(837);
         let signal_name = "UF_HZ_OI".to_string();
         let val_descriptions = vec![ValDescription {
             a: 255.0,
@@ -243,7 +243,7 @@ mod tests {
     fn message_definition_attribute_value_test() {
         let def = "BA_ \"AttrName\" BO_ 298 13;\n";
         let attribute_value = AttributeValuedForObjectType::MessageDefinitionAttributeValue(
-            MessageId(298),
+            MessageId::Standard(298),
             Some(AttributeValue::AttributeValueF64(13.0)),
         );
         let attr_val_exp = AttributeValueForObject {
@@ -258,7 +258,7 @@ mod tests {
     fn signal_attribute_value_test() {
         let def = "BA_ \"AttrName\" SG_ 198 SGName 13;\n";
         let attribute_value = AttributeValuedForObjectType::SignalAttributeValue(
-            MessageId(198),
+            MessageId::Standard(198),
             "SGName".to_string(),
             AttributeValue::AttributeValueF64(13.0),
         );
@@ -377,7 +377,7 @@ mod tests {
         let def = "SIG_GROUP_ 23 X_3290 1 : A_b XY_Z;\n";
 
         let exp = SignalGroups {
-            message_id: MessageId(23),
+            message_id: MessageId::Standard(23),
             signal_group_name: "X_3290".to_string(),
             repetitions: 1,
             signal_names: vec!["A_b".to_string(), "XY_Z".to_string()],
@@ -442,7 +442,7 @@ mod tests {
     fn message_transmitters_test() {
         let def = "BO_TX_BU_ 12345 : XZY,ABC;\n";
         let exp = MessageTransmitter {
-            message_id: MessageId(12345),
+            message_id: MessageId::Standard(12345),
             transmitter: vec![
                 Transmitter::NodeName("XZY".to_string()),
                 Transmitter::NodeName("ABC".to_string()),
@@ -502,7 +502,7 @@ mod tests {
         // simple mapping
         let def = "SG_MUL_VAL_ 2147483650 muxed_A_1 MUX_A 1-1;\n";
         let exp = ExtendedMultiplex {
-            message_id: MessageId(2147483650),
+            message_id: MessageId::Extended(2),
             signal_name: "muxed_A_1".to_string(),
             multiplexor_signal_name: "MUX_A".to_string(),
             mappings: vec![ExtendedMultiplexMapping {
@@ -516,7 +516,7 @@ mod tests {
         // range mapping
         let def = "SG_MUL_VAL_ 2147483650 muxed_A_1 MUX_A 1568-2568;\n";
         let exp = ExtendedMultiplex {
-            message_id: MessageId(2147483650),
+            message_id: MessageId::Extended(2),
             signal_name: "muxed_A_1".to_string(),
             multiplexor_signal_name: "MUX_A".to_string(),
             mappings: vec![ExtendedMultiplexMapping {
@@ -530,7 +530,7 @@ mod tests {
         // multiple mappings
         let def = "SG_MUL_VAL_ 2147483650 muxed_B_5 MUX_B 5-5, 16-24;\n";
         let exp = ExtendedMultiplex {
-            message_id: MessageId(2147483650),
+            message_id: MessageId::Extended(2),
             signal_name: "muxed_B_5".to_string(),
             multiplexor_signal_name: "MUX_B".to_string(),
             mappings: vec![
@@ -552,7 +552,7 @@ mod tests {
     fn sig_val_type_test() {
         let def = "SIG_VALTYPE_ 2000 Signal_8 : 1;\n";
         let exp = SignalExtendedValueTypeList {
-            message_id: MessageId(2000),
+            message_id: MessageId::Standard(2000),
             signal_name: "Signal_8".to_string(),
             signal_extended_value_type: SignalExtendedValueType::IEEEfloat32Bit,
         };
@@ -687,7 +687,14 @@ fn byte_order(s: &str) -> IResult<&str, ByteOrder> {
 }
 
 fn message_id(s: &str) -> IResult<&str, MessageId> {
-    map(complete::u32, MessageId)(s)
+    let (s, parsed_value) = complete::u32(s)?;
+
+    if parsed_value & (1 << 31) != 0 {
+        let extended_value = parsed_value & u32::from(u16::MAX);
+        Ok((s, MessageId::Extended(extended_value & 0x1FFFFFFF)))
+    } else {
+        Ok((s, MessageId::Standard(parsed_value as u16)))
+    }
 }
 
 fn signed(s: &str) -> IResult<&str, ValueType> {

@@ -153,7 +153,7 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
     fn lookup_signal_comment() {
         let dbc_content = DBC::try_from(SAMPLE_DBC).expect("Failed to parse DBC");
         let comment = dbc_content
-            .signal_comment(MessageId(1840), "Signal_4")
+            .signal_comment(MessageId::Standard(1840), "Signal_4")
             .expect("Signal comment missing");
         assert_eq!(
             "asaklfjlsdfjlsdfgls\nHH?=(%)/&KKDKFSDKFKDFKSDFKSDFNKCnvsdcvsvxkcv",
@@ -164,7 +164,7 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
     #[test]
     fn lookup_signal_comment_none_when_missing() {
         let dbc_content = DBC::try_from(SAMPLE_DBC).expect("Failed to parse DBC");
-        let comment = dbc_content.signal_comment(MessageId(1840), "Signal_2");
+        let comment = dbc_content.signal_comment(MessageId::Standard(1840), "Signal_2");
         assert_eq!(None, comment);
     }
 
@@ -172,7 +172,7 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
     fn lookup_message_comment() {
         let dbc_content = DBC::try_from(SAMPLE_DBC).expect("Failed to parse DBC");
         let comment = dbc_content
-            .message_comment(MessageId(1840))
+            .message_comment(MessageId::Standard(1840))
             .expect("Message comment missing");
         assert_eq!("Some Message comment", comment);
     }
@@ -180,7 +180,7 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
     #[test]
     fn lookup_message_comment_none_when_missing() {
         let dbc_content = DBC::try_from(SAMPLE_DBC).expect("Failed to parse DBC");
-        let comment = dbc_content.message_comment(MessageId(2000));
+        let comment = dbc_content.message_comment(MessageId::Standard(2000));
         assert_eq!(None, comment);
     }
 
@@ -188,7 +188,7 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
     fn lookup_value_descriptions_for_signal() {
         let dbc_content = DBC::try_from(SAMPLE_DBC).expect("Failed to parse DBC");
         let val_descriptions = dbc_content
-            .value_descriptions_for_signal(MessageId(2000), "Signal_3")
+            .value_descriptions_for_signal(MessageId::Standard(2000), "Signal_3")
             .expect("Message comment missing");
 
         let exp = vec![ValDescription {
@@ -202,7 +202,7 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
     fn lookup_value_descriptions_for_signal_none_when_missing() {
         let dbc_content = DBC::try_from(SAMPLE_DBC).expect("Failed to parse DBC");
         let val_descriptions =
-            dbc_content.value_descriptions_for_signal(MessageId(2000), "Signal_2");
+            dbc_content.value_descriptions_for_signal(MessageId::Standard(2000), "Signal_2");
         assert_eq!(None, val_descriptions);
     }
 
@@ -210,7 +210,7 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
     fn lookup_extended_value_type_for_signal() {
         let dbc_content = DBC::try_from(SAMPLE_DBC).expect("Failed to parse DBC");
         let extended_value_type =
-            dbc_content.extended_value_type_for_signal(MessageId(2000), "Signal_8");
+            dbc_content.extended_value_type_for_signal(MessageId::Standard(2000), "Signal_8");
         assert_eq!(
             extended_value_type,
             Some(&SignalExtendedValueType::IEEEfloat32Bit)
@@ -221,28 +221,28 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
     fn lookup_extended_value_type_for_signal_none_when_missing() {
         let dbc_content = DBC::try_from(SAMPLE_DBC).expect("Failed to parse DBC");
         let extended_value_type =
-            dbc_content.extended_value_type_for_signal(MessageId(2000), "Signal_1");
+            dbc_content.extended_value_type_for_signal(MessageId::Standard(2000), "Signal_1");
         assert_eq!(extended_value_type, None);
     }
 
     #[test]
     fn lookup_signal_by_name() {
         let dbc_content = DBC::try_from(SAMPLE_DBC).expect("Failed to parse DBC");
-        let signal = dbc_content.signal_by_name(MessageId(2000), "Signal_8");
+        let signal = dbc_content.signal_by_name(MessageId::Standard(2000), "Signal_8");
         assert!(signal.is_some());
     }
 
     #[test]
     fn lookup_signal_by_name_none_when_missing() {
         let dbc_content = DBC::try_from(SAMPLE_DBC).expect("Failed to parse DBC");
-        let signal = dbc_content.signal_by_name(MessageId(2000), "Signal_25");
+        let signal = dbc_content.signal_by_name(MessageId::Standard(2000), "Signal_25");
         assert_eq!(signal, None);
     }
 
     #[test]
     fn lookup_multiplex_indicator_switch() {
         let dbc_content = DBC::try_from(SAMPLE_DBC).expect("Failed to parse DBC");
-        let multiplexor_switch = dbc_content.message_multiplexor_switch(MessageId(3040));
+        let multiplexor_switch = dbc_content.message_multiplexor_switch(MessageId::Standard(3040));
         assert!(multiplexor_switch.is_ok());
         assert!(multiplexor_switch.as_ref().unwrap().is_some());
         assert_eq!(multiplexor_switch.unwrap().unwrap().name(), "Switch");
@@ -251,7 +251,7 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
     #[test]
     fn lookup_multiplex_indicator_switch_none_when_missing() {
         let dbc_content = DBC::try_from(SAMPLE_DBC).expect("Failed to parse DBC");
-        let multiplexor_switch = dbc_content.message_multiplexor_switch(MessageId(1840));
+        let multiplexor_switch = dbc_content.message_multiplexor_switch(MessageId::Standard(1840));
         assert!(multiplexor_switch.unwrap().is_none());
     }
 }
@@ -298,7 +298,10 @@ pub struct Signal {
 /// Must be unique in DBC file.
 #[derive(Copy, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "serde", derive(Serialize))]
-pub struct MessageId(pub u32);
+pub enum MessageId {
+    Standard(u16),
+    Extended(u32),
+}
 
 #[derive(Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "serde", derive(Serialize))]
