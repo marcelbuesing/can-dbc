@@ -654,6 +654,7 @@ pub struct DBC {
 
 impl DBC {
     /// Read a DBC from a buffer
+    #[allow(clippy::result_large_err)]
     pub fn from_slice(buffer: &[u8]) -> Result<DBC, Error> {
         let dbc_in = std::str::from_utf8(buffer).unwrap();
         Self::try_from(dbc_in)
@@ -661,6 +662,7 @@ impl DBC {
 
     #[allow(clippy::should_implement_trait)]
     #[deprecated(since = "4.0.0", note = "please use `DBC::try_from` instead")]
+    #[allow(clippy::result_large_err)]
     pub fn from_str(dbc_in: &str) -> Result<DBC, Error> {
         let (remaining, dbc) = parser::dbc(dbc_in).map_err(Error::Nom)?;
         if !remaining.is_empty() {
@@ -775,6 +777,7 @@ impl DBC {
 
     /// Lookup the message multiplexor switch signal for a given message
     /// This does not work for extended multiplexed messages, if multiple multiplexors are defined for a message a Error is returned.
+    #[allow(clippy::result_large_err)]
     pub fn message_multiplexor_switch(
         &self,
         message_id: MessageId,
