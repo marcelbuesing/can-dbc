@@ -1,7 +1,7 @@
 extern crate clap;
 
 use can_dbc::{self};
-use clap::{App, Arg};
+use clap::{command, Arg};
 
 use std::convert::TryFrom;
 use std::fs::File;
@@ -9,18 +9,19 @@ use std::io;
 use std::io::prelude::*;
 
 fn main() -> io::Result<()> {
-    let matches = App::new("DBC Parser")
+    let matches = command!()
         .version("1.0")
         .arg(
-            Arg::with_name("input")
-                .short("i")
+            Arg::new("input")
+                .short('i')
                 .long("input")
                 .value_name("FILE")
                 .help("DBC file path")
-                .takes_value(true),
+                .default_value("./examples/sample.dbc")
+                .num_args(1),
         )
         .get_matches();
-    let path = matches.value_of("input").unwrap_or("./examples/sample.dbc");
+    let path = matches.get_one::<String>("input").unwrap();
 
     let mut f = File::open(path)?;
     let mut buffer = Vec::new();
