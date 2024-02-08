@@ -1,5 +1,11 @@
 # Change Log
 
+## [6.0.0](https://github.com/marcelbuesing/can-dbc/tree/6.0.0) (2024-02-08)
+- Update dependencies.
+- Breaking: PR #13 and #14. Thank you @erzoe and @kistenklaus.
+    Replace u32 in MessageId with enum type to raise awareness that the raw dbc message ids contain the extended bit.
+    Add `MessageId.raw()` which returns the previous raw identifier including the extended id!
+
 ## [5.0.0](https://github.com/marcelbuesing/can-dbc/tree/5.0.0) (2022-06-22)
 - Add support for dbcs with [extended multiplex messages](https://cdn.vector.com/cms/content/know-how/_application-notes/AN-ION-1-0521_Extended_Signal_Multiplexing.pdf). Thank you @pbert519!
 - Breaking: `fn message_multiplexor_switch` now returns `Result<Option<&Signal>, Error>` instead of `Option<&Signal>`.
