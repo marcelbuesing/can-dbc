@@ -254,6 +254,20 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
         let multiplexor_switch = dbc_content.message_multiplexor_switch(MessageId::Standard(1840));
         assert!(multiplexor_switch.unwrap().is_none());
     }
+
+    #[test]
+    fn extended_message_id_raw() {
+        let message_id = MessageId::Extended(2);
+        assert_eq!(message_id.raw(), 2 | 1 << 31);
+        let message_id = MessageId::Extended(2 ^ 29);
+        assert_eq!(message_id.raw(), 2 ^ 29 | 1 << 31);
+    }
+
+    #[test]
+    fn standard_message_id_raw() {
+        let message_id = MessageId::Standard(2);
+        assert_eq!(message_id.raw(), 2);
+    }
 }
 
 /// Possible error cases for `can-dbc`
@@ -301,6 +315,16 @@ pub struct Signal {
 pub enum MessageId {
     Standard(u16),
     Extended(u32),
+}
+
+impl MessageId {
+    /// Raw value of the message id including the bit for extended identifiers
+    pub fn raw(&self) -> u32 {
+        match self {
+            MessageId::Standard(id) => *id as u32,
+            MessageId::Extended(id) => *id | 1 << 31,
+        }
+    }
 }
 
 #[derive(Clone, Debug, PartialEq)]

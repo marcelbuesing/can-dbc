@@ -560,6 +560,33 @@ mod tests {
         let (_, extended_value_type_list) = signal_extended_value_type_list(def).unwrap();
         assert_eq!(extended_value_type_list, exp);
     }
+
+    #[test]
+    fn standard_message_id_test() {
+        let (_, extended_message_id) = message_id("2").unwrap();
+        assert_eq!(extended_message_id, MessageId::Standard(2));
+    }
+
+    #[test]
+    fn extended_low_message_id_test() {
+        let s = (2u32 | 1 << 31).to_string();
+        let (_, extended_message_id) = message_id(&s).unwrap();
+        assert_eq!(extended_message_id, MessageId::Extended(2));
+    }
+
+    #[test]
+    fn extended_message_id_test() {
+        let s = (0x1FFFFFFFu32 | 1 << 31).to_string();
+        let (_, extended_message_id) = message_id(&s).unwrap();
+        assert_eq!(extended_message_id, MessageId::Extended(0x1FFFFFFF));
+    }
+
+    #[test]
+    fn extended_message_id_test_max_29bit() {
+        let s = u32::MAX.to_string();
+        let (_, extended_message_id) = message_id(&s).unwrap();
+        assert_eq!(extended_message_id, MessageId::Extended(0x1FFFFFFF));
+    }
 }
 
 fn is_semi_colon(chr: char) -> bool {
@@ -690,8 +717,7 @@ fn message_id(s: &str) -> IResult<&str, MessageId> {
     let (s, parsed_value) = complete::u32(s)?;
 
     if parsed_value & (1 << 31) != 0 {
-        let extended_value = parsed_value & u32::from(u16::MAX);
-        Ok((s, MessageId::Extended(extended_value & 0x1FFFFFFF)))
+        Ok((s, MessageId::Extended(parsed_value & 0x1FFFFFFF)))
     } else {
         Ok((s, MessageId::Standard(parsed_value as u16)))
     }
