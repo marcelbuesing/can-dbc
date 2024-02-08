@@ -14,7 +14,7 @@ travis-ci = { repository = "marcelbuesing/can-dbc", branch = "dev" }
 codecov = { repository = "marcelbuesing/can-dbc", branch = "dev", service = "github" }
 
 [dependencies]
-derive-getters = "0.2"
+derive-getters = "0.3"
 nom = { version = "7.1", features = ["alloc"] }
 serde = { version = "1.0", optional = true }
 serde_derive = { version = "1.0", optional = true }
