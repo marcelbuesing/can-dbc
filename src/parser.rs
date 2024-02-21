@@ -22,7 +22,7 @@ use crate::{
     EnvironmentVariable, EnvironmentVariableData, ExtendedMultiplex, ExtendedMultiplexMapping,
     Message, MessageId, MessageTransmitter, MultiplexIndicator, Node, Signal,
     SignalExtendedValueType, SignalExtendedValueTypeList, SignalGroups, SignalType, SignalTypeRef,
-    Symbol, Transmitter, ValDescription, ValueDescription, ValueTable, ValueType, Version, DBC,
+    Symbol, Transmitter, ValueDescription, ValueDescriptions, ValueTable, ValueType, Version, DBC,
 };
 
 #[cfg(test)]
@@ -174,11 +174,11 @@ mod tests {
         let def1 = "VAL_ 837 UF_HZ_OI 255 \"NOP\";\n";
         let message_id = MessageId::Standard(837);
         let signal_name = "UF_HZ_OI".to_string();
-        let val_descriptions = vec![ValDescription {
-            a: 255.0,
-            b: "NOP".to_string(),
+        let val_descriptions = vec![ValueDescription {
+            value: 255.0,
+            description: "NOP".to_string(),
         }];
-        let value_description_for_signal1 = ValueDescription::Signal {
+        let value_description_for_signal1 = ValueDescriptions::Signal {
             message_id,
             signal_name,
             value_descriptions: val_descriptions,
@@ -192,11 +192,11 @@ mod tests {
     fn value_description_for_env_var_test() {
         let def1 = "VAL_ MY_ENV_VAR 255 \"NOP\";\n";
         let env_var_name = "MY_ENV_VAR".to_string();
-        let val_descriptions = vec![ValDescription {
-            a: 255.0,
-            b: "NOP".to_string(),
+        let val_descriptions = vec![ValueDescription {
+            value: 255.0,
+            description: "NOP".to_string(),
         }];
-        let value_env_var1 = ValueDescription::EnvironmentVariable {
+        let value_env_var1 = ValueDescriptions::EnvironmentVariable {
             env_var_name,
             value_descriptions: val_descriptions,
         };
@@ -455,9 +455,9 @@ mod tests {
     #[test]
     fn value_description_test() {
         let def = "2 \"ABC\"\n";
-        let exp = ValDescription {
-            a: 2f64,
-            b: "ABC".to_string(),
+        let exp = ValueDescription {
+            value: 2f64,
+            description: "ABC".to_string(),
         };
         let (_, val_desc) = value_description(def).unwrap();
         assert_eq!(exp, val_desc);
@@ -469,13 +469,13 @@ mod tests {
         let exp = ValueTable {
             value_table_name: "Tst".to_string(),
             value_descriptions: vec![
-                ValDescription {
-                    a: 2f64,
-                    b: "ABC".to_string(),
+                ValueDescription {
+                    value: 2f64,
+                    description: "ABC".to_string(),
                 },
-                ValDescription {
-                    a: 1f64,
-                    b: "Test A".to_string(),
+                ValueDescription {
+                    value: 1f64,
+                    description: "Test A".to_string(),
                 },
             ],
         };
@@ -488,9 +488,9 @@ mod tests {
         let def = "VAL_TABLE_ Tst 2 \"ABC\";\n";
         let exp = ValueTable {
             value_table_name: "Tst".to_string(),
-            value_descriptions: vec![ValDescription {
-                a: 2f64,
-                b: "ABC".to_string(),
+            value_descriptions: vec![ValueDescription {
+                value: 2f64,
+                description: "ABC".to_string(),
             }],
         };
         let (_, val_table) = value_table(def).unwrap();
@@ -973,20 +973,20 @@ fn comment(s: &str) -> IResult<&str, Comment> {
     Ok((s, comment))
 }
 
-fn value_description(s: &str) -> IResult<&str, ValDescription> {
-    let (s, a) = double(s)?;
+fn value_description(s: &str) -> IResult<&str, ValueDescription> {
+    let (s, value) = double(s)?;
     let (s, _) = ms1(s)?;
-    let (s, b) = char_string(s)?;
+    let (s, description) = char_string(s)?;
     Ok((
         s,
-        ValDescription {
-            a,
-            b: b.to_string(),
+        ValueDescription {
+            value,
+            description: description.to_string(),
         },
     ))
 }
 
-fn value_description_for_signal(s: &str) -> IResult<&str, ValueDescription> {
+fn value_description_for_signal(s: &str) -> IResult<&str, ValueDescriptions> {
     let (s, _) = ms0(s)?;
     let (s, _) = tag("VAL_")(s)?;
     let (s, _) = ms1(s)?;
@@ -999,7 +999,7 @@ fn value_description_for_signal(s: &str) -> IResult<&str, ValueDescription> {
     )(s)?;
     Ok((
         s,
-        ValueDescription::Signal {
+        ValueDescriptions::Signal {
             message_id,
             signal_name,
             value_descriptions: value_descriptions.0,
@@ -1007,7 +1007,7 @@ fn value_description_for_signal(s: &str) -> IResult<&str, ValueDescription> {
     ))
 }
 
-fn value_description_for_env_var(s: &str) -> IResult<&str, ValueDescription> {
+fn value_description_for_env_var(s: &str) -> IResult<&str, ValueDescriptions> {
     let (s, _) = ms0(s)?;
     let (s, _) = tag("VAL_")(s)?;
     let (s, _) = ms1(s)?;
@@ -1018,14 +1018,14 @@ fn value_description_for_env_var(s: &str) -> IResult<&str, ValueDescription> {
     )(s)?;
     Ok((
         s,
-        ValueDescription::EnvironmentVariable {
+        ValueDescriptions::EnvironmentVariable {
             env_var_name,
             value_descriptions: value_descriptions.0,
         },
     ))
 }
 
-fn value_descriptions(s: &str) -> IResult<&str, ValueDescription> {
+fn value_descriptions(s: &str) -> IResult<&str, ValueDescriptions> {
     let (s, _) = multispace0(s)?;
     let (s, vd) = alt((value_description_for_signal, value_description_for_env_var))(s)?;
     let (s, _) = line_ending(s)?;

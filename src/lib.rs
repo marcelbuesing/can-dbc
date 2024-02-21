@@ -191,9 +191,9 @@ SIG_VALTYPE_ 2000 Signal_8 : 1;
             .value_descriptions_for_signal(MessageId::Standard(2000), "Signal_3")
             .expect("Message comment missing");
 
-        let exp = vec![ValDescription {
-            a: 255.0,
-            b: "NOP".to_string(),
+        let exp = vec![ValueDescription {
+            value: 255.0,
+            description: "NOP".to_string(),
         }];
         assert_eq!(exp, val_descriptions);
     }
@@ -450,9 +450,9 @@ pub enum AttributeValueType {
 
 #[derive(Clone, Debug, PartialEq, Getters)]
 #[cfg_attr(feature = "serde", derive(Serialize))]
-pub struct ValDescription {
-    a: f64,
-    b: String,
+pub struct ValueDescription {
+    value: f64,
+    description: String,
 }
 
 #[derive(Clone, Debug, PartialEq, Getters)]
@@ -476,7 +476,7 @@ pub enum AttributeValue {
 #[cfg_attr(feature = "serde", derive(Serialize))]
 pub struct ValueTable {
     value_table_name: String,
-    value_descriptions: Vec<ValDescription>,
+    value_descriptions: Vec<ValueDescription>,
 }
 
 #[derive(Clone, Debug, PartialEq, Getters)]
@@ -591,15 +591,15 @@ pub enum AttributeDefinition {
 /// Encoding for signal raw values.
 #[derive(Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "serde", derive(Serialize))]
-pub enum ValueDescription {
+pub enum ValueDescriptions {
     Signal {
         message_id: MessageId,
         signal_name: String,
-        value_descriptions: Vec<ValDescription>,
+        value_descriptions: Vec<ValueDescription>,
     },
     EnvironmentVariable {
         env_var_name: String,
-        value_descriptions: Vec<ValDescription>,
+        value_descriptions: Vec<ValueDescription>,
     },
 }
 
@@ -663,7 +663,7 @@ pub struct DBC {
     attribute_defaults: Vec<AttributeDefault>,
     attribute_values: Vec<AttributeValueForObject>,
     /// Encoding for signal raw values
-    value_descriptions: Vec<ValueDescription>,
+    value_descriptions: Vec<ValueDescriptions>,
     // obsolete + undefined
     // category_definitions: Vec<CategoryDefinition>,
     // obsolete + undefined
@@ -758,11 +758,11 @@ impl DBC {
         &self,
         message_id: MessageId,
         signal_name: &str,
-    ) -> Option<&[ValDescription]> {
+    ) -> Option<&[ValueDescription]> {
         self.value_descriptions
             .iter()
             .filter_map(|x| match x {
-                ValueDescription::Signal {
+                ValueDescriptions::Signal {
                     message_id: ref x_message_id,
                     signal_name: ref x_signal_name,
                     ref value_descriptions,
